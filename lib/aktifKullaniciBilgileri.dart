@@ -1,51 +1,51 @@
 import 'metadata.dart';
 
 class AktifKullaniciBilgileri {
-  static String _firmaKodu;
-  static String _firmaAdi;
-  static String _firmaEposta;
-  static String _firmaSifresi;
-  static String _firmaTitresim;
-  static String _firmaSesli;
-  static String _firmaWebSitesi;
-  static String _firmaUnvani;
-  static String _firmaIl;
-  static String _firmaIlce;
-  static String _firmaAdres;
-  static String _firmaVergiDairesi;
-  static String _firmaVergiNo;
-  static String _firmaAracSayisi;
-  static String _firmaPersonelSayisi;
-  static String _firmaBelgeler;
-  static String _firmaKacYildirFaaliyette;
-  static String _firmaSabitTel;
-  static String _firmaCepTel;
-  static String _firmaBankaBir;
-  static String _firmaIbanBir;
-  static String _firmaBankaIki;
-  static String _firmaIbanIki;
-  static String _firmaBankaUc;
-  static String _firmaIbanUc;
+ static String firmaKodu;
+  static String firmaAdi;
+  static String firmaEposta;
+  static String firmaSifresi;
+  static String firmaTitresim;
+  static String firmaSesli;
+  static String firmaWebSitesi;
+  static String firmaUnvani;
+  static String firmaIl;
+  static String firmaIlce;
+  static String firmaAdres;
+  static String firmaVergiDairesi;
+  static String firmaVergiNo;
+  static String firmaAracSayisi;
+  static String firmaPersonelSayisi;
+  static String firmaBelgeler;
+  static String firmaKacYildirFaaliyette;
+  static String firmaSabitTel;
+  static String firmaCepTel;
+  static String firmaBankaBir;
+  static String firmaIbanBir;
+  static String firmaBankaIki;
+  static String firmaIbanIki;
+  static String firmaBankaUc;
+  static String firmaIbanUc;
 
-  static String _musteriKodu;
-  static String _musteriKullaniciAdi;
-  static String _musteriAdi;
-  static String _musteriSoyadi;
-  static String _musteriTcNo;
-  static String _musteriTelNo;
-  static String _musteriAdresi;
-  static String _musteriEposta;
-  static String _musteriSifresi;
-  static String _musteriTitresim;
-  static String _musteriSesli;
+  static String musteriKodu;
+  static String musteriKullaniciAdi;
+  static String musteriAdi;
+  static String musteriSoyadi;
+  static String musteriTcNo;
+  static String musteriTelNo;
+  static String musteriAdresi;
+  static String musteriEposta;
+  static String musteriSifresi;
+  static String musteriTitresim;
+  static String musteriSesli;
 
-  static String _adminKodu;
-  static String _adminAdi;
-  static String _adminAdresi;
-  static String _adminSifresi;
-  static String _adminTitresim;
-  static String _adminSesli;
-  static String _adminEposta;
+  static String adminKodu;
+  static String adminAdi;
+  static String adminAdresi;
+  static String adminSifresi;
+  static String adminTitresim;
+  static String adminSesli;
+  static String adminEposta;
 
   static String aktifKullaniciVerisiDoldur(List<Metadata> gelenveri) {
     String tur;
@@ -63,36 +63,36 @@ class AktifKullaniciBilgileri {
         }
       }
     if (tur == "musteri") {
-      _musteriKullaniciAdi = getMetaValue("nickname", gelenveri);
-      _musteriAdi = getMetaValue("first_name", gelenveri);
-      _musteriAdresi = getMetaValue("musteri-adres", gelenveri);
-      _musteriSoyadi = getMetaValue("last_name", gelenveri);
-      _musteriTcNo = getMetaValue("musteri-tc-kimlik-no", gelenveri);
-      _musteriTelNo = getMetaValue("musteri-iletisim-tel", gelenveri);
+      musteriKullaniciAdi = getMetaValue("nickname", gelenveri);
+      musteriAdi = getMetaValue("first_name", gelenveri);
+      musteriAdresi = getMetaValue("musteri-adres", gelenveri);
+      musteriSoyadi = getMetaValue("last_name", gelenveri);
+      musteriTcNo = getMetaValue("musteri-tc-kimlik-no", gelenveri);
+      musteriTelNo = getMetaValue("musteri-iletisim-tel", gelenveri);
     } else if (tur == "firma") {
-      _firmaAdi = getMetaValue("firma_unvan", gelenveri);
-      _firmaAdres = getMetaValue("firma_adres", gelenveri);
-      _firmaUnvani = getMetaValue("firma_unvan", gelenveri);
-      _firmaIl = getMetaValue("firma_il", gelenveri);
-      _firmaIlce = getMetaValue("firma_ilce", gelenveri);
-      _firmaVergiDairesi = getMetaValue("firma_vergi_dairesi", gelenveri);
-      _firmaVergiNo = getMetaValue("firma_vergi_no", gelenveri);
-      _firmaAracSayisi = getMetaValue("firma_arac_sayisi", gelenveri);
-      _firmaPersonelSayisi = getMetaValue("firma_personel_sayisi", gelenveri);
-      _firmaKacYildirFaaliyette =
+      firmaAdi = getMetaValue("firma_unvan", gelenveri);
+      firmaAdres = getMetaValue("firma_adres", gelenveri);
+      firmaUnvani = getMetaValue("firma_unvan", gelenveri);
+      firmaIl = getMetaValue("firma_il", gelenveri);
+      firmaIlce = getMetaValue("firma_ilce", gelenveri);
+      firmaVergiDairesi = getMetaValue("firma_vergi_dairesi", gelenveri);
+      firmaVergiNo = getMetaValue("firma_vergi_no", gelenveri);
+      firmaAracSayisi = getMetaValue("firma_arac_sayisi", gelenveri);
+      firmaPersonelSayisi = getMetaValue("firma_personel_sayisi", gelenveri);
+      firmaKacYildirFaaliyette =
           getMetaValue("firma_kac_yildir_faliyette", gelenveri);
-      _firmaSabitTel = getMetaValue("firma_sabit_tel", gelenveri);
-      _firmaCepTel = getMetaValue("firma_cep_telefonu", gelenveri);
-      _firmaBankaBir = getMetaValue("firma_banka_adi_bir", gelenveri);
-      _firmaBankaIki = getMetaValue("firma_banka_adi_iki", gelenveri);
-      _firmaBankaUc = getMetaValue("firma_banka_adi_uc", gelenveri);
-      _firmaWebSitesi = getMetaValue("firma_web_sitesi", gelenveri);
-      _firmaIbanBir = getMetaValue("firma_banka_iban_bir", gelenveri);
-      _firmaIbanIki = getMetaValue("firma_banka_iban_iki", gelenveri);
-      _firmaIbanUc = getMetaValue("firma_banka_iban_uc", gelenveri);
+      firmaSabitTel = getMetaValue("firma_sabit_tel", gelenveri);
+      firmaCepTel = getMetaValue("firma_cep_telefonu", gelenveri);
+      firmaBankaBir = getMetaValue("firma_banka_adi_bir", gelenveri);
+      firmaBankaIki = getMetaValue("firma_banka_adi_iki", gelenveri);
+      firmaBankaUc = getMetaValue("firma_banka_adi_uc", gelenveri);
+      firmaWebSitesi = getMetaValue("firma_web_sitesi", gelenveri);
+      firmaIbanBir = getMetaValue("firma_banka_iban_bir", gelenveri);
+      firmaIbanIki = getMetaValue("firma_banka_iban_iki", gelenveri);
+      firmaIbanUc = getMetaValue("firma_banka_iban_uc", gelenveri);
     } else {
-      _adminAdi = getMetaValue("first_name", gelenveri);
-      _adminKodu = getMetaValue("ID", gelenveri);
+      adminAdi = getMetaValue("first_name", gelenveri);
+      adminKodu = getMetaValue("ID", gelenveri);
     }
     return tur;
   }

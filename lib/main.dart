@@ -89,9 +89,21 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
       },
     );
   }
+  _showIndicator() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          content: CircularProgressIndicator(),          
+        );
+      },
+    );
+  }
+  
   void oturumAc(String kulEmail, String kulSifre) async {
     String girenKullaniciTuru = await _database.giris(kulEmail, kulSifre);
-
+    Navigator.pop(context);
     if (girenKullaniciTuru == "basarisiz") {
       _showDialog("Kullanıcı adı veya şifre yanlış", "Girmiş olduğunuz Kullanıcı adı veya şifreyi kontrol ediniz üye değilseniz aşağıdan üye olabilirsiniz");      
     } else if (girenKullaniciTuru == "musteri") {
@@ -215,8 +227,9 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
                           "Oturum Aç",
                           textScaleFactor: 2,
                         ),
-                        onPressed: () {
+                        onPressed: () async{
                           //Oturum açma kodu
+                          _showIndicator();
                           oturumAc(kulmail.text, kulsifre.text);
                         },
                         shape: new RoundedRectangleBorder(
