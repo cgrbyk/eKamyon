@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'database.dart';
 
+import 'kullaniciMenu.dart';
+import 'firmaMenu.dart';
 import 'KayitKullanici.dart';
+import 'KayitFirma.dart';
 
 void main() => runApp(Ekamyon());
 
@@ -44,23 +47,64 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
               child: new Text("Müşteri Hesabı"),
               onPressed: () {
                 //Müşteri Kayıt Ekranı açılacak
+                Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => KayitKullanici()),
+                  MaterialPageRoute(builder: (context) => KayitKullanici()),
                 );
               },
             ),
             new FlatButton(
               child: new Text("Nakliye Hesabı"),
               onPressed: () {
-                //Nakliyeci Kayıt Ekranı Açılacak
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => KayitFirma()),
+                );
               },
             ),
           ],
         );
       },
     );
+  }
+  void _showDialog(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text(title),
+          content: new Text(message),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Kapat"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+  void oturumAc(String kulEmail, String kulSifre) async {
+    String girenKullaniciTuru = await _database.giris(kulEmail, kulSifre);
+
+    if (girenKullaniciTuru == "basarisiz") {
+      _showDialog("Kullanıcı adı veya şifre yanlış", "Girmiş olduğunuz Kullanıcı adı veya şifreyi kontrol ediniz üye değilseniz aşağıdan üye olabilirsiniz");      
+    } else if (girenKullaniciTuru == "musteri") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => KullaniciMenu()),
+      );
+    } else if (girenKullaniciTuru == "firma") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => FirmaMenu()),
+      );
+    } else {}
   }
 
   @override
@@ -165,7 +209,7 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
                       top: MediaQuery.of(context).size.height * 0.05),
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width * 0.6,
-                    height: MediaQuery.of(context).size.width * 0.15,
+                    height: MediaQuery.of(context).size.height * 0.08,
                     child: RaisedButton(
                         child: new Text(
                           "Oturum Aç",
@@ -173,8 +217,7 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
                         ),
                         onPressed: () {
                           //Oturum açma kodu
-                          var response =
-                              _database.giris(kulmail.text, kulsifre.text);
+                          oturumAc(kulmail.text, kulsifre.text);
                         },
                         shape: new RoundedRectangleBorder(
                             borderRadius: new BorderRadius.circular(30.0))),
@@ -195,17 +238,12 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
                         onPressed: () {},
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                          right: MediaQuery.of(context).size.width * 0.1),
-                      child: FlatButton(
-                        child: Text('Yeni Kullanıcı',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 19)),
-                        onPressed: () {
-                          _kayitDialog();
-                        },
-                      ),
+                    FlatButton(
+                      child: Text('Yeni Kullanıcı',
+                          style: TextStyle(color: Colors.white, fontSize: 19)),
+                      onPressed: () {
+                        _kayitDialog();
+                      },
                     ),
                   ],
                 ),
