@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'aktifKullaniciBilgileri.dart';
+import 'package:ekamyon/Modeller/aktifKullaniciBilgileri.dart';
+import 'FiyatListesi.dart';
+
+import 'araclar.dart';
 
 class FirmaMenu extends StatefulWidget {
   @override
@@ -27,12 +30,15 @@ class FirmaMenuEkrani extends State<FirmaMenu> {
                 ),
                 Padding(
                     padding: EdgeInsets.only(top: 8, left: 5, right: 5),
-                    child: Text(isim,style: TextStyle(fontWeight: FontWeight.bold),))
+                    child: Text(
+                      isim,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ))
               ],
             )),
           ),
         ),
-      ),     
+      ),
     );
   }
 
@@ -77,14 +83,36 @@ class FirmaMenuEkrani extends State<FirmaMenu> {
                   GestureDetector(
                     child: getImageButton(
                         "bekleyennakliyeler.png", "bekleyen nakliyelerim"),
-                        onTap: (){},
+                    onTap: () {
+                      /*
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AracListe()),
+                      );*/
+                    },
                   ),
-                  getImageButton("sarikamyon.png", "Araçlarım")
+                  GestureDetector(
+                      child: getImageButton("sarikamyon.png", "Araçlarım"),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => AracListe()),
+                        );
+                      })
                 ],
               ),
               Row(
                 children: <Widget>[
-                  getImageButton("fiyatguncelle.png", "Fiyat listeri Güncelle"),
+                  GestureDetector(
+                    child: getImageButton(
+                        "fiyatguncelle.png", "Fiyat listeri Güncelle"),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => FiyatListe()),
+                      );
+                    },
+                  ),
                   getImageButton(
                       "firmabilgisiguncelle.png", "Firma bilgisi güncelle")
                 ],

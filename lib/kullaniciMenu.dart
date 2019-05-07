@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'aktifKullaniciBilgileri.dart';
+import 'Modeller/aktifKullaniciBilgileri.dart';
 
 class KullaniciMenu extends StatefulWidget {
   @override

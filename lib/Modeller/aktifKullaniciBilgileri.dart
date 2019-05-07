@@ -52,13 +52,16 @@ class AktifKullaniciBilgileri {
     for (Metadata md in gelenveri)
       if (md.metakey == "wp_capabilities") {
         if (md.metavalue.lastIndexOf("firma") != -1) {
+          firmaKodu=md.id.toString();
           tur = "firma";
           break;
         } else if (md.metavalue.lastIndexOf("musteri") != -1) {
           tur = "musteri";
+          musteriKodu=md.id.toString();
           break;
         } else {
           tur = "admin";
+          adminKodu=md.id.toString();
           break;
         }
       }

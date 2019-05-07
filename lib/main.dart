@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'database.dart';
 
 import 'kullaniciMenu.dart';
-import 'firmaMenu.dart';
+import 'Firma/firmaMenu.dart';
 import 'KayitKullanici.dart';
 import 'KayitFirma.dart';
 
@@ -31,6 +31,13 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
   TextEditingController kulmail = TextEditingController();
   TextEditingController kulsifre = TextEditingController();
   FocusNode kulsifreNode = new FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    kulmail.text="firma1@yusuf.com";
+    kulsifre.text="1234";
+  }
 
   void _kayitDialog() {
     showDialog(
