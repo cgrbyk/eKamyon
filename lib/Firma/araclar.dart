@@ -118,7 +118,9 @@ class AracListeEkrani extends State<AracListe> {
                               context: context,
                               builder: (_) {
                                 return AracGuncellemeDialog(
-                                    arac: araclar[index]);
+                                    arac: araclar[index],
+                                    ale: this,
+                                    );
                               });
                         },
                       ),
@@ -150,7 +152,7 @@ class AracListeEkrani extends State<AracListe> {
               showDialog(
                   context: context,
                   builder: (_) {
-                    return AracEklemeDialog();
+                    return AracEklemeDialog(ale: this,);
                   });
             },
             shape: RoundedRectangleBorder(
@@ -161,11 +163,15 @@ class AracListeEkrani extends State<AracListe> {
 }
 
 class AracEklemeDialog extends StatefulWidget {
+  final AracListeEkrani ale;
+  AracEklemeDialog({this.ale});
   @override
-  YeniAracEkle createState() => new YeniAracEkle();
+  YeniAracEkle createState() => new YeniAracEkle(ale: ale);
 }
 
 class YeniAracEkle extends State<AracEklemeDialog> {
+  final AracListeEkrani ale;
+  YeniAracEkle({this.ale});
   TextEditingController aracPlaka = TextEditingController();
   TextEditingController aracMarka = TextEditingController();
   TextEditingController aracModel = TextEditingController();
@@ -231,9 +237,9 @@ class YeniAracEkle extends State<AracEklemeDialog> {
       content: Column(
         children: <Widget>[
           customTextBox(TextInputType.text, "Araç Plakası", aracPlaka,
-              TextInputAction.next, null, aracMarkaNode, false),
+              TextInputAction.next, null, new FocusNode(),false),
           customTextBox(TextInputType.text, "Araç Markası", aracMarka,
-              TextInputAction.next, aracMarkaNode, aracModelNode, false),
+              TextInputAction.next, aracMarkaNode, new FocusNode(), false),
           customTextBox(TextInputType.text, "Araç Modeli", aracModel,
               TextInputAction.send, aracModelNode, new FocusNode(), false),
           CheckboxListTile(
@@ -257,6 +263,7 @@ class YeniAracEkle extends State<AracEklemeDialog> {
                   aracPlaka.text, aracMarka.text, aracModel.text, aracaktifmi);
               Navigator.of(context).pop();
               _showDialog("Ekleme Başarılı", "Yeni aracınız eklenmiştir.");
+              ale.aracListesiDoldur();
               setState(() {});
             } else {
               _showDialog("Boş bırakılamaz", "Bütün alanları doldurmalısınız");
@@ -277,14 +284,16 @@ class YeniAracEkle extends State<AracEklemeDialog> {
 
 class AracGuncellemeDialog extends StatefulWidget {
   final Arac arac;
-  AracGuncellemeDialog({this.arac});
+  final AracListeEkrani ale;
+  AracGuncellemeDialog({this.arac,this.ale});
   @override
-  AracGuncelleme createState() => new AracGuncelleme(arac: arac);
+  AracGuncelleme createState() => new AracGuncelleme(arac: arac,ale: ale);
 }
 
 class AracGuncelleme extends State<AracGuncellemeDialog> {
   final Arac arac;
-  AracGuncelleme({this.arac});
+  final AracListeEkrani ale;
+  AracGuncelleme({this.arac,this.ale});
   TextEditingController aracPlaka = TextEditingController();
   TextEditingController aracMarka = TextEditingController();
   TextEditingController aracModel = TextEditingController();
@@ -336,12 +345,16 @@ class AracGuncelleme extends State<AracGuncellemeDialog> {
           actions: <Widget>[
             new FlatButton(
               child: new Text("Evet"),
-              onPressed: () {
+              onPressed: () async {
                 Navigator.of(context).pop();
-                bool islemsonuc = _database.aracSil(arac.aracPlakasi);
+                bool islemsonuc = await _database.aracSil(arac.aracPlakasi);
                   if (islemsonuc)
                   {
                     _showDialog("Araç silme", "Araç silme işlemi başarılı.");
+                    ale.aracListesiDoldur();
+                    setState(() {
+                      
+                    });
                   }
               },
             ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:ekamyon/Modeller/aktifKullaniciBilgileri.dart';
 import 'package:ekamyon/database.dart';
 import 'package:ekamyon/Modeller/Fiyat.dart';
+import 'package:flutter/semantics.dart';
 
 class FiyatListe extends StatefulWidget {
   @override
@@ -12,40 +13,13 @@ class FiyatListe extends StatefulWidget {
 class FiyatListeEkrani extends State<FiyatListe> {
   Database _database = Database();
   List<Fiyat> fiyatlar = new List<Fiyat>();
-
-  bool aracaktifmi = false;
+  TextEditingController toplucontroller = TextEditingController();
+  TextEditingController teklicontroller = TextEditingController();
 
   @override
   void initState() {
     fiyatListesiDoldur();
     super.initState();
-  }
-
-  Widget customTextBox(
-      TextInputType type,
-      String placeholder,
-      TextEditingController controller,
-      TextInputAction action,
-      FocusNode ownFocus,
-      FocusNode tofocus,
-      bool password) {
-    return TextField(
-      focusNode: ownFocus,
-      obscureText: password,
-      keyboardType: type,
-      autofocus: false,
-      decoration: InputDecoration(
-        hintText: placeholder,
-        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-      ),
-      controller: controller,
-      textInputAction: action,
-      onSubmitted: (String s) {
-        FocusScope.of(context).requestFocus(tofocus);
-      },
-      style: TextStyle(
-          fontWeight: FontWeight.bold, fontFamily: 'Montserrat', fontSize: 20),
-    );
   }
 
   void _showDialog(String title, String message) {
@@ -61,6 +35,118 @@ class FiyatListeEkrani extends State<FiyatListe> {
               child: new Text("Kapat"),
               onPressed: () {
                 Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+  _showDialogTekliFiyat(Fiyat f) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Rota için yeni fiyatı giriniz"),
+          content: TextField(
+            controller: teklicontroller,
+            keyboardType: TextInputType.number,
+            autofocus: false,
+            decoration: InputDecoration(
+              hintText: "Fiyat",
+              contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+            ),
+          ),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("İptal"),
+              onPressed: () async{
+                Navigator.of(context).pop();
+              },
+            ),
+            new FlatButton(
+              child: new Text("Güncelle"),
+              onPressed: () async{
+                await _database.tekliFiyatGuncelle(f.tasimaUcretiTam, f.varisIl, f.evTipi);
+                Navigator.of(context).pop();
+                await fiyatListesiDoldur();              
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  _showDialogSilme(Fiyat f) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Fiyat Silme"),
+          content: new Text("Bu fiyatı silmek istediğinizden emin misiniz ?"),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Evet"),
+              onPressed: () async {
+                await _database.fiyatsil(f.varisIl, f.evTipi, f.tasimaUcretiTam);
+                Navigator.of(context).pop();
+                await fiyatListesiDoldur();
+                return true;
+              },
+            ),
+            new FlatButton(
+              child: new Text("hayır"),
+              onPressed: () {
+                Navigator.of(context).pop();
+                return false;
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showDialogTopluFiyat() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Toplu Fiyat Güncelle"),
+          content: TextField(
+            controller: toplucontroller,
+            keyboardType: TextInputType.number,
+            autofocus: false,
+            decoration: InputDecoration(
+              hintText: "Fiyat",
+              contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+            ),
+          ),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("İptal"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            new FlatButton(
+              child: new Text("ARTIR"),
+              onPressed: () async {
+                await _database.topluFiyatGuncelle("0", toplucontroller.text);
+                Navigator.of(context).pop();
+                await fiyatListesiDoldur();                
+              },
+            ),
+            new FlatButton(
+              child: new Text("AZALT"),
+              onPressed: () async {
+                await _database.topluFiyatGuncelle("1", toplucontroller.text);
+                Navigator.of(context).pop();
+                await fiyatListesiDoldur();              
               },
             ),
           ],
@@ -137,10 +223,8 @@ class FiyatListeEkrani extends State<FiyatListe> {
                             alignment: Alignment.bottomRight,
                             child: RaisedButton(
                               child: Text("Fiyat Güncelle"),
-                              onPressed: () {
-                                showDialog(context: context, builder: (_) {
-                                  //fiyat güncelle popupu
-                                });
+                              onPressed: ()  {
+                                 _showDialogTekliFiyat(fiyatlar[index]);                              
                               },
                             ),
                           ),
@@ -149,7 +233,7 @@ class FiyatListeEkrani extends State<FiyatListe> {
                             child: RaisedButton(
                               child: Text("Sil"),
                               onPressed: () {
-                                //Fiyatı sil
+                                _showDialogSilme(fiyatlar[index]);
                               },
                             ),
                           ),
@@ -166,26 +250,263 @@ class FiyatListeEkrani extends State<FiyatListe> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 RaisedButton(
-                  child: Text("Yeni Fiyat"),
-                  color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(30)),
-                  onPressed: () {
-                    //yeni fiyat ekle
-                  },
-                ),
+                    child: Text("Yeni Fiyat"),
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(30)),
+                    onPressed: () async {
+                      //yeni fiyat ekle
+                      await showDialog(
+                          context: context,
+                          builder: (_) {
+                            return FiyatDialog(fle: this,);
+                          });
+                      setState(() {});
+                    }),
                 RaisedButton(
                   child: Text("Toplu Fiyat Güncelle"),
                   color: Colors.white,
                   shape: RoundedRectangleBorder(
                       borderRadius: new BorderRadius.circular(30)),
                   onPressed: () {
+                    _showDialogTopluFiyat();
                     //toplu fiyat Güncelle
                   },
-                )
+                ),
               ],
             )
           ],
         ));
+  }
+}
+
+class FiyatDialog extends StatefulWidget {
+  final FiyatListeEkrani fle;
+  FiyatDialog({this.fle});
+  FiyatDialogPopup createState() => FiyatDialogPopup(fle:fle);
+}
+
+class FiyatDialogPopup extends State<FiyatDialog> {
+  final FiyatListeEkrani fle;
+  FiyatDialogPopup({this.fle});
+  TextEditingController fiyatcontroller = TextEditingController();
+
+  List<String> sehirler = [
+    'Adana',
+    'Adıyaman',
+    'Afyon',
+    'Ağrı',
+    'Amasya',
+    'Ankara',
+    'Antalya',
+    'Artvin',
+    'Aydın',
+    'Balıkesir',
+    'Bilecik',
+    'Bingöl',
+    'Bitlis',
+    'Bolu',
+    'Burdur',
+    'Bursa',
+    'Çanakkale',
+    'Çankırı',
+    'Çorum',
+    'Denizli',
+    'Diyarbakır',
+    'Edirne',
+    'Elazığ',
+    'Erzincan',
+    'Erzurum',
+    'Eskişehir',
+    'Gaziantep',
+    'Giresun',
+    'Gümüşhane',
+    'Hakkari',
+    'Hatay',
+    'Isparta',
+    'Mersin',
+    'İstanbul',
+    'İzmir',
+    'Kars',
+    'Kastamonu',
+    'Kayseri',
+    'Kırklareli',
+    'Kırşehir',
+    'Kocaeli',
+    'Konya',
+    'Kütahya',
+    'Malatya',
+    'Manisa',
+    'Kahramanmaraş',
+    'Mardin',
+    'Muğla',
+    'Muş',
+    'Nevşehir',
+    'Niğde',
+    'Ordu',
+    'Rize',
+    'Sakarya',
+    'Samsun',
+    'Siirt',
+    'Sinop',
+    'Sivas',
+    'Tekirdağ',
+    'Tokat',
+    'Trabzon',
+    'Tunceli',
+    'Şanlıurfa',
+    'Uşak',
+    'Van',
+    'Yozgat',
+    'Zonguldak',
+    'Aksaray',
+    'Bayburt',
+    'Karaman',
+    'Kırıkkale',
+    'Batman',
+    'Şırnak',
+    'Bartın',
+    'Ardahan',
+    'Iğdır',
+    'Yalova',
+    'Karabük',
+    'Kilis',
+    'Osmaniye',
+    'Düzce'
+  ];
+  List<DropdownMenuItem> sehirlerDDM = List<DropdownMenuItem>();
+  String curItemSehir;
+  bool aracaktifmi = false;
+
+  List<String> evTipleri = ['1+0', '1+1', '1+2', '1+3', '1+4'];
+  List<DropdownMenuItem> evTipleriDDM = List<DropdownMenuItem>();
+  String curItemEv;
+
+  Database _database = Database();
+
+  void _showDialog(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text(title),
+          content: new Text(message),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Kapat"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget customTextBox(
+      TextInputType type,
+      String placeholder,
+      TextEditingController controller,
+      TextInputAction action,
+      FocusNode ownFocus,
+      FocusNode tofocus,
+      bool password) {
+    return TextField(
+      focusNode: ownFocus,
+      obscureText: password,
+      keyboardType: type,
+      autofocus: false,
+      decoration: InputDecoration(
+        hintText: placeholder,
+        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+      ),
+      controller: controller,
+      textInputAction: action,
+      onSubmitted: (String s) {
+        FocusScope.of(context).requestFocus(tofocus);
+      },
+      style: TextStyle(
+          fontWeight: FontWeight.bold, fontFamily: 'Montserrat', fontSize: 20),
+    );
+  }
+
+  @override
+  void initState() {
+    for (String sehir in sehirler) {
+      sehirlerDDM.add(new DropdownMenuItem(
+        value: sehir,
+        child: new Text(sehir),
+      ));
+    }
+    for (String evtipi in evTipleri) {
+      evTipleriDDM.add(new DropdownMenuItem(
+        value: evtipi,
+        child: new Text(evtipi),
+      ));
+    }
+    curItemSehir = sehirler.first;
+    curItemEv = evTipleri.first;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Scaffold(
+      backgroundColor: Color(0x00000000),
+      body: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.60,
+        child: AlertDialog(
+          title: new Text("Yeni Rota ve Fiyat Ekle"),
+          content: Column(
+            children: <Widget>[
+              DropdownButton(
+                isExpanded: true,
+                items: sehirlerDDM,
+                value: curItemSehir,
+                onChanged: (dynamic dmi) {
+                  curItemSehir = dmi;
+                  setState(() {});
+                },
+              ),
+              DropdownButton(
+                items: evTipleriDDM,
+                value: curItemEv,
+                isExpanded: true,
+                onChanged: (dynamic dmi) {
+                  curItemEv = dmi;
+                  setState(() {});
+                },
+              ),
+              customTextBox(TextInputType.number, "Fiyat", fiyatcontroller,
+                  TextInputAction.done, null, null, false),
+            ],
+          ),
+          actions: <Widget>[
+            new FlatButton(
+                child: new Text("İptal"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                }),
+            new FlatButton(
+              child: new Text("Fiyatı Kaydet"),
+              onPressed: () async {
+                //database den kaydfet
+                String oda =
+                    curItemEv.replaceAll('+', '.').split('').reversed.join();
+                bool sonuc = await _database.fiyatKaydet(
+                    curItemSehir, oda, fiyatcontroller.text);
+                Navigator.of(context).pop();
+                if (sonuc)
+                  _showDialog("Fiyat Ekleme", "Fiyat Ekleme işlemi başarılı");
+                fle.fiyatListesiDoldur();
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
