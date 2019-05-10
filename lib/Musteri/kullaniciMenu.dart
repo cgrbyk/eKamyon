@@ -1,17 +1,16 @@
 import 'dart:async';
-import 'package:ekamyon/Firma/FirmaBilgisiGuncelle.dart';
-import 'package:flutter/material.dart';
 import 'package:ekamyon/Modeller/aktifKullaniciBilgileri.dart';
-import 'FiyatListesi.dart';
+import 'package:ekamyon/Musteri/EsyaTasima.dart';
+import 'package:ekamyon/Musteri/KullaniciBilgileri.dart';
+import 'package:ekamyon/Musteri/OfisTasima.dart';
+import 'package:flutter/material.dart';
 
-import 'araclar.dart';
-
-class FirmaMenu extends StatefulWidget {
+class KullaniciMenu extends StatefulWidget {
   @override
-  FirmaMenuEkrani createState() => FirmaMenuEkrani();
+  KullaniciMenuEkrani createState() => KullaniciMenuEkrani();
 }
 
-class FirmaMenuEkrani extends State<FirmaMenu> {
+class KullaniciMenuEkrani extends State<KullaniciMenu> {
   Widget getImageButton(String imagePath, String isim) {
     return new Container(
       child: Padding(
@@ -73,8 +72,9 @@ class FirmaMenuEkrani extends State<FirmaMenu> {
                 padding: EdgeInsets.only(top: 15),
                 child: Center(
                   child: Text(
-                      "Hoşgeldiniz " +
-                          AktifKullaniciBilgileri.firmaAdi.toString(),
+                      "Sn." +
+                          AktifKullaniciBilgileri.musteriAdi.toString() +
+                          " 4dk da teklif alabilirsin",
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 ),
@@ -82,45 +82,17 @@ class FirmaMenuEkrani extends State<FirmaMenu> {
               Row(
                 children: <Widget>[
                   GestureDetector(
-                    child: getImageButton(
-                        "bekleyennakliyeler.png", "bekleyen nakliyelerim"),
-                    onTap: () {
-                      /*
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => AracListe()),
-                      );*/
-                    },
+                    child:
+                        getImageButton("evdeneve.png", "Evden eve taşımacılık"),
+                    onTap: () {},
                   ),
                   GestureDetector(
-                      child: getImageButton("sarikamyon.png", "Araçlarım"),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => AracListe()),
-                        );
-                      })
-                ],
-              ),
-              Row(
-                children: <Widget>[
-                  GestureDetector(
-                    child: getImageButton(
-                        "fiyatguncelle.png", "Fiyat listeri Güncelle"),
+                    child: getImageButton("ofis.png", "Ofis taşımacılığı"),
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => FiyatListe()),
-                      );
-                    },
-                  ),
-                  GestureDetector(
-                    child: getImageButton(
-                        "firmabilgisiguncelle.png", "Firma bilgisi güncelle"),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => FirmaBilgisiGuncelle()),
+                        MaterialPageRoute(
+                            builder: (context) => OfisTasimaEkrani()),
                       );
                     },
                   )
@@ -128,7 +100,31 @@ class FirmaMenuEkrani extends State<FirmaMenu> {
               ),
               Row(
                 children: <Widget>[
-                  getImageButton("tamamlanan.png", "Tamamlanan nakliyeler"),
+                  GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => EsyaTasima()),
+                        );
+                      },
+                      child: getImageButton(
+                          "esyatasimaciligi.png", "Eşya taşımacılığı")),
+                  getImageButton("gecmis.png", "Geçmiş taleplerim")
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  GestureDetector(
+                    child: getImageButton(
+                        "firmabilgisiguncelle.png", "Kullanıcı bilgilerim"),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => KullaniciBilgileri()),
+                      );
+                    },
+                  ),
                   GestureDetector(
                     child: getImageButton(
                         "bildirimayarlari.png", "Bildirim Ayarları"),
