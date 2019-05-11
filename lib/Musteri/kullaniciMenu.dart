@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:ekamyon/Modeller/aktifKullaniciBilgileri.dart';
 import 'package:ekamyon/Musteri/EsyaTasima.dart';
+import 'package:ekamyon/Musteri/EvdenEveTasima.dart';
 import 'package:ekamyon/Musteri/KullaniciBilgileri.dart';
 import 'package:ekamyon/Musteri/OfisTasima.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,10 @@ class KullaniciMenu extends StatefulWidget {
 }
 
 class KullaniciMenuEkrani extends State<KullaniciMenu> {
+  stateGuncelle() {
+    setState(() {});
+  }
+
   Widget getImageButton(String imagePath, String isim) {
     return new Container(
       child: Padding(
@@ -84,7 +89,13 @@ class KullaniciMenuEkrani extends State<KullaniciMenu> {
                   GestureDetector(
                     child:
                         getImageButton("evdeneve.png", "Evden eve taşımacılık"),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EvdenEveTasima()),
+                      );
+                    },
                   ),
                   GestureDetector(
                     child: getImageButton("ofis.png", "Ofis taşımacılığı"),
@@ -121,7 +132,7 @@ class KullaniciMenuEkrani extends State<KullaniciMenu> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => KullaniciBilgileri()),
+                            builder: (context) => KullaniciBilgileri(mainState: this,)),
                       );
                     },
                   ),

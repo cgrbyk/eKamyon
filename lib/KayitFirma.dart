@@ -78,8 +78,7 @@ class KayitFirmaEkrani extends State<KayitFirma> {
       TextInputAction action,
       FocusNode ownFocus,
       FocusNode tofocus,
-      bool password
-      ) {
+      bool password) {
     return TextField(
       focusNode: ownFocus,
       obscureText: password,
@@ -120,106 +119,144 @@ class KayitFirmaEkrani extends State<KayitFirma> {
                 firmayetkiliadController,
                 TextInputAction.next,
                 null,
-                firmayetkilisoyadFocusNode,false),
+                firmayetkilisoyadFocusNode,
+                false),
             customTextBox(
                 TextInputType.text,
                 "Firma yetkilisi soyadı",
                 firmayetkilisoyadController,
                 TextInputAction.next,
                 firmayetkilisoyadFocusNode,
-                tcNoFocusNode,false),
-            customTextBox(TextInputType.text, "Tc numaranız", tcNoController,
-                TextInputAction.next, tcNoFocusNode, vergiDaireFocusNode,false),
+                tcNoFocusNode,
+                false),
+            customTextBox(
+                TextInputType.text,
+                "Tc numaranız",
+                tcNoController,
+                TextInputAction.next,
+                tcNoFocusNode,
+                vergiDaireFocusNode,
+                false),
             customTextBox(
                 TextInputType.text,
                 "Vergi daire",
                 vergiDaireController,
                 TextInputAction.next,
                 vergiDaireFocusNode,
-                vergiNumaraFocusNode,false),
+                vergiNumaraFocusNode,
+                false),
             customTextBox(
                 TextInputType.number,
                 "Vergi numaranız",
                 vergiNumaraController,
                 TextInputAction.next,
                 vergiNumaraFocusNode,
-                telNoFocusNode,false),
+                telNoFocusNode,
+                false),
             customTextBox(
                 TextInputType.number,
                 "Telefon numaranız",
                 telNoController,
                 TextInputAction.next,
                 telNoFocusNode,
-                bankaAdiFocusNode,false),
-            customTextBox(TextInputType.text, "Banka adı", bankaAdiController,
-                TextInputAction.next, bankaAdiFocusNode, bankaIbanNoFocusNode,false),
+                bankaAdiFocusNode,
+                false),
+            customTextBox(
+                TextInputType.text,
+                "Banka adı",
+                bankaAdiController,
+                TextInputAction.next,
+                bankaAdiFocusNode,
+                bankaIbanNoFocusNode,
+                false),
             customTextBox(
                 TextInputType.text,
                 "Banka Iban numaranız",
                 bankaIbanNoController,
                 TextInputAction.next,
                 bankaIbanNoFocusNode,
-                firmaUnvaniFocusNode,false),
+                firmaUnvaniFocusNode,
+                false),
             customTextBox(
                 TextInputType.text,
                 "Firma Ünvanı",
                 firmaUnvaniController,
                 TextInputAction.next,
                 firmaUnvaniFocusNode,
-                firmaIlFocusNode,false),
-            customTextBox(TextInputType.text, "Firma İl", firmaIlController,
-                TextInputAction.next, firmaIlFocusNode, firmaIlceFocusNode,false),
-            customTextBox(TextInputType.text, "Firma İlçe", firmaIlceController,
-                TextInputAction.next, firmaIlceFocusNode, firmaAdresiFocusNode,false),
+                firmaIlFocusNode,
+                false),
+            customTextBox(
+                TextInputType.text,
+                "Firma İl",
+                firmaIlController,
+                TextInputAction.next,
+                firmaIlFocusNode,
+                firmaIlceFocusNode,
+                false),
+            customTextBox(
+                TextInputType.text,
+                "Firma İlçe",
+                firmaIlceController,
+                TextInputAction.next,
+                firmaIlceFocusNode,
+                firmaAdresiFocusNode,
+                false),
             customTextBox(
                 TextInputType.text,
                 "Firma Adresi",
                 firmaAdresiController,
                 TextInputAction.next,
                 firmaAdresiFocusNode,
-                postaKoduFocusNode,false),
+                postaKoduFocusNode,
+                false),
             customTextBox(
                 TextInputType.number,
                 "Firma posta kodu",
                 postaKoduController,
                 TextInputAction.next,
                 postaKoduFocusNode,
-                ePostaAdresFocusNode,false),
+                ePostaAdresFocusNode,
+                false),
             customTextBox(
                 TextInputType.emailAddress,
                 "Firma email adresi",
                 ePostaAdresController,
                 TextInputAction.next,
                 ePostaAdresFocusNode,
-                firmaWebSitesiFocusNode,false),
+                firmaWebSitesiFocusNode,
+                false),
             customTextBox(
                 TextInputType.text,
                 "Firma web sitesi",
                 firmaWebSitesiController,
                 TextInputAction.next,
                 firmaWebSitesiFocusNode,
-                kullaniciAdiFocusNode,false),
+                kullaniciAdiFocusNode,
+                false),
             customTextBox(
                 TextInputType.text,
                 "Kullanıcı Adı oluşturunuz",
                 kullaniciAdiController,
                 TextInputAction.next,
                 kullaniciAdiFocusNode,
-                sifre1FocusNode,false),
+                sifre1FocusNode,
+                false),
             customTextBox(
                 TextInputType.text,
                 "Bir şifre oluşturunuz",
                 sifre1Controller,
                 TextInputAction.next,
                 sifre1FocusNode,
-                sifre2FocusNode,true),
+                sifre2FocusNode,
+                true),
             customTextBox(
                 TextInputType.text,
                 "Tekrar şifrenizi giriniz",
                 sifre2Controller,
                 TextInputAction.next,
                 sifre2FocusNode,
-                new FocusNode(),true),
+                new FocusNode(),
+                true),
             Center(
               child: FlatButton(
                 child: Text("Kullanıcı sözleşmesini buradan okuyabilirsiniz",
@@ -254,7 +291,7 @@ class KayitFirmaEkrani extends State<KayitFirma> {
                     "Kayıt",
                     textScaleFactor: 2,
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     //Kullanıcı Kayıt kodu
                     if (tcNoController.text.isEmpty ||
                         vergiDaireController.text.isEmpty ||
@@ -283,7 +320,30 @@ class KayitFirmaEkrani extends State<KayitFirma> {
                           _showDialog("Gizlilik sözleşmesi",
                               "kayıt olmak için gizlilik sözleşmesini kabul etmek zorundasınız");
                         else {
-                          //kayıt işlemi
+                          bool sonuc = await _database.yeniFirmaEkle(
+                              telNoController.text,
+                              firmaUnvaniController.text,
+                              firmaIlController.text,
+                              firmaIlceController.text,
+                              firmaAdresiController.text,
+                              kullaniciAdiController.text,
+                              sifre1Controller.text,
+                              ePostaAdresController.text,
+                              firmaWebSitesiController.text,
+                              firmayetkiliadController.text,
+                              firmayetkilisoyadController.text,
+                              tcNoController.text,
+                              vergiDaireController.text,
+                              vergiNumaraController.text,
+                              bankaAdiController.text,
+                              bankaIbanNoController.text,
+                              postaKoduController.text);
+                          if (sonuc)
+                            _showDialog(
+                                "Kayıt Başarılı", "Firma başarıyla kaydedildi");
+                          else
+                            _showDialog("Kayıt işlemi başarısız",
+                                "Zaten böyle bir kullanıcı olabilir");
                         }
                       }
                     }

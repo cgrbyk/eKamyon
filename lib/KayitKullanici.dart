@@ -52,14 +52,14 @@ class KayitKullaniciEkrani extends State<KayitKullanici> {
   }
 
   Widget customTextBox(
-      TextInputType type,
-      String placeholder,
-      TextEditingController controller,
-      TextInputAction action,
-      FocusNode ownFocus,
-      FocusNode tofocus,
-      bool passoword,
-      ) {
+    TextInputType type,
+    String placeholder,
+    TextEditingController controller,
+    TextInputAction action,
+    FocusNode ownFocus,
+    FocusNode tofocus,
+    bool passoword,
+  ) {
     return TextField(
       focusNode: ownFocus,
       obscureText: passoword,
@@ -95,48 +95,59 @@ class KayitKullaniciEkrani extends State<KayitKullanici> {
         child: ListView(
           children: <Widget>[
             customTextBox(TextInputType.text, "Adınız", adController,
-                TextInputAction.next, null, soyadFocus,false),
+                TextInputAction.next, null, soyadFocus, false),
             customTextBox(TextInputType.text, "Soyadınız", soyadController,
-                TextInputAction.next, soyadFocus, tcNoFocus,false),
-            customTextBox(TextInputType.number, "Tc kimlik numaranız",
-                tcNoController, TextInputAction.next, tcNoFocus, telNoFocus,false),
+                TextInputAction.next, soyadFocus, tcNoFocus, false),
+            customTextBox(
+                TextInputType.number,
+                "Tc kimlik numaranız",
+                tcNoController,
+                TextInputAction.next,
+                tcNoFocus,
+                telNoFocus,
+                false),
             customTextBox(
                 TextInputType.number,
                 "Telefon numaranızı giriniz",
                 telNoController,
                 TextInputAction.next,
                 telNoFocus,
-                evAdresFocus
-                ,false
-                ),
+                evAdresFocus,
+                false),
             customTextBox(TextInputType.text, "Ev adresiniz", evAdresController,
-                TextInputAction.next, evAdresFocus, ePostaAdresFocus,false),
+                TextInputAction.next, evAdresFocus, ePostaAdresFocus, false),
             customTextBox(
                 TextInputType.emailAddress,
                 "E-posta adresiniz",
                 ePostaAdresController,
                 TextInputAction.next,
                 ePostaAdresFocus,
-                kullaniciAdiFocus
-                ,false),
+                kullaniciAdiFocus,
+                false),
             customTextBox(
                 TextInputType.text,
                 "Kullanıcı adınız",
                 kullaniciAdiController,
                 TextInputAction.next,
                 kullaniciAdiFocus,
-                sifre1Focus
-                ,false),
+                sifre1Focus,
+                false),
             customTextBox(
                 TextInputType.text,
                 "Bir şifre girin",
                 sifre1Controller,
                 TextInputAction.next,
                 sifre1Focus,
-                sifre2Focus
-                ,true),
-            customTextBox(TextInputType.text, "Şifreyi tekrar girin",
-                sifre2Controller, TextInputAction.next, sifre2Focus, new FocusNode(),true),
+                sifre2Focus,
+                true),
+            customTextBox(
+                TextInputType.text,
+                "Şifreyi tekrar girin",
+                sifre2Controller,
+                TextInputAction.next,
+                sifre2Focus,
+                new FocusNode(),
+                true),
             Center(
               child: FlatButton(
                 child: Text("Kullanıcı sözleşmesini buradan okuyabilirsiniz",
@@ -171,7 +182,7 @@ class KayitKullaniciEkrani extends State<KayitKullanici> {
                     "Kayıt",
                     textScaleFactor: 2,
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     //Kullanıcı Kayıt kodu
                     if (adController.text.isEmpty ||
                         soyadController.text.isEmpty ||
@@ -189,12 +200,26 @@ class KayitKullaniciEkrani extends State<KayitKullanici> {
                         _showDialog("Şifreler aynı olmalıdır",
                             "Girmiş olduğunuz şifreler birbiri ile aynı değil lütfen kontrol edin");
                       } else {
-                        if(!ischecked)
-                          _showDialog("Gizlilik sözleşmesi", "kayıt olmak için gizlilik sözleşmesini kabul etmek zorundasınız");
+                        if (!ischecked)
+                          _showDialog("Gizlilik sözleşmesi",
+                              "kayıt olmak için gizlilik sözleşmesini kabul etmek zorundasınız");
+                        else {
+                          bool sonuc = await _database.yeniKullaniciEkle(
+                              kullaniciAdiController.text,
+                              sifre1Controller.text,
+                              adController.text,
+                              soyadController.text,
+                              tcNoController.text,
+                              telNoController.text,
+                              evAdresController.text,
+                              ePostaAdresController.text);
+                          if (sonuc)
+                            _showDialog("Ekleme Başarılı",
+                                "Kayıt işlemi başarıyla tamamlandı");
                           else
-                          {
-                        //kayıt işlemi
-                          }
+                            _showDialog("Başarısız",
+                                "Böyle bir kullanıcı zaten var olabilir");
+                        }
                       }
                     }
                   },

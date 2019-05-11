@@ -12,6 +12,10 @@ class FirmaMenu extends StatefulWidget {
 }
 
 class FirmaMenuEkrani extends State<FirmaMenu> {
+  stateGuncelle() {
+    setState(() {});
+  }
+
   Widget getImageButton(String imagePath, String isim) {
     return new Container(
       child: Padding(
@@ -120,7 +124,8 @@ class FirmaMenuEkrani extends State<FirmaMenu> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => FirmaBilgisiGuncelle()),
+                        MaterialPageRoute(
+                            builder: (context) => FirmaBilgisiGuncelle(mainState: this,)),
                       );
                     },
                   )

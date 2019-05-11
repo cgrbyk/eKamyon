@@ -1,3 +1,4 @@
+import 'package:ekamyon/Modeller/aktifKullaniciBilgileri.dart';
 import 'package:ekamyon/Musteri/kullaniciMenu.dart';
 import 'package:flutter/material.dart';
 import 'database.dart';
@@ -114,11 +115,15 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
     if (girenKullaniciTuru == "basarisiz") {
       _showDialog("Kullanıcı adı veya şifre yanlış", "Girmiş olduğunuz Kullanıcı adı veya şifreyi kontrol ediniz üye değilseniz aşağıdan üye olabilirsiniz");      
     } else if (girenKullaniciTuru == "musteri") {
+      AktifKullaniciBilgileri.musteriSifresi=kulSifre;
+      AktifKullaniciBilgileri.musteriEposta=kulEmail;
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => KullaniciMenu()),
       );
     } else if (girenKullaniciTuru == "firma") {
+      AktifKullaniciBilgileri.firmaSifresi=kulSifre;
+      AktifKullaniciBilgileri.firmaEposta=kulEmail;
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => FirmaMenu()),

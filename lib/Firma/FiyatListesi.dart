@@ -69,7 +69,7 @@ class FiyatListeEkrani extends State<FiyatListe> {
               child: new Text("Güncelle"),
               onPressed: () async{
                 await _database.tekliFiyatGuncelle(f.tasimaUcretiTam, f.varisIl, f.evTipi);
-                Navigator.of(context).pop();
+                Navigator.of(context).pop();               
                 await fiyatListesiDoldur();              
               },
             ),
