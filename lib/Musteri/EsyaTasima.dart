@@ -1,3 +1,4 @@
+import 'package:ekamyon/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
@@ -7,6 +8,7 @@ class EsyaTasima extends StatefulWidget {
 }
 
 class _EsyaTasimaState extends State<EsyaTasima> {
+  Database _database=Database();
   DateTime secilenTarih = DateTime.now();
   TextEditingController esyaOdaSayisi = TextEditingController();
   TextEditingController esyaMevcutKat = TextEditingController();
@@ -515,8 +517,7 @@ class _EsyaTasimaState extends State<EsyaTasima> {
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 18)),
                     onPressed: () {
-                      //Kaydetme Kodu vs vs
-                      Navigator.of(context).pop();
+                      //kaydeyme vs
                     },
                   ),
                 )

@@ -1,3 +1,5 @@
+import 'package:ekamyon/Modeller/teklifFirma.dart';
+import 'package:ekamyon/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
@@ -7,6 +9,7 @@ class OfisTasimaEkrani extends StatefulWidget {
 }
 
 class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
+  Database _database = Database();
   DateTime secilenTarih = DateTime.now();
   TextEditingController ofisOdaSayisi = TextEditingController();
   TextEditingController ofisMevcutKat = TextEditingController();
@@ -112,6 +115,182 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
   List<DropdownMenuItem> sehirlerDDM = List<DropdownMenuItem>();
   String curItemSehir;
   String newItemSehir;
+
+  void _showDialog(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text(title),
+          content: new Text(message),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Kapat"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showDetay(TeklifFirma firma) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: Center(child: new Text(firma.firmaUnvan)),
+          content: SizedBox(
+            height: MediaQuery.of(context).size.height * 0.2,
+            child: Column(
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Text("Firma İli :", style: TextStyle(color: Colors.grey)),
+                    Text(firma.firmaIl),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    Text("Firma İlçe :", style: TextStyle(color: Colors.grey)),
+                    Text(firma.firmaIlce),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    Text("Firma Adres :", style: TextStyle(color: Colors.grey)),
+                    Text(firma.firmaAdresi),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    Text("Firma Cep NO :",
+                        style: TextStyle(color: Colors.grey)),
+                    Text(firma.cepTel),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    Text("Firma Sabit Tel :",
+                        style: TextStyle(color: Colors.grey)),
+                    Text(firma.sabitTel),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    Text("Firma Faaliyet süresi :",
+                        style: TextStyle(color: Colors.grey)),
+                    Text(firma.firmaKacYildirFaaliyette),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Kapat"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  _showTeklifListe(List<TeklifFirma> gelenTeklifler) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: Center(child: new Text("Uygun Teklifler")),
+          content: Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height * 0.3,
+            child: ListView.builder(
+              itemCount: gelenTeklifler.length,
+              itemBuilder: (context, index) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Column(
+                      children: <Widget>[
+                        Text(
+                          gelenTeklifler[index].firmaUnvan,
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          gelenTeklifler[index].firmaIl,
+                          style: TextStyle(fontSize: 12, color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      width: 80,
+                      child: FlatButton(
+                        child: Text(
+                          "Detay",
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                        onPressed: () {
+                          _showDetay(gelenTeklifler[index]);
+                        },
+                      ),
+                    ),
+                    Column(
+                      children: <Widget>[
+                        Text(
+                          "Teklif Fiyatı",
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          gelenTeklifler[index].tasimaUcretiTam,
+                          style:
+                              TextStyle(fontSize: 18, color: Colors.lightGreen),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      width: 60,
+                      child: FlatButton(
+                        child: Text(
+                          "Seç",
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                        onPressed: () async {
+                          //indexdeki teklif seçilecek
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Vazgeç"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Widget customTextBox(
       TextInputType type,
@@ -229,13 +408,36 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
                               )),
                         ],
                       ),
-                      customTextBox(
-                          TextInputType.number,
-                          "Oda Sayisi",
-                          ofisOdaSayisi,
-                          TextInputAction.next,
-                          ofisMevcutKatNode,
-                          false),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left: 8.0, right: 8.0, bottom: 8.0),
+                        child: TextField(
+                          obscureText: false,
+                          keyboardType: TextInputType.number,
+                          autofocus: false,
+                          decoration: InputDecoration(
+                            hintText: "Oda sayısı",
+                            contentPadding:
+                                EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                          ),
+                          controller: ofisOdaSayisi,
+                          textInputAction: TextInputAction.done,
+                          onSubmitted: (String s) {
+                            if (int.parse(s) > 4) {
+                              FocusScope.of(context)
+                                  .requestFocus(new FocusNode());
+                              _showDialog("Oda Sayısı 4 den büyük olamaz.",
+                                  "Oda sayısı 4 olarak seçildi.");
+                              ofisOdaSayisi.text = "4";
+                              setState(() {});
+                            } else
+                              FocusScope.of(context)
+                                  .requestFocus(ofisMevcutKatNode);
+                          },
+                          style:
+                              TextStyle(fontFamily: 'Montserrat', fontSize: 15),
+                        ),
+                      ),
                       customTextBox(
                           TextInputType.number,
                           "Ofisinizin şuan bulunduğu kat",
@@ -516,9 +718,16 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
                     child: Text("Tamamla",
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 18)),
-                    onPressed: () {
-                      //Kaydetme Kodu vs vs
-                      Navigator.of(context).pop();
+                    onPressed: () async {
+                      List<TeklifFirma> gelenTeklifler =
+                          await _database.ofisTasimaTeklifleriAl(secilenTarih,
+                              curItemSehir, newItemSehir, ofisOdaSayisi.text);
+                      if (gelenTeklifler != null) {
+                        _showTeklifListe(gelenTeklifler);
+                      } else {
+                        _showDialog("Uygun teklif bulunamadı",
+                            "Şuan sizin için uygun bir araç bulamadık en kısa sürede bu eksiği gidereceğiz.");
+                      }
                     },
                   ),
                 )

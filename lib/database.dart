@@ -1,3 +1,4 @@
+import 'package:ekamyon/Modeller/teklifFirma.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'Modeller/metadata.dart';
@@ -134,7 +135,14 @@ class Database {
   tekliFiyatGuncelle(
       String tasimaUcreti, String paramVarisIl, String paramEvTipi) async {
     final response = await http.get(
-        "http://www.ekamyon.com/wp-app/update_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&UpdateTuru=UpdateFiyatlarim&TasimaUcretiTam=" + tasimaUcreti + "&FirmaID=" + AktifKullaniciBilgileri.firmaKodu + "&VarisIl=" + paramVarisIl + "&EvTipi=" + paramEvTipi);
+        "http://www.ekamyon.com/wp-app/update_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&UpdateTuru=UpdateFiyatlarim&TasimaUcretiTam=" +
+            tasimaUcreti +
+            "&FirmaID=" +
+            AktifKullaniciBilgileri.firmaKodu +
+            "&VarisIl=" +
+            paramVarisIl +
+            "&EvTipi=" +
+            paramEvTipi);
     if (response.statusCode == 200)
       return true;
     else
@@ -158,6 +166,111 @@ class Database {
       return true;
     } else
       return false;
+  }
+
+  evdenEveTasimaTeklifleriAl(DateTime tasinmaTarih, String mevcutIl,
+      String varisIl, String odaSayisi) async {
+    final response = await http.get(
+        "http://www.ekamyon.com/wp-app/select_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&SelectTuru=Teklifler&TasinmaTarihi=" +
+            tasinmaTarih.toString() +
+            "&MevcutIl=" +
+            mevcutIl +
+            "&VarisIl=" +
+            varisIl +
+            "&EvTipi=" +
+            odaSayisi +
+            ".1");
+    if (response.statusCode == 200) {
+      if (response.body != "null") {
+        List<TeklifFirma> gelenteklifler =
+            TeklifFirma.fromArray(json.decode(response.body));
+        return gelenteklifler;
+      }
+    } else
+      return null;
+  }
+
+  ofisTasimaTeklifleriAl(DateTime tarih, String mevcutSehir,
+      String gelecekSehir, String odaSayisi) async {
+    final response = await http.get(
+        "http://www.ekamyon.com/wp-app/select_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&SelectTuru=Teklifler&TasinmaTarihi=" +
+            tarih.toString() +
+            "&MevcutIl=" +
+            mevcutSehir +
+            "&VarisIl=" +
+            gelecekSehir +
+            "&EvTipi=" +
+            odaSayisi +
+            ".1");
+    if (response.statusCode == 200) {
+      if (response.body != "null") {
+        var jsonArray = jsonDecode(response.body);
+        List<TeklifFirma> gelenTeklifler = TeklifFirma.fromArray(jsonArray);
+        return gelenTeklifler;
+      } else
+        return null;
+    } else
+      return null;
+  }
+
+  ofisTasimaTeklifKabul(
+    String odaSayisi,
+    DateTime tasinmaTarih,
+    String mevcutIl,
+    String mevcutIlce,
+    String mevcutAdres,
+    String mevcutKat,
+    String yakinlik,
+    String nasilTasinacak,
+    String nasilPaketlenecek,
+    String varisIl,
+    String varisIlce,
+    String varisAdres,
+    String varisKat,
+    bool sigorta,
+    String tekAracCiftYuk,
+    String anlasilanFirmaID,
+    String anlasilanFiyat,
+  ) async {
+    String sigortadurum = "";
+    sigorta
+        ? sigortadurum = "Evet İstiyorum"
+        : sigortadurum = "Hayır İstemiyorum";
+    final response = await http.post(
+        "http://www.ekamyon.com/wp-app/insert_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&InsertTuru=Ofis",
+        body: {
+          'InsertTuru': 'Ofis',
+          'MusteriID': AktifKullaniciBilgileri.musteriKodu,
+          'MusteriAdi': AktifKullaniciBilgileri.musteriAdi +
+              " " +
+              AktifKullaniciBilgileri.musteriSoyadi,
+          'Eposta': AktifKullaniciBilgileri.musteriEposta,
+          'MevcutOda': odaSayisi + ".1",
+          'TasinmaTuru': 'Ofis Taşıma',
+          'TasinmaTarihi': tasinmaTarih.toString(),
+          'MevcutIl': mevcutIl,
+          'MevcutIlce': mevcutIlce,
+          'MevcutAdres': mevcutAdres,
+          'MevcutKat': mevcutKat,
+          'YukeYaklasma': yakinlik,
+          'NasilTasinacak': nasilTasinacak,
+          'NasilPaketlenecek': nasilPaketlenecek,
+          'VarisIl': varisIl,
+          'VarisIlce': varisIlce,
+          'VarisAdres': varisAdres,
+          'VarisKat': varisKat,
+          'Sigorta': sigortadurum,
+          'TekAracCiftYuk': tekAracCiftYuk,
+          'AnlasilanFirmaID': anlasilanFirmaID,
+          'AnlasilanFiyat': anlasilanFiyat,
+          'AnlasilanTarih': DateTime.now(),
+          'OlusturmaTarihi': DateTime.now(),
+        });
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   firmaBilgileriGuncelle(
@@ -205,7 +318,7 @@ class Database {
           'BankaIbanUc': bankaIbanUc,
         });
     if (response.statusCode == 200) {
-      AktifKullaniciBilgileri.firmaAdi=firmaUnvan;
+      AktifKullaniciBilgileri.firmaAdi = firmaUnvan;
       AktifKullaniciBilgileri.firmaUnvani = firmaUnvan;
       AktifKullaniciBilgileri.firmaIl = firmaIl;
       AktifKullaniciBilgileri.firmaIlce = firmaIlce;
