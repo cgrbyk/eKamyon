@@ -293,7 +293,7 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
         );
       },
     );
-  }
+  } 
 
   Widget customTextBox(
       TextInputType type,
@@ -449,6 +449,60 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
   FocusNode koliNode = FocusNode();
   TextEditingController hurc = TextEditingController();
   FocusNode hurcNode = FocusNode();
+
+  int esyaSayisiHesaplama()
+  {
+    int toplamEsyaSayisi=0;
+    toplamEsyaSayisi+=int.parse(ucluKoltuk.text);
+    toplamEsyaSayisi+=int.parse(ikiliKoltuk.text);
+    toplamEsyaSayisi+=int.parse(tekliKoltuk.text);
+    toplamEsyaSayisi+=int.parse(tvSehba.text);
+    toplamEsyaSayisi+=int.parse(ortaSehba.text);
+    toplamEsyaSayisi+=int.parse(televizyon.text);
+    toplamEsyaSayisi+=int.parse(zigonSehba.text);
+    toplamEsyaSayisi+=int.parse(portre.text);
+    toplamEsyaSayisi+=int.parse(kitaplik.text);
+    toplamEsyaSayisi+=int.parse(yemekMasasi.text);
+    toplamEsyaSayisi+=int.parse(sandalye.text);
+    toplamEsyaSayisi+=int.parse(gumusluk.text);
+    toplamEsyaSayisi+=int.parse(avize.text);
+    toplamEsyaSayisi+=int.parse(altiKapiGardrop.text);
+    toplamEsyaSayisi+=int.parse(ikiliYatak.text);
+    toplamEsyaSayisi+=int.parse(sifonyer.text);
+    toplamEsyaSayisi+=int.parse(komidin.text);
+    toplamEsyaSayisi+=int.parse(tuvaletAyna.text);
+    toplamEsyaSayisi+=int.parse(abajur.text);
+    toplamEsyaSayisi+=int.parse(ucKapiliGardrop.text);
+    toplamEsyaSayisi+=int.parse(tekKisilikYatak.text);
+    toplamEsyaSayisi+=int.parse(bilgisayarMasasi.text);
+    toplamEsyaSayisi+=int.parse(bilgisayar.text);
+    toplamEsyaSayisi+=int.parse(sandalyeGenc.text);
+    toplamEsyaSayisi+=int.parse(camasirMakinasi.text);
+    toplamEsyaSayisi+=int.parse(sofBen.text);
+    toplamEsyaSayisi+=int.parse(camasirSepet.text);
+    toplamEsyaSayisi+=int.parse(buzdolabi.text);
+    toplamEsyaSayisi+=int.parse(bulasikMakinesi.text);
+    toplamEsyaSayisi+=int.parse(firin.text);
+    toplamEsyaSayisi+=int.parse(mikroFirin.text);
+    toplamEsyaSayisi+=int.parse(setOcak.text);
+    toplamEsyaSayisi+=int.parse(mutfakMasasi.text);
+    toplamEsyaSayisi+=int.parse(mutfakSandalye.text);
+    toplamEsyaSayisi+=int.parse(derinDondurucu.text);
+    toplamEsyaSayisi+=int.parse(kosuBandi.text);
+    toplamEsyaSayisi+=int.parse(bisiklet.text);
+    toplamEsyaSayisi+=int.parse(bilgisayarMasasiDiger.text);
+    toplamEsyaSayisi+=int.parse(mBilgisayar.text);
+    toplamEsyaSayisi+=int.parse(utuMasasi.text);
+    toplamEsyaSayisi+=int.parse(klima.text);
+    toplamEsyaSayisi+=int.parse(portManto.text);
+    toplamEsyaSayisi+=int.parse(elektrikliSupurge.text);
+    toplamEsyaSayisi+=int.parse(resim.text);
+    toplamEsyaSayisi+=int.parse(canliCicek.text);
+    toplamEsyaSayisi+=int.parse(hali.text);
+    toplamEsyaSayisi+=int.parse(koli.text);
+    toplamEsyaSayisi+=int.parse(hurc.text);
+    return toplamEsyaSayisi;
+  }
 
   @override
   void initState() {
@@ -1474,6 +1528,23 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 18)),
                         onPressed: () async {
+                          int odasayisi=esyaSayisiHesaplama();
+                          if(odasayisi<40)
+                            {
+                              _showDialog("Oda sayısı hesaplandı", "Girdiğiniz Eşyalar 1+1 için uygundur.Oda tipi değiştilimiştir.");
+                              ofisOdaSayisi.text="1";
+                            }else if(odasayisi>40 && odasayisi<=50){
+                              _showDialog("Oda sayısı hesaplandı", "Girdiğiniz Eşyalar 2+1 için uygundur.Oda tipi değiştilimiştir.");
+                              ofisOdaSayisi.text="2";
+                            }
+                            else if(odasayisi>50 && odasayisi<=70){
+                              _showDialog("Oda sayısı hesaplandı", "Girdiğiniz Eşyalar 3+1 için uygundur.Oda tipi değiştilimiştir.");
+                              ofisOdaSayisi.text="3";
+                            }
+                            else{
+                              _showDialog("Oda sayısı hesaplandı", "Girdiğiniz Eşyalar 4+1 için uygundur.Oda tipi değiştilimiştir.");
+                              ofisOdaSayisi.text="4";
+                            }
                           List<TeklifFirma> gelenTeklifler =
                               await _database.evdenEveTasimaTeklifleriAl(
                                   secilenTarih,
