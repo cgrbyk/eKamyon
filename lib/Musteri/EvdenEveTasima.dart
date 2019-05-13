@@ -220,7 +220,7 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
               itemCount: gelenTeklifler.length,
               itemBuilder: (context, index) {
                 return Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     Column(
                       children: <Widget>[
@@ -237,17 +237,14 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                         ),
                       ],
                     ),
-                    SizedBox(
-                      width: 80,
-                      child: FlatButton(
-                        child: Text(
-                          "Detay",
-                          style: TextStyle(color: Colors.blue),
-                        ),
-                        onPressed: () {
-                          _showDetay(gelenTeklifler[index]);
-                        },
+                    GestureDetector(
+                      child: Text(
+                        "Detay",
+                        style: TextStyle(color: Colors.blue),
                       ),
+                      onTap: () {
+                        _showDetay(gelenTeklifler[index]);
+                      },
                     ),
                     Column(
                       children: <Widget>[
@@ -265,17 +262,14 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                         ),
                       ],
                     ),
-                    SizedBox(
-                      width: 60,
-                      child: FlatButton(
-                        child: Text(
-                          "Seç",
-                          style: TextStyle(color: Colors.blue),
-                        ),
-                        onPressed: () async {
-                          //indexdeki teklif seçilecek
-                        },
+                    GestureDetector(
+                      child: Text(
+                        "Seç",
+                        style: TextStyle(color: Colors.blue),
                       ),
+                      onTap: () async {
+                        //indexdeki teklif seçilecek
+                      },
                     ),
                   ],
                 );
@@ -293,7 +287,7 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
         );
       },
     );
-  } 
+  }
 
   Widget customTextBox(
       TextInputType type,
@@ -450,57 +444,56 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
   TextEditingController hurc = TextEditingController();
   FocusNode hurcNode = FocusNode();
 
-  int esyaSayisiHesaplama()
-  {
-    int toplamEsyaSayisi=0;
-    toplamEsyaSayisi+=int.parse(ucluKoltuk.text);
-    toplamEsyaSayisi+=int.parse(ikiliKoltuk.text);
-    toplamEsyaSayisi+=int.parse(tekliKoltuk.text);
-    toplamEsyaSayisi+=int.parse(tvSehba.text);
-    toplamEsyaSayisi+=int.parse(ortaSehba.text);
-    toplamEsyaSayisi+=int.parse(televizyon.text);
-    toplamEsyaSayisi+=int.parse(zigonSehba.text);
-    toplamEsyaSayisi+=int.parse(portre.text);
-    toplamEsyaSayisi+=int.parse(kitaplik.text);
-    toplamEsyaSayisi+=int.parse(yemekMasasi.text);
-    toplamEsyaSayisi+=int.parse(sandalye.text);
-    toplamEsyaSayisi+=int.parse(gumusluk.text);
-    toplamEsyaSayisi+=int.parse(avize.text);
-    toplamEsyaSayisi+=int.parse(altiKapiGardrop.text);
-    toplamEsyaSayisi+=int.parse(ikiliYatak.text);
-    toplamEsyaSayisi+=int.parse(sifonyer.text);
-    toplamEsyaSayisi+=int.parse(komidin.text);
-    toplamEsyaSayisi+=int.parse(tuvaletAyna.text);
-    toplamEsyaSayisi+=int.parse(abajur.text);
-    toplamEsyaSayisi+=int.parse(ucKapiliGardrop.text);
-    toplamEsyaSayisi+=int.parse(tekKisilikYatak.text);
-    toplamEsyaSayisi+=int.parse(bilgisayarMasasi.text);
-    toplamEsyaSayisi+=int.parse(bilgisayar.text);
-    toplamEsyaSayisi+=int.parse(sandalyeGenc.text);
-    toplamEsyaSayisi+=int.parse(camasirMakinasi.text);
-    toplamEsyaSayisi+=int.parse(sofBen.text);
-    toplamEsyaSayisi+=int.parse(camasirSepet.text);
-    toplamEsyaSayisi+=int.parse(buzdolabi.text);
-    toplamEsyaSayisi+=int.parse(bulasikMakinesi.text);
-    toplamEsyaSayisi+=int.parse(firin.text);
-    toplamEsyaSayisi+=int.parse(mikroFirin.text);
-    toplamEsyaSayisi+=int.parse(setOcak.text);
-    toplamEsyaSayisi+=int.parse(mutfakMasasi.text);
-    toplamEsyaSayisi+=int.parse(mutfakSandalye.text);
-    toplamEsyaSayisi+=int.parse(derinDondurucu.text);
-    toplamEsyaSayisi+=int.parse(kosuBandi.text);
-    toplamEsyaSayisi+=int.parse(bisiklet.text);
-    toplamEsyaSayisi+=int.parse(bilgisayarMasasiDiger.text);
-    toplamEsyaSayisi+=int.parse(mBilgisayar.text);
-    toplamEsyaSayisi+=int.parse(utuMasasi.text);
-    toplamEsyaSayisi+=int.parse(klima.text);
-    toplamEsyaSayisi+=int.parse(portManto.text);
-    toplamEsyaSayisi+=int.parse(elektrikliSupurge.text);
-    toplamEsyaSayisi+=int.parse(resim.text);
-    toplamEsyaSayisi+=int.parse(canliCicek.text);
-    toplamEsyaSayisi+=int.parse(hali.text);
-    toplamEsyaSayisi+=int.parse(koli.text);
-    toplamEsyaSayisi+=int.parse(hurc.text);
+  int esyaSayisiHesaplama() {
+    int toplamEsyaSayisi = 0;
+    toplamEsyaSayisi += int.tryParse(ucluKoltuk.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(ikiliKoltuk.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(tekliKoltuk.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(tvSehba.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(ortaSehba.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(televizyon.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(zigonSehba.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(portre.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(kitaplik.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(yemekMasasi.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(sandalye.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(gumusluk.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(avize.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(altiKapiGardrop.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(ikiliYatak.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(sifonyer.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(komidin.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(tuvaletAyna.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(abajur.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(ucKapiliGardrop.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(tekKisilikYatak.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(bilgisayarMasasi.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(bilgisayar.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(sandalyeGenc.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(camasirMakinasi.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(sofBen.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(camasirSepet.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(buzdolabi.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(bulasikMakinesi.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(firin.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(mikroFirin.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(setOcak.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(mutfakMasasi.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(mutfakSandalye.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(derinDondurucu.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(kosuBandi.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(bisiklet.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(bilgisayarMasasiDiger.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(mBilgisayar.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(utuMasasi.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(klima.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(portManto.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(elektrikliSupurge.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(resim.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(canliCicek.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(hali.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(koli.text) ?? 0;
+    toplamEsyaSayisi += int.tryParse(hurc.text) ?? 0;
     return toplamEsyaSayisi;
   }
 
@@ -1528,23 +1521,7 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 18)),
                         onPressed: () async {
-                          int odasayisi=esyaSayisiHesaplama();
-                          if(odasayisi<40)
-                            {
-                              _showDialog("Oda sayısı hesaplandı", "Girdiğiniz Eşyalar 1+1 için uygundur.Oda tipi değiştilimiştir.");
-                              ofisOdaSayisi.text="1";
-                            }else if(odasayisi>40 && odasayisi<=50){
-                              _showDialog("Oda sayısı hesaplandı", "Girdiğiniz Eşyalar 2+1 için uygundur.Oda tipi değiştilimiştir.");
-                              ofisOdaSayisi.text="2";
-                            }
-                            else if(odasayisi>50 && odasayisi<=70){
-                              _showDialog("Oda sayısı hesaplandı", "Girdiğiniz Eşyalar 3+1 için uygundur.Oda tipi değiştilimiştir.");
-                              ofisOdaSayisi.text="3";
-                            }
-                            else{
-                              _showDialog("Oda sayısı hesaplandı", "Girdiğiniz Eşyalar 4+1 için uygundur.Oda tipi değiştilimiştir.");
-                              ofisOdaSayisi.text="4";
-                            }
+                          int odasayisi = esyaSayisiHesaplama();
                           List<TeklifFirma> gelenTeklifler =
                               await _database.evdenEveTasimaTeklifleriAl(
                                   secilenTarih,
@@ -1556,6 +1533,27 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                           } else {
                             _showDialog("Uygun teklif bulunamadı",
                                 "Şuan sizin için uygun bir araç bulamadık en kısa sürede bu eksiği gidereceğiz.");
+                          }
+                          if (odasayisi < 40 && ofisOdaSayisi.text != "1") {
+                            _showDialog("Oda sayısı hesaplandı",
+                                "Girdiğiniz Eşyalar 1+1 için uygundur.Oda tipi değiştilimiştir.");
+                            ofisOdaSayisi.text = "1";
+                          } else if (odasayisi > 40 &&
+                              odasayisi <= 50 &&
+                              ofisOdaSayisi.text != "2") {
+                            _showDialog("Oda sayısı hesaplandı",
+                                "Girdiğiniz Eşyalar 2+1 için uygundur.Oda tipi değiştilimiştir.");
+                            ofisOdaSayisi.text = "2";
+                          } else if (odasayisi > 50 &&
+                              odasayisi <= 70 &&
+                              ofisOdaSayisi.text != "3") {
+                            _showDialog("Oda sayısı hesaplandı",
+                                "Girdiğiniz Eşyalar 3+1 için uygundur.Oda tipi değiştilimiştir.");
+                            ofisOdaSayisi.text = "3";
+                          } else if (ofisOdaSayisi.text == "4") {
+                            _showDialog("Oda sayısı hesaplandı",
+                                "Girdiğiniz Eşyalar 4+1 için uygundur.Oda tipi değiştilimiştir.");
+                            ofisOdaSayisi.text = "4";
                           }
                         },
                       ),

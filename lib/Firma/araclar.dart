@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:ekamyon/Modeller/aktifKullaniciBilgileri.dart';
 import 'package:ekamyon/database.dart';
 import 'package:ekamyon/Modeller/arac.dart';
 
@@ -118,9 +117,9 @@ class AracListeEkrani extends State<AracListe> {
                               context: context,
                               builder: (_) {
                                 return AracGuncellemeDialog(
-                                    arac: araclar[index],
-                                    ale: this,
-                                    );
+                                  arac: araclar[index],
+                                  ale: this,
+                                );
                               });
                         },
                       ),
@@ -152,7 +151,9 @@ class AracListeEkrani extends State<AracListe> {
               showDialog(
                   context: context,
                   builder: (_) {
-                    return AracEklemeDialog(ale: this,);
+                    return AracEklemeDialog(
+                      ale: this,
+                    );
                   });
             },
             shape: RoundedRectangleBorder(
@@ -232,52 +233,79 @@ class YeniAracEkle extends State<AracEklemeDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: new Text("Yeni Araç Ekle"),
-      content: Column(
-        children: <Widget>[
-          customTextBox(TextInputType.text, "Araç Plakası", aracPlaka,
-              TextInputAction.next, null, new FocusNode(),false),
-          customTextBox(TextInputType.text, "Araç Markası", aracMarka,
-              TextInputAction.next, aracMarkaNode, new FocusNode(), false),
-          customTextBox(TextInputType.text, "Araç Modeli", aracModel,
-              TextInputAction.send, aracModelNode, new FocusNode(), false),
-          CheckboxListTile(
-              title: Text("Aracınız aktif kullanılıyor mu ?"),
-              value: aracaktifmi,
-              onChanged: (bool yd) {
-                setState(() {
-                  aracaktifmi = yd;
-                });
-              })
-        ],
+    return Scaffold(
+      backgroundColor: Color(0x00000000),
+      body: Center(
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.85,
+          height: MediaQuery.of(context).size.height * 0.50,
+          decoration: BoxDecoration(
+              color: Colors.white, borderRadius: BorderRadius.circular(25)),
+          child: Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                    child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "Yeni Araç Ekle",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                )),
+              ),
+              customTextBox(TextInputType.text, "Araç Plakası", aracPlaka,
+                  TextInputAction.next, null, new FocusNode(), false),
+              customTextBox(TextInputType.text, "Araç Markası", aracMarka,
+                  TextInputAction.next, aracMarkaNode, new FocusNode(), false),
+              customTextBox(TextInputType.text, "Araç Modeli", aracModel,
+                  TextInputAction.send, aracModelNode, new FocusNode(), false),
+              CheckboxListTile(
+                  title: Text("Aracınız aktif kullanılıyor mu ?"),
+                  value: aracaktifmi,
+                  onChanged: (bool yd) {
+                    setState(() {
+                      aracaktifmi = yd;
+                    });
+                  }),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    new FlatButton(
+                      child: new Text("İptal",style: TextStyle(color: Colors.blue,fontSize: 16,fontWeight: FontWeight.bold)),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        setState(() {});
+                      },
+                    ),
+                    new FlatButton(
+                      child: new Text("Ekle",style: TextStyle(color: Colors.blue,fontSize: 16,fontWeight: FontWeight.bold)),
+                      onPressed: () async {
+                        if (aracPlaka.text != "" ||
+                            aracMarka.text != "" ||
+                            aracModel.text != "") {
+                          await _database.yeniAracKayit(aracPlaka.text,
+                              aracMarka.text, aracModel.text, aracaktifmi);
+                          Navigator.of(context).pop();
+                          _showDialog(
+                              "Ekleme Başarılı", "Yeni aracınız eklenmiştir.");
+                          ale.aracListesiDoldur();
+                          setState(() {});
+                        } else {
+                          _showDialog("Boş bırakılamaz",
+                              "Bütün alanları doldurmalısınız");
+                        }
+                      },
+                    ),     
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
       ),
-      actions: <Widget>[
-        new FlatButton(
-          child: new Text("Ekle"),
-          onPressed: () async {
-            if (aracPlaka.text != "" ||
-                aracMarka.text != "" ||
-                aracModel.text != "") {
-              await _database.yeniAracKayit(
-                  aracPlaka.text, aracMarka.text, aracModel.text, aracaktifmi);
-              Navigator.of(context).pop();
-              _showDialog("Ekleme Başarılı", "Yeni aracınız eklenmiştir.");
-              ale.aracListesiDoldur();
-              setState(() {});
-            } else {
-              _showDialog("Boş bırakılamaz", "Bütün alanları doldurmalısınız");
-            }
-          },
-        ),
-        new FlatButton(
-          child: new Text("İptal"),
-          onPressed: () {
-            Navigator.of(context).pop();
-            setState(() {});
-          },
-        ),
-      ],
     );
   }
 }
@@ -285,15 +313,15 @@ class YeniAracEkle extends State<AracEklemeDialog> {
 class AracGuncellemeDialog extends StatefulWidget {
   final Arac arac;
   final AracListeEkrani ale;
-  AracGuncellemeDialog({this.arac,this.ale});
+  AracGuncellemeDialog({this.arac, this.ale});
   @override
-  AracGuncelleme createState() => new AracGuncelleme(arac: arac,ale: ale);
+  AracGuncelleme createState() => new AracGuncelleme(arac: arac, ale: ale);
 }
 
 class AracGuncelleme extends State<AracGuncellemeDialog> {
   final Arac arac;
   final AracListeEkrani ale;
-  AracGuncelleme({this.arac,this.ale});
+  AracGuncelleme({this.arac, this.ale});
   TextEditingController aracPlaka = TextEditingController();
   TextEditingController aracMarka = TextEditingController();
   TextEditingController aracModel = TextEditingController();
@@ -348,14 +376,11 @@ class AracGuncelleme extends State<AracGuncellemeDialog> {
               onPressed: () async {
                 Navigator.of(context).pop();
                 bool islemsonuc = await _database.aracSil(arac.aracPlakasi);
-                  if (islemsonuc)
-                  {
-                    _showDialog("Araç silme", "Araç silme işlemi başarılı.");
-                    ale.aracListesiDoldur();
-                    setState(() {
-                      
-                    });
-                  }
+                if (islemsonuc) {
+                  _showDialog("Araç silme", "Araç silme işlemi başarılı.");
+                  ale.aracListesiDoldur();
+                  setState(() {});
+                }
               },
             ),
             new FlatButton(
@@ -402,62 +427,106 @@ class AracGuncelleme extends State<AracGuncellemeDialog> {
     return Scaffold(
         backgroundColor: Color(0x00000000),
         resizeToAvoidBottomPadding: false,
-        body: AlertDialog(
-          title: new Text("Araç bilgileri"),
-          content: Column(
-            children: <Widget>[
-              customTextBox(TextInputType.text, "Araç Plakası", aracPlaka,
-                  TextInputAction.next, null, aracMarkaNode, false),
-              customTextBox(TextInputType.text, "Araç Markası", aracMarka,
-                  TextInputAction.next, aracMarkaNode, aracModelNode, false),
-              customTextBox(TextInputType.text, "Araç Modeli", aracModel,
-                  TextInputAction.send, aracModelNode, new FocusNode(), false),
-              CheckboxListTile(
-                  title: Text("Aracınız aktif kullanılıyor mu ?"),
-                  value: aracaktifmi,
-                  onChanged: (bool yd) {
-                    setState(() {
-                      aracaktifmi = yd;
-                    });
-                  })
-            ],
+        body: Center(
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.85,
+            height: MediaQuery.of(context).size.height * 0.5,
+            child: Container(
+              decoration: BoxDecoration(
+                  color: Colors.white, borderRadius: BorderRadius.circular(25)),
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        top: 15, left: 8, right: 8, bottom: 15),
+                    child: Center(
+                        child: Text(
+                      "Araç bilgileri",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    )),
+                  ),
+                  customTextBox(TextInputType.text, "Araç Plakası", aracPlaka,
+                      TextInputAction.next, null, aracMarkaNode, false),
+                  customTextBox(
+                      TextInputType.text,
+                      "Araç Markası",
+                      aracMarka,
+                      TextInputAction.next,
+                      aracMarkaNode,
+                      aracModelNode,
+                      false),
+                  customTextBox(
+                      TextInputType.text,
+                      "Araç Modeli",
+                      aracModel,
+                      TextInputAction.send,
+                      aracModelNode,
+                      new FocusNode(),
+                      false),
+                  CheckboxListTile(
+                      title: Text("Aracınız aktif kullanılıyor mu ?"),
+                      value: aracaktifmi,
+                      onChanged: (bool yd) {
+                        setState(() {
+                          aracaktifmi = yd;
+                        });
+                      }),
+                  Padding(
+                    padding: EdgeInsets.only(top: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        new GestureDetector(
+                          child: new Text("Bilgileri Güncelle",
+                              style: TextStyle(
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.bold)),
+                          onTap: () async {
+                            if (aracPlaka.text != "" ||
+                                aracMarka.text != "" ||
+                                aracModel.text != "") {
+                              await _database.aracBilgiGuncelle(aracPlaka.text,
+                                  aracMarka.text, aracModel.text, aracaktifmi);
+                              _showDialog(
+                                  "Araç", "Araç bilgileriniz güncellenmiştir.");
+                              setState(() {});
+                            } else {
+                              _showDialog("Boş bırakılamaz",
+                                  "Bütün alanları doldurmalısınız");
+                            }
+                          },
+                        ),
+                        new GestureDetector(
+                          child: new Text("Araçı Sil",
+                              style: TextStyle(
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.bold)),
+                          onTap: () async {
+                            _showQuestionDialog(
+                                "Aracı Sil",
+                                arac.aracPlakasi +
+                                    " Plakalı aracı silmek istediğinizden emin misiniz?");
+                            setState(() {});
+                          },
+                        ),
+                        new GestureDetector(
+                          child: new Text("Kapat",
+                              style: TextStyle(
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.bold)),
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            setState(() {});
+                          },
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
           ),
-          actions: <Widget>[
-            new FlatButton(
-              child: new Text("Bilgileri Güncelle"),
-              onPressed: () async {
-                if (aracPlaka.text != "" ||
-                    aracMarka.text != "" ||
-                    aracModel.text != "") {
-                  await _database.aracBilgiGuncelle(aracPlaka.text,
-                      aracMarka.text, aracModel.text, aracaktifmi);
-                  Navigator.of(context).pop();
-                  _showDialog("Araç", "Araç bilgileriniz güncellenmiştir.");
-                  setState(() {});
-                } else {
-                  _showDialog(
-                      "Boş bırakılamaz", "Bütün alanları doldurmalısınız");
-                }
-              },
-            ),
-            new FlatButton(
-              child: new Text("Araçı Sil"),
-              onPressed: () async {
-                _showQuestionDialog(
-                    "Aracı Sil",
-                    arac.aracPlakasi +
-                        " Plakalı aracı silmek istediğinizden emin misiniz?");              
-                setState(() {});
-              },
-            ),
-            new FlatButton(
-              child: new Text("Kapat"),
-              onPressed: () {
-                Navigator.of(context).pop();
-                setState(() {});
-              },
-            ),
-          ],
         ));
   }
 }

@@ -36,8 +36,8 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
   @override
   void initState() {
     super.initState();
-    kulmail.text="firma1@yusuf.com";
-    kulsifre.text="1234";
+    kulmail.text = "firma1@yusuf.com";
+    kulsifre.text = "1234";
   }
 
   void _kayitDialog() {
@@ -45,38 +45,48 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
       context: context,
       builder: (BuildContext context) {
         // return object of type Dialog
-        return AlertDialog(
-          title: new Text("Yeni Hesap Oluştur"),
-          content: new Text(
-              "Size daha iyi hizmet verebilmem için bütün bilgileri eksiksiz girmeniz gerekmektedir."),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text("Müşteri Hesabı"),
-              onPressed: () {
-                //Müşteri Kayıt Ekranı açılacak
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => KayitKullanici()),
-                );
-              },
-            ),
-            new FlatButton(
-              child: new Text("Nakliye Hesabı"),
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => KayitFirma()),
-                );
-              },
-            ),
-          ],
-        );
+        return SimpleDialog(
+            title: Center(child: new Text("Yeni Hesap Oluştur")),
+            children: <Widget>[
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: new Text(
+                      "Size daha iyi hizmet verebilmem için bütün bilgileri eksiksiz girmeniz gerekmektedir."),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  new FlatButton(
+                    child: new Text("Müşteri Hesabı",style: TextStyle(color: Colors.blue,fontSize: 14,fontWeight: FontWeight.bold)),
+                    onPressed: () {
+                      //Müşteri Kayıt Ekranı açılacak
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => KayitKullanici()),
+                      );
+                    },
+                  ),
+                  new FlatButton(
+                    child: new Text("Nakliye Hesabı",style: TextStyle(color: Colors.blue,fontSize: 14,fontWeight: FontWeight.bold)),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => KayitFirma()),
+                      );
+                    },
+                  ),
+                ],
+              )
+            ]);
       },
     );
   }
+
   void _showDialog(String title, String message) {
     showDialog(
       context: context,
@@ -97,33 +107,41 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
       },
     );
   }
+
   _showIndicator() {
     showDialog(
+      barrierDismissible: true,
       context: context,
       builder: (BuildContext context) {
         // return object of type Dialog
-        return AlertDialog(
-          content: CircularProgressIndicator(),          
+        return Container(
+          width: MediaQuery.of(context).size.width * 0.1,
+          height: MediaQuery.of(context).size.height * 0.1,
+          child: Center(
+            child: SizedBox(
+                width: 50, height: 50, child: CircularProgressIndicator()),
+          ),
         );
       },
     );
   }
-  
+
   void oturumAc(String kulEmail, String kulSifre) async {
     String girenKullaniciTuru = await _database.giris(kulEmail, kulSifre);
     Navigator.pop(context);
     if (girenKullaniciTuru == "basarisiz") {
-      _showDialog("Kullanıcı adı veya şifre yanlış", "Girmiş olduğunuz Kullanıcı adı veya şifreyi kontrol ediniz üye değilseniz aşağıdan üye olabilirsiniz");      
+      _showDialog("Kullanıcı adı veya şifre yanlış",
+          "Girmiş olduğunuz Kullanıcı adı veya şifreyi kontrol ediniz üye değilseniz aşağıdan üye olabilirsiniz");
     } else if (girenKullaniciTuru == "musteri") {
-      AktifKullaniciBilgileri.musteriSifresi=kulSifre;
-      AktifKullaniciBilgileri.musteriEposta=kulEmail;
+      AktifKullaniciBilgileri.musteriSifresi = kulSifre;
+      AktifKullaniciBilgileri.musteriEposta = kulEmail;
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => KullaniciMenu()),
       );
     } else if (girenKullaniciTuru == "firma") {
-      AktifKullaniciBilgileri.firmaSifresi=kulSifre;
-      AktifKullaniciBilgileri.firmaEposta=kulEmail;
+      AktifKullaniciBilgileri.firmaSifresi = kulSifre;
+      AktifKullaniciBilgileri.firmaEposta = kulEmail;
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => FirmaMenu()),
@@ -218,7 +236,10 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
                       controller: kulsifre,
                       focusNode: kulsifreNode,
                       textInputAction: TextInputAction.done,
-                      onSubmitted: (String deger) {},
+                      onSubmitted: (String deger) {
+                        _showIndicator();
+                        oturumAc(kulmail.text, kulsifre.text);
+                      },
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Montserrat',
@@ -235,11 +256,12 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
                     width: MediaQuery.of(context).size.width * 0.6,
                     height: MediaQuery.of(context).size.height * 0.08,
                     child: RaisedButton(
+                        color: Colors.white,
                         child: new Text(
                           "Oturum Aç",
                           textScaleFactor: 2,
                         ),
-                        onPressed: () async{
+                        onPressed: () async {
                           //Oturum açma kodu
                           _showIndicator();
                           oturumAc(kulmail.text, kulsifre.text);
@@ -252,16 +274,12 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
                 padding: EdgeInsets.only(
                     top: MediaQuery.of(context).size.height * 0.05),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(
-                          left: MediaQuery.of(context).size.width * 0.1),
-                      child: FlatButton(
-                        child: Text('Şifremi Unuttum',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 19)),
-                        onPressed: () {},
-                      ),
+                    FlatButton(
+                      child: Text('Şifremi Unuttum',
+                          style: TextStyle(color: Colors.white, fontSize: 19)),
+                      onPressed: () {},
                     ),
                     FlatButton(
                       child: Text('Yeni Kullanıcı',

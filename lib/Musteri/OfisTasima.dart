@@ -9,6 +9,7 @@ class OfisTasimaEkrani extends StatefulWidget {
 }
 
 class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
+  int sigortaHeight=0;
   Database _database = Database();
   DateTime secilenTarih = DateTime.now();
   TextEditingController ofisOdaSayisi = TextEditingController();
@@ -217,7 +218,7 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
               itemCount: gelenTeklifler.length,
               itemBuilder: (context, index) {
                 return Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     Column(
                       children: <Widget>[
@@ -234,17 +235,14 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
                         ),
                       ],
                     ),
-                    SizedBox(
-                      width: 80,
-                      child: FlatButton(
-                        child: Text(
-                          "Detay",
-                          style: TextStyle(color: Colors.blue),
-                        ),
-                        onPressed: () {
-                          _showDetay(gelenTeklifler[index]);
-                        },
+                    GestureDetector(
+                      child: Text(
+                        "Detay",
+                        style: TextStyle(color: Colors.blue),
                       ),
+                      onTap: () {
+                        _showDetay(gelenTeklifler[index]);
+                      },
                     ),
                     Column(
                       children: <Widget>[
@@ -262,17 +260,14 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
                         ),
                       ],
                     ),
-                    SizedBox(
-                      width: 60,
-                      child: FlatButton(
-                        child: Text(
-                          "Seç",
-                          style: TextStyle(color: Colors.blue),
-                        ),
-                        onPressed: () async {
-                          //indexdeki teklif seçilecek
-                        },
+                    GestureDetector(
+                      child: Text(
+                        "Seç",
+                        style: TextStyle(color: Colors.blue),
                       ),
+                      onTap: () async {
+                        //indexdeki teklif seçilecek
+                      },
                     ),
                   ],
                 );
@@ -666,7 +661,7 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
                         "Yükünüzü taşıyacak olan araç eğer sizin eşyalarınızla tamamen dolmazsa başka bir müşterinin eşyaları da araca yüklüyoruz ve beraber taşıyoruz böylece sizin için maliyet yüzde 20'ye varan oranda düşebiliyor bu özellikten faydalanmak istiyorsanız evet seçeneğini seçiniz.",
                         style: TextStyle(color: Colors.blueGrey, fontSize: 11),
                       ),
-                    ),
+                    ),                   
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
