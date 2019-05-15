@@ -170,6 +170,7 @@ class Database {
 
   evdenEveTasimaTeklifleriAl(DateTime tasinmaTarih, String mevcutIl,
       String varisIl, String odaSayisi) async {
+        odaSayisi=odaSayisi.split('+')[0];
     final response = await http.get(
         "http://www.ekamyon.com/wp-app/select_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&SelectTuru=Teklifler&TasinmaTarihi=" +
             tasinmaTarih.toString() +
@@ -192,6 +193,7 @@ class Database {
 
   ofisTasimaTeklifleriAl(DateTime tarih, String mevcutSehir,
       String gelecekSehir, String odaSayisi) async {
+        odaSayisi=odaSayisi.split('+')[0];
     final response = await http.get(
         "http://www.ekamyon.com/wp-app/select_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&SelectTuru=Teklifler&TasinmaTarihi=" +
             tarih.toString() +

@@ -1,4 +1,4 @@
-class Arac{
+class Arac {
   final String id;
   final String firmaId;
   final String aracModel;
@@ -6,7 +6,13 @@ class Arac{
   final String aracPlakasi;
   final String aracMarkasi;
 
-  Arac({this.id,this.firmaId,this.aracPlakasi,this.aracModel,this.aracMarkasi,this.aracAktifmi});
+  Arac(
+      {this.id,
+      this.firmaId,
+      this.aracPlakasi,
+      this.aracModel,
+      this.aracMarkasi,
+      this.aracAktifmi});
 
   factory Arac.fromJson(Map<String, dynamic> json) {
     return Arac(
@@ -21,8 +27,10 @@ class Arac{
 
   static List<Arac> fromArray(var jsonArray) {
     List<Arac> gelenmesajlar = List<Arac>();
-    for (Map<String, dynamic> json in jsonArray) {
-      gelenmesajlar.add(Arac.fromJson(json));
+    if (jsonArray != null) {
+      for (Map<String, dynamic> json in jsonArray) {
+        gelenmesajlar.add(Arac.fromJson(json));
+      }
     }
     return gelenmesajlar;
   }

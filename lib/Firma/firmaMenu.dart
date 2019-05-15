@@ -3,6 +3,7 @@ import 'package:ekamyon/Firma/FirmaBilgisiGuncelle.dart';
 import 'package:flutter/material.dart';
 import 'package:ekamyon/Modeller/aktifKullaniciBilgileri.dart';
 import 'FiyatListesi.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 import 'araclar.dart';
 
@@ -24,6 +25,8 @@ class FirmaMenuEkrani extends State<FirmaMenu> {
           width: MediaQuery.of(context).size.width * 0.45,
           height: MediaQuery.of(context).size.height * 0.20,
           child: new Card(
+            shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
             child: new Center(
                 child: Column(
               children: <Widget>[
@@ -35,9 +38,10 @@ class FirmaMenuEkrani extends State<FirmaMenu> {
                 ),
                 Padding(
                     padding: EdgeInsets.only(top: 8, left: 5, right: 5),
-                    child: Text(
+                    child: AutoSizeText(
                       isim,
                       style: TextStyle(fontWeight: FontWeight.bold),
+                      maxLines: 1,
                     ))
               ],
             )),

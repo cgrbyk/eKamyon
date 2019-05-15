@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'database.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class KayitKullanici extends StatefulWidget {
   @override
@@ -49,6 +50,14 @@ class KayitKullaniciEkrani extends State<KayitKullanici> {
         );
       },
     );
+  }
+
+  _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   Widget customTextBox(
@@ -154,7 +163,7 @@ class KayitKullaniciEkrani extends State<KayitKullanici> {
                     style: TextStyle(
                         color: Colors.red, fontWeight: FontWeight.bold)),
                 onPressed: () {
-                  //tarayıcıdan sözleşme açılacak
+                  _launchURL("http://gelengigames.com/privacyPolicy.html");
                 },
               ),
             ),

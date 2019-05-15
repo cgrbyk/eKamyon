@@ -23,21 +23,29 @@ class FirmaBilgisiGuncelleEkrani extends State<FirmaBilgisiGuncelle> {
     FocusNode tofocus,
     bool passoword,
   ) {
-    return TextField(
-      focusNode: ownFocus,
-      obscureText: passoword,
-      keyboardType: type,
-      autofocus: false,
-      decoration: InputDecoration(
-        hintText: placeholder,
-        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-      ),
-      controller: controller,
-      textInputAction: action,
-      onSubmitted: (String s) {
-        FocusScope.of(context).requestFocus(tofocus);
-      },
-      style: TextStyle(fontFamily: 'Montserrat', fontSize: 16),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        Text(placeholder+" :"),
+        Expanded(
+                  child: TextField(
+            focusNode: ownFocus,
+            obscureText: passoword,
+            keyboardType: type,
+            autofocus: false,
+            decoration: InputDecoration(
+              hintText: placeholder,
+              contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+            ),
+            controller: controller,
+            textInputAction: action,
+            onSubmitted: (String s) {
+              FocusScope.of(context).requestFocus(tofocus);
+            },
+            style: TextStyle(fontFamily: 'Montserrat', fontSize: 16),
+          ),
+        ),
+      ],
     );
   }
 

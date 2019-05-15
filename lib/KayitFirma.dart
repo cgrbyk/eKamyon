@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'database.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class KayitFirma extends StatefulWidget {
   @override
@@ -49,6 +50,14 @@ class KayitFirmaEkrani extends State<KayitFirma> {
 
   bool ischecked = false;
   Database _database = new Database();
+
+  _launchURL(String url) async {
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
+  }
+}
 
   void _showDialog(String title, String message) {
     showDialog(
@@ -130,7 +139,7 @@ class KayitFirmaEkrani extends State<KayitFirma> {
                 tcNoFocusNode,
                 false),
             customTextBox(
-                TextInputType.text,
+                TextInputType.number,
                 "Tc numaranız",
                 tcNoController,
                 TextInputAction.next,
@@ -263,7 +272,7 @@ class KayitFirmaEkrani extends State<KayitFirma> {
                     style: TextStyle(
                         color: Colors.red, fontWeight: FontWeight.bold)),
                 onPressed: () {
-                  //tarayıcıdan sözleşme açılacak
+                  _launchURL("http://gelengigames.com/privacyPolicy.html");
                 },
               ),
             ),

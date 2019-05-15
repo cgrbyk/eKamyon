@@ -2,6 +2,7 @@ import 'package:ekamyon/Modeller/teklifFirma.dart';
 import 'package:ekamyon/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class OfisTasimaEkrani extends StatefulWidget {
   @override
@@ -9,10 +10,12 @@ class OfisTasimaEkrani extends StatefulWidget {
 }
 
 class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
-  int sigortaHeight=0;
+  bool showSigorta = false;
+  bool sigorta = true;
+  int sigortaHeight = 0;
   Database _database = Database();
   DateTime secilenTarih = DateTime.now();
-  TextEditingController ofisOdaSayisi = TextEditingController();
+  String ofisOdaSayisi = "1+1";
   TextEditingController ofisMevcutKat = TextEditingController();
   TextEditingController ofisGelecekKat = TextEditingController();
   TextEditingController binayaYakinlik = TextEditingController();
@@ -406,31 +409,38 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
                       Padding(
                         padding: const EdgeInsets.only(
                             left: 8.0, right: 8.0, bottom: 8.0),
-                        child: TextField(
-                          obscureText: false,
-                          keyboardType: TextInputType.number,
-                          autofocus: false,
-                          decoration: InputDecoration(
-                            hintText: "Oda sayısı",
-                            contentPadding:
-                                EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                          ),
-                          controller: ofisOdaSayisi,
-                          textInputAction: TextInputAction.done,
-                          onSubmitted: (String s) {
-                            if (int.parse(s) > 4) {
-                              FocusScope.of(context)
-                                  .requestFocus(new FocusNode());
-                              _showDialog("Oda Sayısı 4 den büyük olamaz.",
-                                  "Oda sayısı 4 olarak seçildi.");
-                              ofisOdaSayisi.text = "4";
-                              setState(() {});
-                            } else
-                              FocusScope.of(context)
-                                  .requestFocus(ofisMevcutKatNode);
-                          },
-                          style:
-                              TextStyle(fontFamily: 'Montserrat', fontSize: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Text("Ofisinizin oda sayisi :"),
+                            Expanded(
+                              child: DropdownButton(
+                                value: ofisOdaSayisi,
+                                items: [
+                                  DropdownMenuItem(
+                                    value: "1+1",
+                                    child: Center(child: Text("1+1")),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: "2+1",
+                                    child: Center(child: Text("2+1")),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: "3+1",
+                                    child: Center(child: Text("3+1")),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: "4+1",
+                                    child: Center(child: Text("4+1")),
+                                  ),
+                                ],
+                                onChanged: (String s) {
+                                  ofisOdaSayisi = s;
+                                  setState(() {});
+                                },
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       customTextBox(
@@ -570,124 +580,166 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
               child: Card(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20)),
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(top: 10),
-                      child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            " Mevcut ofis adresiniz ?",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.blue[800]),
-                          )),
-                    ),
-                    Row(
-                      children: <Widget>[
-                        DropdownButton(
-                          items: sehirlerDDM,
-                          value: curItemSehir,
-                          onChanged: (dynamic dmi) {
-                            curItemSehir = dmi;
-                            setState(() {});
-                          },
-                        ),
-                        Expanded(
-                            child: customTextBox(
-                                TextInputType.text,
-                                "İlçe Adı",
-                                mevcutIlce,
-                                TextInputAction.done,
-                                new FocusNode(),
-                                false)),
-                      ],
-                    ),
-                    customTextBox(
-                        TextInputType.text,
-                        "Mahalle/Cadde/Sokak/DaireNo/KapıNo",
-                        mevcutAdres,
-                        TextInputAction.done,
-                        new FocusNode(),
-                        false),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 13.0),
-                      child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            " Yeni ofis adresiniz ?",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.blue[800]),
-                          )),
-                    ),
-                    Row(
-                      children: <Widget>[
-                        DropdownButton(
-                          items: sehirlerDDM,
-                          value: newItemSehir,
-                          onChanged: (dynamic dmi) {
-                            newItemSehir = dmi;
-                            setState(() {});
-                          },
-                        ),
-                        Expanded(
-                            child: customTextBox(
-                                TextInputType.text,
-                                "İlçe Adı",
-                                yeniIlce,
-                                TextInputAction.done,
-                                new FocusNode(),
-                                false)),
-                      ],
-                    ),
-                    customTextBox(
-                        TextInputType.text,
-                        "Mahalle/Cadde/Sokak/DaireNo/KapıNo",
-                        yeniAdres,
-                        TextInputAction.done,
-                        new FocusNode(),
-                        false),
-                    Padding(
-                      padding: EdgeInsets.only(top: 12),
-                      child: Text(
-                        "Yükünüzün başka yükler ile beraber taşınmasını ister misiniz ?",
-                        style: TextStyle(color: Colors.blue[900]),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(top: 10),
+                        child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              " Mevcut ofis adresiniz ?",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue[800]),
+                            )),
                       ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 8),
-                      child: Text(
-                        "Yükünüzü taşıyacak olan araç eğer sizin eşyalarınızla tamamen dolmazsa başka bir müşterinin eşyaları da araca yüklüyoruz ve beraber taşıyoruz böylece sizin için maliyet yüzde 20'ye varan oranda düşebiliyor bu özellikten faydalanmak istiyorsanız evet seçeneğini seçiniz.",
-                        style: TextStyle(color: Colors.blueGrey, fontSize: 11),
+                      Row(
+                        children: <Widget>[
+                          DropdownButton(
+                            items: sehirlerDDM,
+                            value: curItemSehir,
+                            onChanged: (dynamic dmi) {
+                              curItemSehir = dmi;
+                              newItemSehir == curItemSehir
+                                  ? showSigorta = false
+                                  : showSigorta = true;
+                              setState(() {});
+                            },
+                          ),
+                          Expanded(
+                              child: customTextBox(
+                                  TextInputType.text,
+                                  "İlçe Adı",
+                                  mevcutIlce,
+                                  TextInputAction.done,
+                                  new FocusNode(),
+                                  false)),
+                        ],
                       ),
-                    ),                   
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.4,
-                          child: CheckboxListTile(
-                              value: ortaklik,
-                              title: Text("Evet"),
-                              onChanged: (bool s) {
-                                ortaklik = true;
-                                setState(() {});
-                              }),
+                      customTextBox(
+                          TextInputType.text,
+                          "Mahalle/Cadde/Sokak/DaireNo/KapıNo",
+                          mevcutAdres,
+                          TextInputAction.done,
+                          new FocusNode(),
+                          false),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 13.0),
+                        child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              " Yeni ofis adresiniz ?",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue[800]),
+                            )),
+                      ),
+                      Row(
+                        children: <Widget>[
+                          DropdownButton(
+                            items: sehirlerDDM,
+                            value: newItemSehir,
+                            onChanged: (dynamic dmi) {
+                              newItemSehir = dmi;
+                              newItemSehir == curItemSehir
+                                  ? showSigorta = false
+                                  : showSigorta = true;
+                              setState(() {});
+                            },
+                          ),
+                          Expanded(
+                              child: customTextBox(
+                                  TextInputType.text,
+                                  "İlçe Adı",
+                                  yeniIlce,
+                                  TextInputAction.done,
+                                  new FocusNode(),
+                                  false)),
+                        ],
+                      ),
+                      customTextBox(
+                          TextInputType.text,
+                          "Mahalle/Cadde/Sokak/DaireNo/KapıNo",
+                          yeniAdres,
+                          TextInputAction.done,
+                          new FocusNode(),
+                          false),
+                      Visibility(
+                        visible: showSigorta,
+                        child: Column(
+                          children: <Widget>[
+                            AutoSizeText(
+                              "Eşyalarınız için sigorta istermisiniz ?",
+                              style: TextStyle(color: Colors.blue[900]),
+                              maxLines: 1,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                Expanded(
+                                  child: CheckboxListTile(
+                                      value: sigorta,
+                                      title: Text("Evet"),
+                                      onChanged: (bool s) {
+                                        sigorta = true;
+                                        setState(() {});
+                                      }),
+                                ),
+                                Expanded(
+                                  child: CheckboxListTile(
+                                      value: !sigorta,
+                                      title: AutoSizeText("İstemiyorum",maxLines: 1),
+                                      onChanged: (bool s) {
+                                        sigorta = false;
+                                        setState(() {});
+                                      }),
+                                ),
+                              ],
+                            )
+                          ],
                         ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.5,
-                          child: CheckboxListTile(
-                              value: !ortaklik,
-                              title: Text("İstemiyorum"),
-                              onChanged: (bool s) {
-                                ortaklik = false;
-                                setState(() {});
-                              }),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 12),
+                        child: Text(
+                          "Yükünüzün başka yükler ile beraber taşınmasını ister misiniz ?",
+                          style: TextStyle(color: Colors.blue[900]),
                         ),
-                      ],
-                    )
-                  ],
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 8),
+                        child: Text(
+                          "Yükünüzü taşıyacak olan araç eğer sizin eşyalarınızla tamamen dolmazsa başka bir müşterinin eşyaları da araca yüklüyoruz ve beraber taşıyoruz böylece sizin için maliyet yüzde 20'ye varan oranda düşebiliyor bu özellikten faydalanmak istiyorsanız evet seçeneğini seçiniz.",
+                          style: TextStyle(color: Colors.blueGrey, fontSize: 11),
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          Expanded(
+                            child: CheckboxListTile(
+                                value: ortaklik,
+                                title: Text("Evet"),
+                                onChanged: (bool s) {
+                                  ortaklik = true;
+                                  setState(() {});
+                                }),
+                          ),
+                          Expanded(
+                            child: CheckboxListTile(
+                                value: !ortaklik,
+                                title: AutoSizeText("İstemiyorum",maxLines: 1,),
+                                onChanged: (bool s) {
+                                  ortaklik = false;
+                                  setState(() {});
+                                }),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -716,7 +768,7 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
                     onPressed: () async {
                       List<TeklifFirma> gelenTeklifler =
                           await _database.ofisTasimaTeklifleriAl(secilenTarih,
-                              curItemSehir, newItemSehir, ofisOdaSayisi.text);
+                              curItemSehir, newItemSehir, ofisOdaSayisi);
                       if (gelenTeklifler != null) {
                         _showTeklifListe(gelenTeklifler);
                       } else {
@@ -734,3 +786,29 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
     );
   }
 }
+/*TextField(
+                          obscureText: false,
+                          keyboardType: TextInputType.number,
+                          autofocus: false,
+                          decoration: InputDecoration(
+                            hintText: "Oda sayısı",
+                            contentPadding:
+                                EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                          ),
+                          controller: ofisOdaSayisi,
+                          textInputAction: TextInputAction.done,
+                          onSubmitted: (String s) {
+                            if (int.parse(s) > 4) {
+                              FocusScope.of(context)
+                                  .requestFocus(new FocusNode());
+                              _showDialog("Oda Sayısı 4 den büyük olamaz.",
+                                  "Oda sayısı 4 olarak seçildi.");
+                              ofisOdaSayisi.text = "4";
+                              setState(() {});
+                            } else
+                              FocusScope.of(context)
+                                  .requestFocus(ofisMevcutKatNode);
+                          },
+                          style:
+                              TextStyle(fontFamily: 'Montserrat', fontSize: 15),
+                        ),*/

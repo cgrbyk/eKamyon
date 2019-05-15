@@ -3,6 +3,7 @@ import 'package:ekamyon/database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class EvdenEveTasima extends StatefulWidget {
   @override
@@ -13,7 +14,7 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
   Database _database = Database();
   PageController _pageController = PageController();
   DateTime secilenTarih = DateTime.now();
-  TextEditingController ofisOdaSayisi = TextEditingController();
+  String ofisOdaSayisi = "1+1";
   TextEditingController ofisMevcutKat = TextEditingController();
   TextEditingController ofisGelecekKat = TextEditingController();
   TextEditingController binayaYakinlik = TextEditingController();
@@ -31,6 +32,8 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
   String esyaTasimaSecim = " Bina merdiveni kullanılacak";
 
   bool ortaklik = true;
+  bool showSigorta = false;
+  bool sigorta = true;
 
   List<String> sehirler = [
     'Adana',
@@ -586,14 +589,43 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                                 )),
                           ],
                         ),
-                        customTextBox(
-                            TextInputType.number,
-                            "Oda Sayisi",
-                            ofisOdaSayisi,
-                            TextInputAction.next,
-                            ofisOdaSayisiNode,
-                            ofisMevcutKatNode,
-                            false),
+                        Padding(
+                        padding: const EdgeInsets.only(
+                            left: 8.0, right: 8.0, bottom: 8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Text("Evinizin oda sayisi :"),
+                            Expanded(
+                              child: DropdownButton(
+                                value: ofisOdaSayisi,
+                                items: [
+                                  DropdownMenuItem(
+                                    value: "1+1",
+                                    child: Center(child: Text("1+1")),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: "2+1",
+                                    child: Center(child: Text("2+1")),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: "3+1",
+                                    child: Center(child: Text("3+1")),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: "4+1",
+                                    child: Center(child: Text("4+1")),
+                                  ),
+                                ],
+                                onChanged: (String s) {
+                                  ofisOdaSayisi = s;
+                                  setState(() {});
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                         customTextBox(
                             TextInputType.number,
                             "Ofisinizin şuan bulunduğu kat",
@@ -1380,6 +1412,9 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                               value: curItemSehir,
                               onChanged: (dynamic dmi) {
                                 curItemSehir = dmi;
+                                newItemSehir == curItemSehir
+                                  ? showSigorta = false
+                                  : showSigorta = true;
                                 setState(() {});
                               },
                             ),
@@ -1420,6 +1455,9 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                               value: newItemSehir,
                               onChanged: (dynamic dmi) {
                                 newItemSehir = dmi;
+                                newItemSehir == curItemSehir
+                                  ? showSigorta = false
+                                  : showSigorta = true;
                                 setState(() {});
                               },
                             ),
@@ -1454,6 +1492,41 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
                       children: <Widget>[
+                        Visibility(
+                        visible: showSigorta,
+                        child: Column(
+                          children: <Widget>[
+                            AutoSizeText(
+                              "Eşyalarınız için sigorta istermisiniz ?",
+                              style: TextStyle(color: Colors.blue[900]),
+                              maxLines: 1,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                Expanded(
+                                  child: CheckboxListTile(
+                                      value: sigorta,
+                                      title: Text("Evet"),
+                                      onChanged: (bool s) {
+                                        sigorta = true;
+                                        setState(() {});
+                                      }),
+                                ),
+                                Expanded(
+                                  child: CheckboxListTile(
+                                      value: !sigorta,
+                                      title: AutoSizeText("İstemiyorum",maxLines: 1),
+                                      onChanged: (bool s) {
+                                        sigorta = false;
+                                        setState(() {});
+                                      }),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
                         Padding(
                           padding: EdgeInsets.only(top: 12),
                           child: Text(
@@ -1527,33 +1600,33 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                                   secilenTarih,
                                   curItemSehir,
                                   newItemSehir,
-                                  ofisOdaSayisi.text);
+                                  ofisOdaSayisi);
                           if (gelenTeklifler != null) {
                             _showTeklifListe(gelenTeklifler);
                           } else {
                             _showDialog("Uygun teklif bulunamadı",
                                 "Şuan sizin için uygun bir araç bulamadık en kısa sürede bu eksiği gidereceğiz.");
                           }
-                          if (odasayisi < 40 && ofisOdaSayisi.text != "1") {
+                          if (odasayisi < 40 && ofisOdaSayisi != "1+1") {
                             _showDialog("Oda sayısı hesaplandı",
                                 "Girdiğiniz Eşyalar 1+1 için uygundur.Oda tipi değiştilimiştir.");
-                            ofisOdaSayisi.text = "1";
+                            ofisOdaSayisi = "1+1";
                           } else if (odasayisi > 40 &&
                               odasayisi <= 50 &&
-                              ofisOdaSayisi.text != "2") {
+                              ofisOdaSayisi != "2+1") {
                             _showDialog("Oda sayısı hesaplandı",
                                 "Girdiğiniz Eşyalar 2+1 için uygundur.Oda tipi değiştilimiştir.");
-                            ofisOdaSayisi.text = "2";
+                            ofisOdaSayisi = "2+1";
                           } else if (odasayisi > 50 &&
                               odasayisi <= 70 &&
-                              ofisOdaSayisi.text != "3") {
+                              ofisOdaSayisi != "3+1") {
                             _showDialog("Oda sayısı hesaplandı",
                                 "Girdiğiniz Eşyalar 3+1 için uygundur.Oda tipi değiştilimiştir.");
-                            ofisOdaSayisi.text = "3";
-                          } else if (ofisOdaSayisi.text == "4") {
+                            ofisOdaSayisi = "3+1";
+                          } else if (ofisOdaSayisi == "4+1") {
                             _showDialog("Oda sayısı hesaplandı",
                                 "Girdiğiniz Eşyalar 4+1 için uygundur.Oda tipi değiştilimiştir.");
-                            ofisOdaSayisi.text = "4";
+                            ofisOdaSayisi = "4+1";
                           }
                         },
                       ),

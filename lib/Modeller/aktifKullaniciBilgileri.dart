@@ -101,8 +101,13 @@ class AktifKullaniciBilgileri {
   }
 
   static getMetaValue(String metaKey, List<Metadata> gelenveri) {
-    Metadata tempdata =
-        gelenveri.singleWhere((mdata) => mdata.metakey == metaKey);
+    try{
+    Metadata tempdata = gelenveri.singleWhere((mdata) => mdata.metakey == metaKey);
     return tempdata.metavalue;
+    }catch(e){
+      print(e);
+      return "Girilmemiş";
+    }
+    
   }
 }

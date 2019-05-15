@@ -5,6 +5,7 @@ import 'package:ekamyon/Musteri/EvdenEveTasima.dart';
 import 'package:ekamyon/Musteri/KullaniciBilgileri.dart';
 import 'package:ekamyon/Musteri/OfisTasima.dart';
 import 'package:flutter/material.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class KullaniciMenu extends StatefulWidget {
   @override
@@ -24,6 +25,8 @@ class KullaniciMenuEkrani extends State<KullaniciMenu> {
           width: MediaQuery.of(context).size.width * 0.45,
           height: MediaQuery.of(context).size.height * 0.20,
           child: new Card(
+            shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
             child: new Center(
                 child: Column(
               children: <Widget>[
@@ -35,9 +38,10 @@ class KullaniciMenuEkrani extends State<KullaniciMenu> {
                 ),
                 Padding(
                     padding: EdgeInsets.only(top: 8, left: 5, right: 5),
-                    child: Text(
+                    child: AutoSizeText(
                       isim,
                       style: TextStyle(fontWeight: FontWeight.bold),
+                      maxLines: 1,
                     ))
               ],
             )),

@@ -1,9 +1,11 @@
-class Fiyat{
+import 'dart:convert';
+
+class Fiyat {
   final String varisIl;
   final String evTipi;
   final String tasimaUcretiTam;
 
-  Fiyat({this.evTipi,this.tasimaUcretiTam,this.varisIl});
+  Fiyat({this.evTipi, this.tasimaUcretiTam, this.varisIl});
 
   factory Fiyat.fromJson(Map<String, dynamic> json) {
     return Fiyat(
@@ -15,8 +17,10 @@ class Fiyat{
 
   static List<Fiyat> fromArray(var jsonArray) {
     List<Fiyat> gelenmesajlar = List<Fiyat>();
-    for (Map<String, dynamic> json in jsonArray) {
-      gelenmesajlar.add(Fiyat.fromJson(json));
+    if (jsonArray != null) {
+      for (Map<String, dynamic> json in jsonArray) {
+        gelenmesajlar.add(Fiyat.fromJson(json));
+      }
     }
     return gelenmesajlar;
   }

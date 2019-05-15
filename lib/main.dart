@@ -7,6 +7,8 @@ import 'Firma/firmaMenu.dart';
 import 'KayitKullanici.dart';
 import 'KayitFirma.dart';
 
+import 'package:auto_size_text/auto_size_text.dart';
+
 void main() => runApp(Ekamyon());
 
 class Ekamyon extends StatelessWidget {
@@ -59,7 +61,11 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
                   new FlatButton(
-                    child: new Text("Müşteri Hesabı",style: TextStyle(color: Colors.blue,fontSize: 14,fontWeight: FontWeight.bold)),
+                    child: new Text("Müşteri Hesabı",
+                        style: TextStyle(
+                            color: Colors.blue,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold)),
                     onPressed: () {
                       //Müşteri Kayıt Ekranı açılacak
                       Navigator.pop(context);
@@ -71,7 +77,11 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
                     },
                   ),
                   new FlatButton(
-                    child: new Text("Nakliye Hesabı",style: TextStyle(color: Colors.blue,fontSize: 14,fontWeight: FontWeight.bold)),
+                    child: new Text("Nakliye Hesabı",
+                        style: TextStyle(
+                            color: Colors.blue,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold)),
                     onPressed: () {
                       Navigator.pop(context);
                       Navigator.push(
@@ -108,9 +118,66 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
     );
   }
 
+  void _showPasswordReset() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Şifremi Unuttum"),
+          content: SizedBox(
+            height: MediaQuery.of(context).size.height * 0.15,
+            child: Column(
+              children: <Widget>[
+                AutoSizeText(
+                  "Mail adresinizi giriniz.",
+                  maxLines: 1,
+                ),
+                TextField(
+                  keyboardType: TextInputType.emailAddress,
+                  autofocus: false,
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(
+                      Icons.email,
+                      color: Colors.lightBlueAccent,
+                    ),
+                    hintText: 'Email',
+                    contentPadding: EdgeInsets.only(top: 20.0),
+                  ),
+                  controller: kulmail,
+                  textInputAction: TextInputAction.next,
+                  onSubmitted: (String s) {
+                    //Şifre yenileme postası gönderme
+                  },
+                  style: TextStyle(
+                      fontFamily: 'Montserrat',
+                      fontSize: 15),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Kapat"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            new FlatButton(
+              child: new Text("Şifremi Yenile"),
+              onPressed: () {
+                //Şifre yenileme postası gönder
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   _showIndicator() {
     showDialog(
-      barrierDismissible: true,
+      barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         // return object of type Dialog
@@ -279,7 +346,9 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
                     FlatButton(
                       child: Text('Şifremi Unuttum',
                           style: TextStyle(color: Colors.white, fontSize: 19)),
-                      onPressed: () {},
+                      onPressed: () {
+                        _showPasswordReset();
+                      },
                     ),
                     FlatButton(
                       child: Text('Yeni Kullanıcı',
