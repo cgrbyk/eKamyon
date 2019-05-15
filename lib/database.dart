@@ -259,8 +259,8 @@ class Database {
           'TekAracCiftYuk': coklutasima ? "Evet" : "Hayır Yüküm Tek Taşınsın",
           'AnlasilanFirmaID': firmaID,
           'AnlasilanFiyat': anlasilanFiyat,
-          'AnlasilanTarih': DateTime.now(),
-          'OlusturmaTarihi': DateTime.now(),
+          'AnlasilanTarih': DateTime.now().toString(),
+          'OlusturmaTarihi': DateTime.now().toString(),
           'EsyaListesi': esyaListesi,
         });
     if (response.statusCode == 200)
@@ -319,8 +319,8 @@ class Database {
           'TekAracCiftYuk': tekAracCiftYuk,
           'AnlasilanFirmaID': anlasilanFirmaID,
           'AnlasilanFiyat': anlasilanFiyat,
-          'AnlasilanTarih': DateTime.now(),
-          'OlusturmaTarihi': DateTime.now(),
+          'AnlasilanTarih': DateTime.now().toString(),
+          'OlusturmaTarihi': DateTime.now().toString(),
         });
     if (response.statusCode == 200) {
       return true;

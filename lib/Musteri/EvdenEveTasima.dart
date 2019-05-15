@@ -272,7 +272,9 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                       ),
                       onTap: () async {
                         String esyaListesi = esyaListesiHesaplama();
-                        bool sonuc = _database.tasimateklifiSec(
+                        if(mevcutIlce.text.isNotEmpty && mevcutAdres.text.isNotEmpty && ofisOdaSayisi.isNotEmpty && ofisMevcutKat.text.isNotEmpty && binayaYakinlik.text.isNotEmpty && yeniIlce.text.isNotEmpty
+                        && yeniAdres.text.isNotEmpty && ofisGelecekKat.text.isNotEmpty){
+                        bool sonuc = await _database.tasimateklifiSec(
                             secilenTarih,
                             curItemSehir,
                             mevcutIlce.text,
@@ -296,6 +298,9 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                                 "Talebiniz firmaya iletilmiştir. Firma sizinle en kısa zamanda iletişime geçecektir.")
                             : _showDialog("Hata",
                                 "Talep oluştururken bir hata meydana geldi");
+                        }else{
+                          _showDialog("Boş alan","Lütfen adres bilgileri gibi önemli alanları boş bırakmayınız.");
+                        }
                       },
                     ),
                   ],
@@ -1501,7 +1506,7 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                                     "İlçe Adı",
                                     mevcutIlce,
                                     TextInputAction.done,
-                                    new FocusNode(),
+                                    null,
                                     new FocusNode(),
                                     false)),
                           ],
@@ -1511,7 +1516,7 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                             "Mahalle/Cadde/Sokak/DaireNo/KapıNo",
                             mevcutAdres,
                             TextInputAction.done,
-                            new FocusNode(),
+                            null,
                             new FocusNode(),
                             false),
                         Padding(
@@ -1544,7 +1549,7 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                                     "İlçe Adı",
                                     yeniIlce,
                                     TextInputAction.done,
-                                    new FocusNode(),
+                                    null,
                                     new FocusNode(),
                                     false)),
                           ],
@@ -1554,7 +1559,7 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                             "Mahalle/Cadde/Sokak/DaireNo/KapıNo",
                             yeniAdres,
                             TextInputAction.done,
-                            new FocusNode(),
+                            null,
                             new FocusNode(),
                             false),
                       ],

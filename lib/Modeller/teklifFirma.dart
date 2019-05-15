@@ -27,7 +27,7 @@ class TeklifFirma {
       this.firmaBelgeler});
   factory TeklifFirma.fromJson(Map<String, dynamic> json) {
     return TeklifFirma(
-      firmaID: json['id'],
+      firmaID: json['FirmaID'],
       firmaUnvan: json['FirmaUnvan'],
       firmaIl: json['FirmaIl'],
       firmaIlce: json['FirmaIlce'],
