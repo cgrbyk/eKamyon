@@ -170,7 +170,7 @@ class Database {
 
   evdenEveTasimaTeklifleriAl(DateTime tasinmaTarih, String mevcutIl,
       String varisIl, String odaSayisi) async {
-        odaSayisi=odaSayisi.split('+')[0];
+    odaSayisi = odaSayisi.split('+')[0];
     final response = await http.get(
         "http://www.ekamyon.com/wp-app/select_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&SelectTuru=Teklifler&TasinmaTarihi=" +
             tasinmaTarih.toString() +
@@ -193,7 +193,7 @@ class Database {
 
   ofisTasimaTeklifleriAl(DateTime tarih, String mevcutSehir,
       String gelecekSehir, String odaSayisi) async {
-        odaSayisi=odaSayisi.split('+')[0];
+    odaSayisi = odaSayisi.split('+')[0];
     final response = await http.get(
         "http://www.ekamyon.com/wp-app/select_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&SelectTuru=Teklifler&TasinmaTarihi=" +
             tarih.toString() +
@@ -213,6 +213,60 @@ class Database {
         return null;
     } else
       return null;
+  }
+
+  tasimateklifiSec(
+      DateTime tasimaTarihi,
+      String mevcutIl,
+      String mevcutIlce,
+      String mevcutAdres,
+      String mevcutOda,
+      String mevcutKat,
+      String yukeYaklasma,
+      String nasilTasinacak,
+      String nasilPaketlenecek,
+      String varisIl,
+      String varisIlce,
+      String varisAdres,
+      String varisKat,
+      bool sigorta,
+      bool coklutasima,
+      String firmaID,
+      String anlasilanFiyat,
+      String esyaListesi) async {
+    final response = await http.post(
+        'http://www.ekamyon.com/wp-app/insert_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&InsertTuru=EvdenEve',
+        body: {
+          'InsertTuru': 'EvdenEve',
+          'MusteriID': AktifKullaniciBilgileri.musteriKodu,
+          'MusteriAdi': AktifKullaniciBilgileri.musteriAdi,
+          'Eposta': AktifKullaniciBilgileri.musteriEposta,
+          'TasinmaTuru': 'Evden Eve Taşınma',
+          'TasinmaTarihi': tasimaTarihi.toString(),
+          'MevcutIl': mevcutIl,
+          'MevcutIlce': mevcutIlce,
+          'MevcutAdres': mevcutAdres,
+          'MevcutOda': mevcutOda,
+          'MevcutKat': mevcutKat,
+          'YukeYaklasma': yukeYaklasma,
+          'NasilTasinacak': nasilTasinacak,
+          'NasilPaketlenecek': nasilPaketlenecek,
+          'VarisIl': varisIl,
+          'VarisIlce': varisIlce,
+          'VarisAdres': varisAdres,
+          'VarisKat': varisKat,
+          'Sigorta': sigorta ? "Evet İstiyorum" : "Hayır İstemiyorum",
+          'TekAracCiftYuk': coklutasima ? "Evet" : "Hayır Yüküm Tek Taşınsın",
+          'AnlasilanFirmaID': firmaID,
+          'AnlasilanFiyat': anlasilanFiyat,
+          'AnlasilanTarih': DateTime.now(),
+          'OlusturmaTarihi': DateTime.now(),
+          'EsyaListesi': esyaListesi,
+        });
+    if (response.statusCode == 200)
+      return true;
+    else
+      return false;
   }
 
   ofisTasimaTeklifKabul(

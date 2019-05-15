@@ -271,7 +271,31 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                         style: TextStyle(color: Colors.blue),
                       ),
                       onTap: () async {
-                        //indexdeki teklif seçilecek
+                        String esyaListesi = esyaListesiHesaplama();
+                        bool sonuc = _database.tasimateklifiSec(
+                            secilenTarih,
+                            curItemSehir,
+                            mevcutIlce.text,
+                            mevcutAdres.text,
+                            ofisOdaSayisi,
+                            ofisMevcutKat.text,
+                            binayaYakinlik.text,
+                            esyaTasimaSecim,
+                            esyaPaketSecim,
+                            newItemSehir,
+                            yeniIlce.text,
+                            yeniAdres.text,
+                            ofisGelecekKat.text,
+                            sigorta,
+                            ortaklik,
+                            gelenTeklifler[index].firmaID,
+                            gelenTeklifler[index].tasimaUcretiTam,
+                            esyaListesi);
+                        sonuc
+                            ? _showDialog("Başarılı",
+                                "Talebiniz firmaya iletilmiştir. Firma sizinle en kısa zamanda iletişime geçecektir.")
+                            : _showDialog("Hata",
+                                "Talep oluştururken bir hata meydana geldi");
                       },
                     ),
                   ],
@@ -500,6 +524,59 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
     return toplamEsyaSayisi;
   }
 
+  String esyaListesiHesaplama() {
+    String esyaListesi = "";
+    esyaListesi += "Üçlü koltuk :" + ucluKoltuk.text + "\n";
+    esyaListesi += "İkili koltuk :" + ikiliKoltuk.text + "\n";
+    esyaListesi += "Tekli Koldtuk :" + tekliKoltuk.text + "\n";
+    esyaListesi += "Tv sehba :" + tvSehba.text + "\n";
+    esyaListesi += "Orta sehba :" + ortaSehba.text + "\n";
+    esyaListesi += "Televizyon :" + televizyon.text + "\n";
+    esyaListesi += "Zigon sehba :" + zigonSehba.text + "\n";
+    esyaListesi += "Portre :" + portre.text + "\n";
+    esyaListesi += "Kitaplık :" + kitaplik.text + "\n";
+    esyaListesi += "Yemek masası :" + yemekMasasi.text + "\n";
+    esyaListesi += "Sandalye :" + sandalye.text + "\n";
+    esyaListesi += "Gümüşlük :" + gumusluk.text + "\n";
+    esyaListesi += "Avize :" + avize.text + "\n";
+    esyaListesi += "Altı kapılı gardrop :" + altiKapiGardrop.text + "\n";
+    esyaListesi += "İkili Yatak" + ikiliYatak.text + "\n";
+    esyaListesi += "Sifonyer :" + sifonyer.text + "\n";
+    esyaListesi += "Komidin :" + komidin.text + "\n";
+    esyaListesi += "Tuvalet Aynası :" + tuvaletAyna.text + "\n";
+    esyaListesi += "Abajur :" + abajur.text + "\n";
+    esyaListesi += "Üç kapılı gardrop :" + ucKapiliGardrop.text + "\n";
+    esyaListesi += "Tek kişilik yatak :" + tekKisilikYatak.text + "\n";
+    esyaListesi += "Bilgisayar Masası :" + bilgisayarMasasi.text + "\n";
+    esyaListesi += "Bilgisayar :" + bilgisayar.text + "\n";
+    esyaListesi += "Sandalye :" + sandalyeGenc.text + "\n";
+    esyaListesi += "Çamaşır makinesi :" + camasirMakinasi.text + "\n";
+    esyaListesi += "Şoftben :" + sofBen.text + "\n";
+    esyaListesi += "Çamaşır sepeti :" + camasirSepet.text + "\n";
+    esyaListesi += "Buzdolabı :" + buzdolabi.text + "\n";
+    esyaListesi += "Bulaşık Makinesi :" + bulasikMakinesi.text + "\n";
+    esyaListesi += "Fırın :" + firin.text + "\n";
+    esyaListesi += "Mikrodalga fırın :" + mikroFirin.text + "\n";
+    esyaListesi += "Set ocak :" + setOcak.text + "\n";
+    esyaListesi += "Mutfak masası :" + mutfakMasasi.text + "\n";
+    esyaListesi += "Sandalye :" + mutfakSandalye.text + "\n";
+    esyaListesi += "Derin dondurucu :" + derinDondurucu.text + "\n";
+    esyaListesi += "Koşu bandı :" + kosuBandi.text + "\n";
+    esyaListesi += "Bisiklet :" + bisiklet.text + "\n";
+    esyaListesi += "Bilgisayar masası :" + bilgisayarMasasiDiger.text + "\n";
+    esyaListesi += "Masa üstü bilgisayar :" + mBilgisayar.text + "\n";
+    esyaListesi += "Ütü masası :" + utuMasasi.text + "\n";
+    esyaListesi += "Klima :" + klima.text + "\n";
+    esyaListesi += "Portmanto :" + portManto.text + "\n";
+    esyaListesi += "Elektrikli süpürge :" + elektrikliSupurge.text + "\n";
+    esyaListesi += "Resim :" + resim.text + "\n";
+    esyaListesi += "Canlı çiçek :" + canliCicek.text + "\n";
+    esyaListesi += "Halı :" + hali.text + "\n";
+    esyaListesi += "Koli :" + koli.text + "\n";
+    esyaListesi += "Hurç :" + hurc.text + "\n";
+    return esyaListesi;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -590,42 +667,42 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                           ],
                         ),
                         Padding(
-                        padding: const EdgeInsets.only(
-                            left: 8.0, right: 8.0, bottom: 8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Text("Evinizin oda sayisi :"),
-                            Expanded(
-                              child: DropdownButton(
-                                value: ofisOdaSayisi,
-                                items: [
-                                  DropdownMenuItem(
-                                    value: "1+1",
-                                    child: Center(child: Text("1+1")),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: "2+1",
-                                    child: Center(child: Text("2+1")),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: "3+1",
-                                    child: Center(child: Text("3+1")),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: "4+1",
-                                    child: Center(child: Text("4+1")),
-                                  ),
-                                ],
-                                onChanged: (String s) {
-                                  ofisOdaSayisi = s;
-                                  setState(() {});
-                                },
+                          padding: const EdgeInsets.only(
+                              left: 8.0, right: 8.0, bottom: 8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              Text("Evinizin oda sayisi :"),
+                              Expanded(
+                                child: DropdownButton(
+                                  value: ofisOdaSayisi,
+                                  items: [
+                                    DropdownMenuItem(
+                                      value: "1+1",
+                                      child: Center(child: Text("1+1")),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: "2+1",
+                                      child: Center(child: Text("2+1")),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: "3+1",
+                                      child: Center(child: Text("3+1")),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: "4+1",
+                                      child: Center(child: Text("4+1")),
+                                    ),
+                                  ],
+                                  onChanged: (String s) {
+                                    ofisOdaSayisi = s;
+                                    setState(() {});
+                                  },
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
                         customTextBox(
                             TextInputType.number,
                             "Ofisinizin şuan bulunduğu kat",
@@ -1413,8 +1490,8 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                               onChanged: (dynamic dmi) {
                                 curItemSehir = dmi;
                                 newItemSehir == curItemSehir
-                                  ? showSigorta = false
-                                  : showSigorta = true;
+                                    ? showSigorta = false
+                                    : showSigorta = true;
                                 setState(() {});
                               },
                             ),
@@ -1456,8 +1533,8 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                               onChanged: (dynamic dmi) {
                                 newItemSehir = dmi;
                                 newItemSehir == curItemSehir
-                                  ? showSigorta = false
-                                  : showSigorta = true;
+                                    ? showSigorta = false
+                                    : showSigorta = true;
                                 setState(() {});
                               },
                             ),
@@ -1493,40 +1570,42 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                     child: Column(
                       children: <Widget>[
                         Visibility(
-                        visible: showSigorta,
-                        child: Column(
-                          children: <Widget>[
-                            AutoSizeText(
-                              "Eşyalarınız için sigorta istermisiniz ?",
-                              style: TextStyle(color: Colors.blue[900]),
-                              maxLines: 1,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                Expanded(
-                                  child: CheckboxListTile(
-                                      value: sigorta,
-                                      title: Text("Evet"),
-                                      onChanged: (bool s) {
-                                        sigorta = true;
-                                        setState(() {});
-                                      }),
-                                ),
-                                Expanded(
-                                  child: CheckboxListTile(
-                                      value: !sigorta,
-                                      title: AutoSizeText("İstemiyorum",maxLines: 1),
-                                      onChanged: (bool s) {
-                                        sigorta = false;
-                                        setState(() {});
-                                      }),
-                                ),
-                              ],
-                            )
-                          ],
+                          visible: showSigorta,
+                          child: Column(
+                            children: <Widget>[
+                              AutoSizeText(
+                                "Eşyalarınız için sigorta istermisiniz ?",
+                                style: TextStyle(color: Colors.blue[900]),
+                                maxLines: 1,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: <Widget>[
+                                  Expanded(
+                                    child: CheckboxListTile(
+                                        value: sigorta,
+                                        title: Text("Evet"),
+                                        onChanged: (bool s) {
+                                          sigorta = true;
+                                          setState(() {});
+                                        }),
+                                  ),
+                                  Expanded(
+                                    child: CheckboxListTile(
+                                        value: !sigorta,
+                                        title: AutoSizeText("İstemiyorum",
+                                            maxLines: 1),
+                                        onChanged: (bool s) {
+                                          sigorta = false;
+                                          setState(() {});
+                                        }),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
                         ),
-                      ),
                         Padding(
                           padding: EdgeInsets.only(top: 12),
                           child: Text(
