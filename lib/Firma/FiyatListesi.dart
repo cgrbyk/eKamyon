@@ -230,11 +230,14 @@ class FiyatListeEkrani extends State<FiyatListe> {
                           ),
                           Align(
                             alignment: Alignment.topRight,
-                            child: RaisedButton(
-                              child: Text("Sil"),
-                              onPressed: () {
-                                _showDialogSilme(fiyatlar[index]);
-                              },
+                            child: Padding(
+                              padding: const EdgeInsets.only(right:4.0),
+                              child: RaisedButton(
+                                child: Text("Sil"),
+                                onPressed: () {
+                                  _showDialogSilme(fiyatlar[index]);
+                                },
+                              ),
                             ),
                           ),
                         ],
