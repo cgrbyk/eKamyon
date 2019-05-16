@@ -134,7 +134,7 @@ class Database {
 
   tekliFiyatGuncelle(
       String tasimaUcreti, String paramVarisIl, String paramEvTipi) async {
-    final response = await http.get(
+    final response = await http.post(
         "http://www.ekamyon.com/wp-app/update_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&UpdateTuru=UpdateFiyatlarim&TasimaUcretiTam=" +
             tasimaUcreti +
             "&FirmaID=" +

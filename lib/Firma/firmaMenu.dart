@@ -25,8 +25,8 @@ class FirmaMenuEkrani extends State<FirmaMenu> {
           width: MediaQuery.of(context).size.width * 0.45,
           height: MediaQuery.of(context).size.height * 0.20,
           child: new Card(
-            shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             child: new Center(
                 child: Column(
               children: <Widget>[
@@ -55,7 +55,7 @@ class FirmaMenuEkrani extends State<FirmaMenu> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Hızlı İşlem Münüsü'),
+          title: AutoSizeText('Hızlı İşlem Münüsü',style: TextStyle(fontSize: 18),),
           actions: <Widget>[
             SizedBox(
                 width: MediaQuery.of(context).size.width * 0.30,
@@ -129,7 +129,9 @@ class FirmaMenuEkrani extends State<FirmaMenu> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => FirmaBilgisiGuncelle(mainState: this,)),
+                            builder: (context) => FirmaBilgisiGuncelle(
+                                  mainState: this,
+                                )),
                       );
                     },
                   )

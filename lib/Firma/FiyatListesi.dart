@@ -68,8 +68,8 @@ class FiyatListeEkrani extends State<FiyatListe> {
             new FlatButton(
               child: new Text("Güncelle"),
               onPressed: () async{
-                await _database.tekliFiyatGuncelle(f.tasimaUcretiTam, f.varisIl, f.evTipi);
-                Navigator.of(context).pop();               
+                await _database.tekliFiyatGuncelle(teklicontroller.text, f.varisIl, f.evTipi);
+                Navigator.of(context).pop();
                 await fiyatListesiDoldur();              
               },
             ),

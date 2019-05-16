@@ -55,7 +55,7 @@ class KullaniciMenuEkrani extends State<KullaniciMenu> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Hızlı İşlem Münüsü'),
+          title: AutoSizeText('Hızlı İşlem Münüsü',style: TextStyle(fontSize: 18)),
           actions: <Widget>[
             SizedBox(
                 width: MediaQuery.of(context).size.width * 0.30,
