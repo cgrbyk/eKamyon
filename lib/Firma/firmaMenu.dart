@@ -1,4 +1,5 @@
 import 'package:ekamyon/Firma/FirmaBilgisiGuncelle.dart';
+import 'package:ekamyon/Firma/bekliyenNakliyeler.dart';
 import 'package:flutter/material.dart';
 import 'package:ekamyon/Modeller/aktifKullaniciBilgileri.dart';
 import 'FiyatListesi.dart';
@@ -91,12 +92,11 @@ class FirmaMenuEkrani extends State<FirmaMenu> {
                   GestureDetector(
                     child: getImageButton(
                         "bekleyennakliyeler.png", "bekleyen nakliyelerim"),
-                    onTap: () {
-                      /*
+                    onTap: () {                    
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => AracListe()),
-                      );*/
+                        MaterialPageRoute(builder: (context) => BekleyenNakliyeler()),
+                      );
                     },
                   ),
                   GestureDetector(

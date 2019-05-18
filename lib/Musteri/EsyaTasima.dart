@@ -1,3 +1,5 @@
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:ekamyon/Modeller/teklifFirma.dart';
 import 'package:ekamyon/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -8,7 +10,7 @@ class EsyaTasima extends StatefulWidget {
 }
 
 class _EsyaTasimaState extends State<EsyaTasima> {
-  Database _database=Database();
+  Database _database = Database();
   DateTime secilenTarih = DateTime.now();
   TextEditingController esyaOdaSayisi = TextEditingController();
   TextEditingController esyaMevcutKat = TextEditingController();
@@ -28,6 +30,9 @@ class _EsyaTasimaState extends State<EsyaTasima> {
   String esyaCinsi = " Sanayi Malzemesi";
 
   bool ortaklik = true;
+  bool showSigorta = false;
+  bool sigorta = true;
+  int sigortaHeight = 0;
 
   List<String> sehirler = [
     'Adana',
@@ -116,6 +121,205 @@ class _EsyaTasimaState extends State<EsyaTasima> {
   String curItemSehir;
   String newItemSehir;
 
+  void _showDialog(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text(title),
+          content: new Text(message),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Kapat"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showDetay(TeklifFirma firma) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: Center(child: new Text(firma.firmaUnvan)),
+          content: SizedBox(
+            height: MediaQuery.of(context).size.height * 0.2,
+            child: Column(
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Text("Firma İli :", style: TextStyle(color: Colors.grey)),
+                    Text(firma.firmaIl),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    Text("Firma İlçe :", style: TextStyle(color: Colors.grey)),
+                    Text(firma.firmaIlce),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    Text("Firma Adres :", style: TextStyle(color: Colors.grey)),
+                    Text(firma.firmaAdresi),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    Text("Firma Cep NO :",
+                        style: TextStyle(color: Colors.grey)),
+                    Text(firma.cepTel),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    Text("Firma Sabit Tel :",
+                        style: TextStyle(color: Colors.grey)),
+                    Text(firma.sabitTel),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    Text("Firma Faaliyet süresi :",
+                        style: TextStyle(color: Colors.grey)),
+                    Text(firma.firmaKacYildirFaaliyette),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Kapat"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  _showTeklifListe(List<TeklifFirma> gelenTeklifler) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: Center(child: new Text("Uygun Teklifler")),
+          content: Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height * 0.3,
+            child: ListView.builder(
+              itemCount: gelenTeklifler.length,
+              itemBuilder: (context, index) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Column(
+                      children: <Widget>[
+                        Text(
+                          gelenTeklifler[index].firmaUnvan,
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          gelenTeklifler[index].firmaIl,
+                          style: TextStyle(fontSize: 12, color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                    GestureDetector(
+                      child: Text(
+                        "Detay",
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                      onTap: () {
+                        _showDetay(gelenTeklifler[index]);
+                      },
+                    ),
+                    Column(
+                      children: <Widget>[
+                        Text(
+                          "Teklif Fiyatı",
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          gelenTeklifler[index].tasimaUcretiTam,
+                          style:
+                              TextStyle(fontSize: 18, color: Colors.lightGreen),
+                        ),
+                      ],
+                    ),
+                    GestureDetector(
+                      child: Text(
+                        "Seç",
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                      onTap: () async {
+                        if (mevcutIlce.text.isNotEmpty &&
+                            mevcutAdres.text.isNotEmpty &&
+                            binayaYakinlik.text.isNotEmpty &&
+                            yeniIlce.text.isNotEmpty &&
+                            yeniAdres.text.isNotEmpty) {
+                          bool sonuc = await _database.esyaTasimaTeklifiSec(
+                              secilenTarih,
+                              curItemSehir,
+                              mevcutIlce.text,
+                              mevcutAdres.text,
+                              esyaCinsi,
+                              binayaYakinlik.text,
+                              esyaTasimaSecim,
+                              esyaPaketSecim,
+                              newItemSehir,
+                              yeniIlce.text,
+                              yeniAdres.text,
+                              sigorta,
+                              ortaklik,
+                              gelenTeklifler[index].firmaID,
+                              gelenTeklifler[index].tasimaUcretiTam);
+                          sonuc
+                              ? _showDialog("Başarılı",
+                                  "Talebiniz firmaya iletilmiştir. Firma sizinle en kısa zamanda iletişime geçecektir.")
+                              : _showDialog("Hata",
+                                  "Talep oluştururken bir hata meydana geldi");
+                        } else {
+                          _showDialog("Boş alan",
+                              "Lütfen adres bilgileri gibi önemli alanları boş bırakmayınız.");
+                        }
+                      },
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Vazgeç"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget customTextBox(
       TextInputType type,
       String placeholder,
@@ -197,76 +401,75 @@ class _EsyaTasimaState extends State<EsyaTasima> {
                   left: MediaQuery.of(context).size.width * 0.03,
                   right: MediaQuery.of(context).size.width * 0.03),
               child: Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)
-                ),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
                   child: Column(
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-                      Text(" Taşınacağınız tarih :"),
-                      FlatButton(
-                          onPressed: () {
-                            DatePicker.showDatePicker(context,
-                                showTitleActions: true,
-                                minTime: DateTime.now(),
-                                maxTime:
-                                    DateTime.now().add(Duration(days: 365)),
-                                onConfirm: (date) {
-                              print('confirm $date');
-                              secilenTarih = date;
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          Text(" Taşınacağınız tarih :"),
+                          FlatButton(
+                              onPressed: () {
+                                DatePicker.showDatePicker(context,
+                                    showTitleActions: true,
+                                    minTime: DateTime.now(),
+                                    maxTime:
+                                        DateTime.now().add(Duration(days: 365)),
+                                    onConfirm: (date) {
+                                  print('confirm $date');
+                                  secilenTarih = date;
+                                  setState(() {});
+                                },
+                                    currentTime: DateTime.now(),
+                                    locale: LocaleType.tr);
+                              },
+                              child: Text(
+                                'Tarih Seç ' +
+                                    secilenTarih.day.toString() +
+                                    ":" +
+                                    secilenTarih.month.toString() +
+                                    ":" +
+                                    secilenTarih.year.toString(),
+                                style: TextStyle(
+                                  color: Colors.blue,
+                                ),
+                              )),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          Text(" Eşya tipi :"),
+                          DropdownButton(
+                            value: esyaCinsi,
+                            items: [
+                              DropdownMenuItem(
+                                value: ' Sanayi Malzemesi',
+                                child: Text('Sanayi Malzemesi'),
+                              ),
+                              DropdownMenuItem(
+                                value: ' İnşaat Malzemesi',
+                                child: Text('İnşaat Malzemesi'),
+                              ),
+                              DropdownMenuItem(
+                                value: ' Gıda Malzemesi',
+                                child: Text('Gıda Malzemesi'),
+                              ),
+                              DropdownMenuItem(
+                                value: ' Diğer',
+                                child: Text('Diğer'),
+                              ),
+                            ],
+                            onChanged: (String s) {
+                              esyaCinsi = s;
                               setState(() {});
                             },
-                                currentTime: DateTime.now(),
-                                locale: LocaleType.tr);
-                          },
-                          child: Text(
-                            'Tarih Seç ' +
-                                secilenTarih.day.toString() +
-                                ":" +
-                                secilenTarih.month.toString() +
-                                ":" +
-                                secilenTarih.year.toString(),
-                            style: TextStyle(
-                              color: Colors.blue,
-                            ),
-                          )),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Text(" Eşya tipi :"),
-                      DropdownButton(
-                        value: esyaCinsi,
-                        items: [
-                          DropdownMenuItem(
-                            value: ' Sanayi Malzemesi',
-                            child: Text('Sanayi Malzemesi'),
-                          ),
-                          DropdownMenuItem(
-                            value: ' İnşaat Malzemesi',
-                            child: Text('İnşaat Malzemesi'),
-                          ),
-                          DropdownMenuItem(
-                            value: ' Gıda Malzemesi',
-                            child: Text('Gıda Malzemesi'),
-                          ),
-                          DropdownMenuItem(
-                            value: ' Diğer',
-                            child: Text('Diğer'),
-                          ),
+                          )
                         ],
-                        onChanged: (String s) {
-                          esyaCinsi = s;
-                          setState(() {});
-                        },
                       )
                     ],
-                  )
-                ],
-              )),
+                  )),
             ),
             Padding(
               padding: EdgeInsets.only(
@@ -275,8 +478,7 @@ class _EsyaTasimaState extends State<EsyaTasima> {
                   right: MediaQuery.of(context).size.width * 0.03),
               child: Card(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)
-                ),
+                    borderRadius: BorderRadius.circular(20)),
                 child: Column(
                   children: <Widget>[
                     Padding(
@@ -371,8 +573,7 @@ class _EsyaTasimaState extends State<EsyaTasima> {
                   right: MediaQuery.of(context).size.width * 0.03),
               child: Card(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)
-                ),
+                    borderRadius: BorderRadius.circular(20)),
                 child: Column(
                   children: <Widget>[
                     Padding(
@@ -393,6 +594,9 @@ class _EsyaTasimaState extends State<EsyaTasima> {
                           value: curItemSehir,
                           onChanged: (dynamic dmi) {
                             curItemSehir = dmi;
+                            newItemSehir == curItemSehir
+                                ? showSigorta = false
+                                : showSigorta = true;
                             setState(() {});
                           },
                         ),
@@ -431,6 +635,9 @@ class _EsyaTasimaState extends State<EsyaTasima> {
                           value: newItemSehir,
                           onChanged: (dynamic dmi) {
                             newItemSehir = dmi;
+                            newItemSehir == curItemSehir
+                                ? showSigorta = false
+                                : showSigorta = true;
                             setState(() {});
                           },
                         ),
@@ -451,6 +658,42 @@ class _EsyaTasimaState extends State<EsyaTasima> {
                         TextInputAction.done,
                         new FocusNode(),
                         false),
+                    Visibility(
+                      visible: showSigorta,
+                      child: Column(
+                        children: <Widget>[
+                          AutoSizeText(
+                            "Eşyalarınız için sigorta istermisiniz ?",
+                            style: TextStyle(color: Colors.blue[900]),
+                            maxLines: 1,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              Expanded(
+                                child: CheckboxListTile(
+                                    value: sigorta,
+                                    title: Text("Evet"),
+                                    onChanged: (bool s) {
+                                      sigorta = true;
+                                      setState(() {});
+                                    }),
+                              ),
+                              Expanded(
+                                child: CheckboxListTile(
+                                    value: !sigorta,
+                                    title: AutoSizeText("İstemiyorum",
+                                        maxLines: 1),
+                                    onChanged: (bool s) {
+                                      sigorta = false;
+                                      setState(() {});
+                                    }),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
                     Padding(
                       padding: EdgeInsets.only(top: 12),
                       child: Text(
@@ -516,8 +759,16 @@ class _EsyaTasimaState extends State<EsyaTasima> {
                     child: Text("Tamamla",
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 18)),
-                    onPressed: () {
-                      //kaydeyme vs
+                    onPressed: () async {
+                      List<TeklifFirma> gelenTeklifler =
+                          await _database.evdenEveTasimaTeklifleriAl(
+                              secilenTarih, curItemSehir, newItemSehir, "1+1");
+                      if (gelenTeklifler != null) {
+                        _showTeklifListe(gelenTeklifler);
+                      } else {
+                        _showDialog("Uygun teklif bulunamadı",
+                            "Şuan sizin için uygun bir araç bulamadık en kısa sürede bu eksiği gidereceğiz.");
+                      }
                     },
                   ),
                 )

@@ -710,7 +710,7 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                         ),
                         customTextBox(
                             TextInputType.number,
-                            "Ofisinizin şuan bulunduğu kat",
+                            "Evinizin şuan bulunduğu kat",
                             ofisMevcutKat,
                             TextInputAction.next,
                             ofisMevcutKatNode,
@@ -718,7 +718,7 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                             false),
                         customTextBox(
                             TextInputType.number,
-                            "Yeni ofinizin katı",
+                            "Yeni evinizin katı",
                             ofisGelecekKat,
                             TextInputAction.next,
                             ofisGelecekKatNode,

@@ -269,7 +269,41 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
                         style: TextStyle(color: Colors.blue),
                       ),
                       onTap: () async {
-                        //indexdeki teklif seçilecek
+                        if (mevcutIlce.text.isNotEmpty &&
+                            mevcutAdres.text.isNotEmpty &&
+                            ofisOdaSayisi.isNotEmpty &&
+                            ofisMevcutKat.text.isNotEmpty &&
+                            binayaYakinlik.text.isNotEmpty &&
+                            yeniIlce.text.isNotEmpty &&
+                            yeniAdres.text.isNotEmpty &&
+                            ofisGelecekKat.text.isNotEmpty) {
+                          bool sonuc = await _database.ofisTasimaTeklifKabul(
+                              ofisOdaSayisi,
+                              secilenTarih,
+                              curItemSehir,
+                              mevcutIlce.text,
+                              mevcutAdres.text,
+                              ofisMevcutKat.text,
+                              binayaYakinlik.text,
+                              esyaTasimaSecim,
+                              esyaPaketSecim,
+                              newItemSehir,
+                              yeniIlce.text,
+                              yeniAdres.text,
+                              ofisGelecekKat.text,
+                              sigorta,
+                              ortaklik,
+                              gelenTeklifler[index].firmaID,
+                              gelenTeklifler[index].tasimaUcretiTam);
+                          sonuc
+                              ? _showDialog("Başarılı",
+                                  "Talebiniz firmaya iletilmiştir. Firma sizinle en kısa zamanda iletişime geçecektir.")
+                              : _showDialog("Hata",
+                                  "Talep oluştururken bir hata meydana geldi");
+                        } else {
+                          _showDialog("Boş alan",
+                              "Lütfen adres bilgileri gibi önemli alanları boş bırakmayınız.");
+                        }
                       },
                     ),
                   ],
@@ -690,7 +724,8 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
                                 Expanded(
                                   child: CheckboxListTile(
                                       value: !sigorta,
-                                      title: AutoSizeText("İstemiyorum",maxLines: 1),
+                                      title: AutoSizeText("İstemiyorum",
+                                          maxLines: 1),
                                       onChanged: (bool s) {
                                         sigorta = false;
                                         setState(() {});
@@ -712,7 +747,8 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
                         padding: EdgeInsets.only(top: 8),
                         child: Text(
                           "Yükünüzü taşıyacak olan araç eğer sizin eşyalarınızla tamamen dolmazsa başka bir müşterinin eşyaları da araca yüklüyoruz ve beraber taşıyoruz böylece sizin için maliyet yüzde 20'ye varan oranda düşebiliyor bu özellikten faydalanmak istiyorsanız evet seçeneğini seçiniz.",
-                          style: TextStyle(color: Colors.blueGrey, fontSize: 11),
+                          style:
+                              TextStyle(color: Colors.blueGrey, fontSize: 11),
                         ),
                       ),
                       Row(
@@ -730,7 +766,10 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
                           Expanded(
                             child: CheckboxListTile(
                                 value: !ortaklik,
-                                title: AutoSizeText("İstemiyorum",maxLines: 1,),
+                                title: AutoSizeText(
+                                  "İstemiyorum",
+                                  maxLines: 1,
+                                ),
                                 onChanged: (bool s) {
                                   ortaklik = false;
                                   setState(() {});
@@ -767,8 +806,11 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
                             fontWeight: FontWeight.bold, fontSize: 18)),
                     onPressed: () async {
                       List<TeklifFirma> gelenTeklifler =
-                          await _database.ofisTasimaTeklifleriAl(secilenTarih,
-                              curItemSehir, newItemSehir, ofisOdaSayisi);
+                          await _database.evdenEveTasimaTeklifleriAl(
+                              secilenTarih,
+                              curItemSehir,
+                              newItemSehir,
+                              ofisOdaSayisi);
                       if (gelenTeklifler != null) {
                         _showTeklifListe(gelenTeklifler);
                       } else {
@@ -786,29 +828,3 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
     );
   }
 }
-/*TextField(
-                          obscureText: false,
-                          keyboardType: TextInputType.number,
-                          autofocus: false,
-                          decoration: InputDecoration(
-                            hintText: "Oda sayısı",
-                            contentPadding:
-                                EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                          ),
-                          controller: ofisOdaSayisi,
-                          textInputAction: TextInputAction.done,
-                          onSubmitted: (String s) {
-                            if (int.parse(s) > 4) {
-                              FocusScope.of(context)
-                                  .requestFocus(new FocusNode());
-                              _showDialog("Oda Sayısı 4 den büyük olamaz.",
-                                  "Oda sayısı 4 olarak seçildi.");
-                              ofisOdaSayisi.text = "4";
-                              setState(() {});
-                            } else
-                              FocusScope.of(context)
-                                  .requestFocus(ofisMevcutKatNode);
-                          },
-                          style:
-                              TextStyle(fontFamily: 'Montserrat', fontSize: 15),
-                        ),*/

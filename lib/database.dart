@@ -137,18 +137,28 @@ class Database {
     return json;
   }
 
-  fiyatKaydet(String varisil, String oda, String tasimaUcreti,bool isSehirlerArasi,String yakitMasrafi,String iscilikUcreti,String asansorBedeli,String firmaKari) async {
+  fiyatKaydet(
+      String varisil,
+      String oda,
+      String tasimaUcreti,
+      bool isSehirlerArasi,
+      String yakitMasrafi,
+      String iscilikUcreti,
+      String asansorBedeli,
+      String firmaKari) async {
     final response = await http.post(
         "http://www.ekamyon.com/wp-app/insert_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55",
         body: {
-          'InsertTuru': isSehirlerArasi?'InsertFiyatSehirDisi':'InsertFiyatSehirIci',
+          'InsertTuru':
+              isSehirlerArasi ? 'InsertFiyatSehirDisi' : 'InsertFiyatSehirIci',
           'FirmaID': AktifKullaniciBilgileri.firmaKodu,
-          'VarisIl': isSehirlerArasi?varisil:AktifKullaniciBilgileri.firmaIl,
+          'VarisIl':
+              isSehirlerArasi ? varisil : AktifKullaniciBilgileri.firmaIl,
           'EvTipi': oda,
-          'YakitMasrafi':yakitMasrafi,
-          'IscilikUcreti':iscilikUcreti,
-          'AsansorBedeli':asansorBedeli,
-          'FirmaKari':firmaKari,
+          'YakitMasrafi': yakitMasrafi,
+          'IscilikUcreti': iscilikUcreti,
+          'AsansorBedeli': asansorBedeli,
+          'FirmaKari': firmaKari,
           'TasimaUcreti': tasimaUcreti
         });
     if (response.statusCode == 200)
@@ -277,6 +287,62 @@ class Database {
     return json;
   }
 
+  getBekleyenNakliyeler() async {
+    final response = await http.get(
+        "http://www.ekamyon.com/wp-app/select_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&SelectTuru=FirmaBekleyenNakliyelerim&FirmaID=" +
+            AktifKullaniciBilgileri.firmaKodu);
+    var json = jsonDecode(response.body);
+    return json;
+  }
+
+  esyaTasimaTeklifiSec(
+      DateTime tasimaTarihi,
+      String mevcutIl,
+      String mevcutIlce,
+      String mevcutAdres,
+      String esyaCinsi,
+      String yukeYaklasma,
+      String nasilTasinacak,
+      String nasilPaketlenecek,
+      String varisIl,
+      String varisIlce,
+      String varisAdres,
+      bool sigorta,
+      bool coklutasima,
+      String firmaID,
+      String anlasilanFiyat) async {
+    final response = await http.post(
+        'http://www.ekamyon.com/wp-app/insert_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&InsertTuru=EvdenEve',
+        body: {
+          'InsertTuru': 'Esya',
+          'MusteriID': AktifKullaniciBilgileri.musteriKodu,
+          'MusteriAdi': AktifKullaniciBilgileri.musteriAdi,
+          'Eposta': AktifKullaniciBilgileri.musteriEposta,
+          'TasinmaTuru': 'Eşya Taşıma',
+          'TasinmaTarihi': tasimaTarihi.toString(),
+          'MevcutIl': mevcutIl,
+          'MevcutIlce': mevcutIlce,
+          'MevcutAdres': mevcutAdres,
+          'EsyaCinsi': esyaCinsi,
+          'YukeYaklasma': yukeYaklasma,
+          'NasilTasinacak': nasilTasinacak,
+          'NasilPaketlenecek': nasilPaketlenecek,
+          'VarisIl': varisIl,
+          'VarisIlce': varisIlce,
+          'VarisAdres': varisAdres,
+          'Sigorta': sigorta ? "Evet İstiyorum" : "Hayır İstemiyorum",
+          'TekAracCiftYuk': coklutasima ? "Evet" : "Hayır Yüküm Tek Taşınsın",
+          'AnlasilanFirmaID': firmaID,
+          'AnlasilanFiyat': anlasilanFiyat,
+          'AnlasilanTarih': DateTime.now().toString(),
+          'OlusturmaTarihi': DateTime.now().toString(),
+        });
+    if (response.statusCode == 200)
+      return true;
+    else
+      return false;
+  }
+
   tasimateklifiSec(
       DateTime tasimaTarihi,
       String mevcutIl,
@@ -296,6 +362,7 @@ class Database {
       String firmaID,
       String anlasilanFiyat,
       String esyaListesi) async {
+    mevcutOda = mevcutOda.replaceAll('+', '.');
     final response = await http.post(
         'http://www.ekamyon.com/wp-app/insert_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&InsertTuru=EvdenEve',
         body: {
@@ -346,7 +413,7 @@ class Database {
     String varisAdres,
     String varisKat,
     bool sigorta,
-    String tekAracCiftYuk,
+    bool ortaklik,
     String anlasilanFirmaID,
     String anlasilanFiyat,
   ) async {
@@ -354,6 +421,7 @@ class Database {
     sigorta
         ? sigortadurum = "Evet İstiyorum"
         : sigortadurum = "Hayır İstemiyorum";
+    odaSayisi = odaSayisi.replaceAll('+', '.');
     final response = await http.post(
         "http://www.ekamyon.com/wp-app/insert_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&InsertTuru=Ofis",
         body: {
@@ -363,7 +431,7 @@ class Database {
               " " +
               AktifKullaniciBilgileri.musteriSoyadi,
           'Eposta': AktifKullaniciBilgileri.musteriEposta,
-          'MevcutOda': odaSayisi + ".1",
+          'MevcutOda': odaSayisi,
           'TasinmaTuru': 'Ofis Taşıma',
           'TasinmaTarihi': tasinmaTarih.toString(),
           'MevcutIl': mevcutIl,
@@ -378,7 +446,7 @@ class Database {
           'VarisAdres': varisAdres,
           'VarisKat': varisKat,
           'Sigorta': sigortadurum,
-          'TekAracCiftYuk': tekAracCiftYuk,
+          'TekAracCiftYuk': ortaklik ? "Evet" : "Hayır Yüküm Tek Taşınsın",
           'AnlasilanFirmaID': anlasilanFirmaID,
           'AnlasilanFiyat': anlasilanFiyat,
           'AnlasilanTarih': DateTime.now().toString(),
