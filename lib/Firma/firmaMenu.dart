@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:ekamyon/Firma/FirmaBilgisiGuncelle.dart';
 import 'package:flutter/material.dart';
 import 'package:ekamyon/Modeller/aktifKullaniciBilgileri.dart';

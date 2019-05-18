@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class Fiyat {
   final String varisIl;
   final String evTipi;

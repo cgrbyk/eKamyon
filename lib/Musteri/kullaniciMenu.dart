@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:ekamyon/Modeller/aktifKullaniciBilgileri.dart';
 import 'package:ekamyon/Musteri/EsyaTasima.dart';
 import 'package:ekamyon/Musteri/EvdenEveTasima.dart';

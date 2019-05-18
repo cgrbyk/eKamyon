@@ -1,9 +1,6 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:ekamyon/Modeller/aktifKullaniciBilgileri.dart';
 import 'package:ekamyon/database.dart';
 import 'package:ekamyon/Modeller/Fiyat.dart';
-import 'package:flutter/semantics.dart';
 
 class FiyatListe extends StatefulWidget {
   @override
@@ -42,6 +39,7 @@ class FiyatListeEkrani extends State<FiyatListe> {
       },
     );
   }
+
   _showDialogTekliFiyat(Fiyat f) {
     showDialog(
       context: context,
@@ -61,16 +59,17 @@ class FiyatListeEkrani extends State<FiyatListe> {
           actions: <Widget>[
             new FlatButton(
               child: new Text("İptal"),
-              onPressed: () async{
+              onPressed: () async {
                 Navigator.of(context).pop();
               },
             ),
             new FlatButton(
               child: new Text("Güncelle"),
-              onPressed: () async{
-                await _database.tekliFiyatGuncelle(teklicontroller.text, f.varisIl, f.evTipi);
+              onPressed: () async {
+                await _database.tekliFiyatGuncelle(
+                    teklicontroller.text, f.varisIl, f.evTipi);
                 Navigator.of(context).pop();
-                await fiyatListesiDoldur();              
+                await fiyatListesiDoldur();
               },
             ),
           ],
@@ -91,7 +90,8 @@ class FiyatListeEkrani extends State<FiyatListe> {
             new FlatButton(
               child: new Text("Evet"),
               onPressed: () async {
-                await _database.fiyatsil(f.varisIl, f.evTipi, f.tasimaUcretiTam);
+                await _database.fiyatsil(
+                    f.varisIl, f.evTipi, f.tasimaUcretiTam);
                 Navigator.of(context).pop();
                 await fiyatListesiDoldur();
                 return true;
@@ -138,7 +138,7 @@ class FiyatListeEkrani extends State<FiyatListe> {
               onPressed: () async {
                 await _database.topluFiyatGuncelle("0", toplucontroller.text);
                 Navigator.of(context).pop();
-                await fiyatListesiDoldur();                
+                await fiyatListesiDoldur();
               },
             ),
             new FlatButton(
@@ -146,7 +146,7 @@ class FiyatListeEkrani extends State<FiyatListe> {
               onPressed: () async {
                 await _database.topluFiyatGuncelle("1", toplucontroller.text);
                 Navigator.of(context).pop();
-                await fiyatListesiDoldur();              
+                await fiyatListesiDoldur();
               },
             ),
           ],
@@ -223,15 +223,15 @@ class FiyatListeEkrani extends State<FiyatListe> {
                             alignment: Alignment.bottomRight,
                             child: RaisedButton(
                               child: Text("Fiyat Güncelle"),
-                              onPressed: ()  {
-                                 _showDialogTekliFiyat(fiyatlar[index]);                              
+                              onPressed: () {
+                                _showDialogTekliFiyat(fiyatlar[index]);
                               },
                             ),
                           ),
                           Align(
                             alignment: Alignment.topRight,
                             child: Padding(
-                              padding: const EdgeInsets.only(right:4.0),
+                              padding: const EdgeInsets.only(right: 4.0),
                               child: RaisedButton(
                                 child: Text("Sil"),
                                 onPressed: () {
@@ -262,7 +262,9 @@ class FiyatListeEkrani extends State<FiyatListe> {
                       await showDialog(
                           context: context,
                           builder: (_) {
-                            return FiyatDialog(fle: this,);
+                            return FiyatDialog(
+                              fle: this,
+                            );
                           });
                       setState(() {});
                     }),
@@ -286,13 +288,22 @@ class FiyatListeEkrani extends State<FiyatListe> {
 class FiyatDialog extends StatefulWidget {
   final FiyatListeEkrani fle;
   FiyatDialog({this.fle});
-  FiyatDialogPopup createState() => FiyatDialogPopup(fle:fle);
+  FiyatDialogPopup createState() => FiyatDialogPopup(fle: fle);
 }
 
 class FiyatDialogPopup extends State<FiyatDialog> {
   final FiyatListeEkrani fle;
   FiyatDialogPopup({this.fle});
-  TextEditingController fiyatcontroller = TextEditingController();
+  TextEditingController yakitcontroller = TextEditingController();
+  TextEditingController iscilikcontroller = TextEditingController();
+  TextEditingController asansorcontroller = TextEditingController();
+  TextEditingController karcontroller = TextEditingController();
+
+  FocusNode yakitNode = FocusNode();
+  FocusNode iscilikNode = FocusNode();
+  FocusNode karNode = FocusNode();
+  FocusNode asansorNode = FocusNode();
+  int toplamFiya = 0;
 
   List<String> sehirler = [
     'Adana',
@@ -381,11 +392,12 @@ class FiyatDialogPopup extends State<FiyatDialog> {
   String curItemSehir;
   bool aracaktifmi = false;
 
-  List<String> evTipleri = ['1+0', '1+1', '1+2', '1+3', '1+4'];
+  List<String> evTipleri = ['1+1', '1+2', '1+3', '1+4'];
   List<DropdownMenuItem> evTipleriDDM = List<DropdownMenuItem>();
   String curItemEv;
 
   Database _database = Database();
+  bool isSehirlerArasi = true;
 
   void _showDialog(String title, String message) {
     showDialog(
@@ -428,7 +440,12 @@ class FiyatDialogPopup extends State<FiyatDialog> {
       controller: controller,
       textInputAction: action,
       onSubmitted: (String s) {
+        toplamFiya = int.tryParse(yakitcontroller.text) ?? 0;
+        toplamFiya += int.tryParse(iscilikcontroller.text) ?? 0;
+        toplamFiya += int.tryParse(asansorcontroller.text) ?? 0;
+        toplamFiya += int.tryParse(karcontroller.text) ?? 0;
         FocusScope.of(context).requestFocus(tofocus);
+        setState(() {});
       },
       style: TextStyle(
           fontWeight: FontWeight.bold, fontFamily: 'Montserrat', fontSize: 20),
@@ -456,58 +473,152 @@ class FiyatDialogPopup extends State<FiyatDialog> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       backgroundColor: Color(0x00000000),
-      body: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.60,
-        child: AlertDialog(
-          title: new Text("Yeni Rota ve Fiyat Ekle"),
-          content: Column(
-            children: <Widget>[
-              DropdownButton(
-                isExpanded: true,
-                items: sehirlerDDM,
-                value: curItemSehir,
-                onChanged: (dynamic dmi) {
-                  curItemSehir = dmi;
-                  setState(() {});
-                },
-              ),
-              DropdownButton(
-                items: evTipleriDDM,
-                value: curItemEv,
-                isExpanded: true,
-                onChanged: (dynamic dmi) {
-                  curItemEv = dmi;
-                  setState(() {});
-                },
-              ),
-              customTextBox(TextInputType.number, "Fiyat", fiyatcontroller,
-                  TextInputAction.done, null, null, false),
-            ],
-          ),
-          actions: <Widget>[
-            new FlatButton(
-                child: new Text("İptal"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                }),
-            new FlatButton(
-              child: new Text("Fiyatı Kaydet"),
-              onPressed: () async {
-                //database den kaydfet
-                String oda =
-                    curItemEv.replaceAll('+', '.').split('').reversed.join();
-                bool sonuc = await _database.fiyatKaydet(
-                    curItemSehir, oda, fiyatcontroller.text);
-                Navigator.of(context).pop();
-                if (sonuc)
-                  _showDialog("Fiyat Ekleme", "Fiyat Ekleme işlemi başarılı");
-                fle.fiyatListesiDoldur();
-              },
+      body: Center(
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.8,
+          color: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 18.0, right: 18.0, top: 10),
+            child: ListView(
+              shrinkWrap: true,
+              children: <Widget>[
+                Center(
+                    child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: new Text(
+                    "Yeni Rota ve Fiyat Ekle",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                )),
+                Row(
+                  children: <Widget>[
+                    Text("Şehirler Arası"),
+                    Checkbox(
+                      value: isSehirlerArasi,
+                      onChanged: (bool value) {
+                        isSehirlerArasi = value;
+                        setState(() {});
+                      },
+                    )
+                  ],
+                ),
+                Visibility(
+                  visible: isSehirlerArasi,
+                  child: DropdownButton(
+                    isExpanded: true,
+                    items: sehirlerDDM,
+                    value: curItemSehir,
+                    onChanged: (dynamic dmi) {
+                      curItemSehir = dmi;
+                      setState(() {});
+                    },
+                  ),
+                ),
+                DropdownButton(
+                  items: evTipleriDDM,
+                  value: curItemEv,
+                  isExpanded: true,
+                  onChanged: (dynamic dmi) {
+                    curItemEv = dmi;
+                    setState(() {});
+                  },
+                ),
+                customTextBox(
+                    TextInputType.number,
+                    "Yakit Masrafi",
+                    yakitcontroller,
+                    TextInputAction.done,
+                    yakitNode,
+                    iscilikNode,
+                    false),
+                customTextBox(
+                    TextInputType.number,
+                    "İşcilik Ücreti",
+                    iscilikcontroller,
+                    TextInputAction.done,
+                    iscilikNode,
+                    asansorNode,
+                    false),
+                customTextBox(
+                    TextInputType.number,
+                    "Asansör Bedeli",
+                    asansorcontroller,
+                    TextInputAction.done,
+                    asansorNode,
+                    karNode,
+                    false),
+                customTextBox(TextInputType.number, "Firma Kârı", karcontroller,
+                    TextInputAction.done, karNode, new FocusNode(), false),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: <Widget>[
+                      Text("ToplamFiyat :",
+                          style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold)),
+                      Text(toplamFiya.toString(),
+                          style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      new FlatButton(
+                          child: new Text("İptal",
+                              style: TextStyle(color: Colors.blue)),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          }),
+                      new FlatButton(
+                        child: new Text("Fiyatı Kaydet",
+                            style: TextStyle(color: Colors.blue)),
+                        onPressed: () async {
+                          //database den kaydfet
+                          String oda = curItemEv
+                              .replaceAll('+', '.')
+                              .split('')
+                              .reversed
+                              .join();
+                          if (yakitcontroller.text.isEmpty ||
+                              iscilikcontroller.text.isEmpty ||
+                              asansorcontroller.text.isEmpty ||
+                              karcontroller.text.isEmpty)
+                            _showDialog("Boş bırakılamaz",
+                                "Lütfen tüm alanları doldurun");
+                          else {
+                            bool sonuc = await _database.fiyatKaydet(
+                                curItemSehir,
+                                oda,
+                                toplamFiya.toString(),
+                                isSehirlerArasi,
+                                yakitcontroller.text,
+                                iscilikcontroller.text,
+                                asansorcontroller.text,
+                                karcontroller.text);
+                            Navigator.of(context).pop();
+                            if (sonuc)
+                              _showDialog("Fiyat Ekleme",
+                                  "Fiyat Ekleme işlemi başarılı");
+                            fle.fiyatListesiDoldur();
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                )
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

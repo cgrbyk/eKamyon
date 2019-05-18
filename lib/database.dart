@@ -137,15 +137,19 @@ class Database {
     return json;
   }
 
-  fiyatKaydet(String varisil, String oda, String tasimaUcreti) async {
+  fiyatKaydet(String varisil, String oda, String tasimaUcreti,bool isSehirlerArasi,String yakitMasrafi,String iscilikUcreti,String asansorBedeli,String firmaKari) async {
     final response = await http.post(
         "http://www.ekamyon.com/wp-app/insert_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55",
         body: {
-          'InsertTuru': 'InsertFiyat',
+          'InsertTuru': isSehirlerArasi?'InsertFiyatSehirDisi':'InsertFiyatSehirIci',
           'FirmaID': AktifKullaniciBilgileri.firmaKodu,
-          'varisIL': varisil,
-          'OdaTipi': oda,
-          'tasimaUcreti': tasimaUcreti
+          'VarisIl': isSehirlerArasi?varisil:AktifKullaniciBilgileri.firmaIl,
+          'EvTipi': oda,
+          'YakitMasrafi':yakitMasrafi,
+          'IscilikUcreti':iscilikUcreti,
+          'AsansorBedeli':asansorBedeli,
+          'FirmaKari':firmaKari,
+          'TasimaUcreti': tasimaUcreti
         });
     if (response.statusCode == 200)
       return true;

@@ -12,7 +12,6 @@ class _MusterilerState extends State<Musteriler> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _database.getMusteriler();
   }
