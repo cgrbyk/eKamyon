@@ -1,3 +1,8 @@
+/*
+ÇAĞRI BIYIK 2019
+*/
+
+import 'package:ekamyon/Modeller/aracmusaitlik.dart';
 import 'package:ekamyon/Modeller/teklifFirma.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -76,6 +81,52 @@ class Database {
       return true;
     else
       return false;
+  }
+
+  aracMusaitlikTarihleriCek(String plaka) async {
+    final response = await http.get(
+        "http://www.ekamyon.com/wp-app/select_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&SelectTuru=MusaitAraclarim&FirmaID=" +
+            AktifKullaniciBilgileri.firmaKodu +
+            "&AracPlakasi=" +
+            plaka);
+    if (response.statusCode == 200 &&
+        response.body != null &&
+        response.body != "null") {
+      print(response.body);
+      var json = jsonDecode(response.body);
+      return AracMusaitlik.fromArray(json);
+    } else
+      return List<AracMusaitlik>();
+  }
+
+  aracMusaitlikKaydet(String aracPlakasi, DateTime musaitOlduguTarih) async {
+    final response = await http.post(
+        "http://www.ekamyon.com/wp-app/insert_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55",
+        body: {
+          'InsertTuru': 'InsertMusaitAraclar',
+          'FirmaID': AktifKullaniciBilgileri.firmaKodu,
+          'AracPlakasi': aracPlakasi,
+          'MusaitOlduguTarih': musaitOlduguTarih.toString(),
+        });
+    if (response.statusCode == 200)
+      return true;
+    else
+      return false;
+  }
+
+  aracMusaitlikSil(String plaka) async {
+    final response = await http.post(
+        "http://www.ekamyon.com/wp-app/delete_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55",
+        body: {
+          'DeleteTuru': 'DeleteMusaitlik',
+          'FirmaID': AktifKullaniciBilgileri.firmaKodu,
+          'AracPlakasi': plaka,
+        });
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   fiyatlariCek() async {
@@ -213,6 +264,13 @@ class Database {
         return null;
     } else
       return null;
+  }
+
+  getMusteriler() async {
+    final response = await http.get(
+        "http://www.ekamyon.com/wp-app/select_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&SelectTuru=Musteriler");
+    var json = jsonDecode(response.body);
+    return json;
   }
 
   tasimateklifiSec(

@@ -1,7 +1,11 @@
 import 'dart:async';
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:ekamyon/Modeller/aracmusaitlik.dart';
 import 'package:flutter/material.dart';
 import 'package:ekamyon/database.dart';
 import 'package:ekamyon/Modeller/arac.dart';
+import 'package:calendarro/calendarro.dart';
+import 'package:calendarro/date_utils.dart';
 
 class AracListe extends StatefulWidget {
   @override
@@ -130,6 +134,11 @@ class AracListeEkrani extends State<AracListe> {
                         child: Text("Araç Müsaitlik Tarihi"),
                         onPressed: () {
                           //araç müsaitlik ekranı
+                          showDialog(
+                              context: context,
+                              builder: (_) {
+                                return ShowCalender(arac: araclar[index]);
+                              });
                         },
                       ),
                     ),
@@ -274,14 +283,22 @@ class YeniAracEkle extends State<AracEklemeDialog> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     new FlatButton(
-                      child: new Text("İptal",style: TextStyle(color: Colors.blue,fontSize: 16,fontWeight: FontWeight.bold)),
+                      child: new Text("İptal",
+                          style: TextStyle(
+                              color: Colors.blue,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold)),
                       onPressed: () {
                         Navigator.of(context).pop();
                         setState(() {});
                       },
                     ),
                     new FlatButton(
-                      child: new Text("Ekle",style: TextStyle(color: Colors.blue,fontSize: 16,fontWeight: FontWeight.bold)),
+                      child: new Text("Ekle",
+                          style: TextStyle(
+                              color: Colors.blue,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold)),
                       onPressed: () async {
                         if (aracPlaka.text != "" ||
                             aracMarka.text != "" ||
@@ -298,7 +315,7 @@ class YeniAracEkle extends State<AracEklemeDialog> {
                               "Bütün alanları doldurmalısınız");
                         }
                       },
-                    ),     
+                    ),
                   ],
                 ),
               )
@@ -527,6 +544,196 @@ class AracGuncelleme extends State<AracGuncellemeDialog> {
               ),
             ),
           ),
+        ));
+  }
+}
+
+class ShowCalender extends StatefulWidget {
+  final Arac arac;
+  ShowCalender({this.arac});
+  @override
+  _ShowCalenderState createState() => _ShowCalenderState(arac: arac);
+}
+
+class _ShowCalenderState extends State<ShowCalender> {
+  final Arac arac;
+  _ShowCalenderState({this.arac});
+  List<String> aylar = [
+    'Ocak',
+    'Şubat',
+    'Mart',
+    'Nisan',
+    'Mayıs',
+    'Haziran',
+    'Temmuz',
+    'Ağustos',
+    'Eylül',
+    'Ekim',
+    'Kasım',
+    'Aralık'
+  ];
+  DateTime takvimzamani = DateTime.now();
+  Database _database = Database();
+  List<DateTime> musaitTarihler = List<DateTime>();
+  List<DateTime> tarihler = List<DateTime>();
+  bool tarihCekim = false;
+
+  DateTime getFirstDayOfMonth(DateTime zaman) {
+    var dateTime = zaman;
+    dateTime = DateUtils.getFirstDayOfMonth(dateTime.month);
+    return dateTime;
+  }
+
+  DateTime getFirstDayOfNextMonth(DateTime zaman) {
+    var dateTime = getFirstDayOfMonth(zaman);
+    dateTime = DateUtils.addDaysToDate(dateTime, 31);
+    dateTime = DateTime(dateTime.year, dateTime.month, 1);
+    return dateTime;
+  }
+
+  void _showDialog(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text(title),
+          content: new Text(message),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Kapat"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    tarihleriDoldur();
+  }
+
+  tarihleriDoldur() async {
+    List<AracMusaitlik> aractarihler =
+        await _database.aracMusaitlikTarihleriCek(arac.aracPlakasi);
+    for (var tarih in aractarihler) {
+      tarihler.add(tarih.musaitOlduguTarih);
+      musaitTarihler.add(tarih.musaitOlduguTarih);
+    }
+    tarihCekim = true;
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        backgroundColor: Color(0x00000000),
+        body: AlertDialog(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              IconButton(
+                icon: Icon(Icons.arrow_left),
+                onPressed: () {
+                  if (takvimzamani.month != DateTime.now().month &&
+                      takvimzamani.year == DateTime.now().year) {
+                    takvimzamani =
+                        DateTime(takvimzamani.year, takvimzamani.month - 1, 1);
+                    takvimzamani.month == DateTime.now().month
+                        ? takvimzamani = DateTime(takvimzamani.year,
+                            takvimzamani.month, DateTime.now().day)
+                        : DateTime.now();
+                    setState(() {});
+                  }
+                },
+              ),
+              Text(aylar[takvimzamani.month.toInt() - 1] +
+                  " " +
+                  takvimzamani.year.toString()),
+              IconButton(
+                icon: Icon(Icons.arrow_right),
+                onPressed: () {
+                  takvimzamani = getFirstDayOfNextMonth(takvimzamani);
+                  setState(() {});
+                },
+              ),
+            ],
+          ),
+          content: Builder(
+            builder: (context) {
+              if (tarihCekim) {
+                return Calendarro(
+                  weekdayLabelsRow: Row(
+                    children: <Widget>[
+                      Expanded(
+                          child: AutoSizeText("Pzt",
+                              maxLines: 1, textAlign: TextAlign.center)),
+                      Expanded(
+                          child: AutoSizeText("Sal",
+                              maxLines: 1, textAlign: TextAlign.center)),
+                      Expanded(
+                          child: AutoSizeText("Çar",
+                              maxLines: 1, textAlign: TextAlign.center)),
+                      Expanded(
+                          child: AutoSizeText("Per",
+                              maxLines: 1, textAlign: TextAlign.center)),
+                      Expanded(
+                          child: AutoSizeText("Cum",
+                              maxLines: 1, textAlign: TextAlign.center)),
+                      Expanded(
+                          child: AutoSizeText("Cmt",
+                              maxLines: 1, textAlign: TextAlign.center)),
+                      Expanded(
+                          child: AutoSizeText("Paz",
+                              maxLines: 1, textAlign: TextAlign.center)),
+                    ],
+                  ),
+                  selectedDates: tarihler,
+                  startDate: takvimzamani,
+                  endDate: getFirstDayOfNextMonth(takvimzamani)
+                      .subtract(Duration(days: 1)),
+                  selectionMode: SelectionMode.MULTI,
+                  displayMode: DisplayMode.MONTHS,
+                  onTap: (DateTime date) {
+                    print(date.toString());
+                    bool sahipmi = musaitTarihler.contains(date);
+                    sahipmi
+                        ? musaitTarihler.remove(date)
+                        : musaitTarihler.add(date);
+                    print(musaitTarihler);
+                  },
+                );
+              }else{
+                return CircularProgressIndicator();
+              }
+            },
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("İptal"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text("Kaydet"),
+              onPressed: () async {
+                await _database.aracMusaitlikSil(arac.aracPlakasi);
+                for(var tarih in musaitTarihler)
+                {
+                  _database.aracMusaitlikKaydet(arac.aracPlakasi, tarih);
+                }
+                _showDialog("Tarihler Kaydedildi", "Tarihler başarıyla kaydedildi");
+                //Kapat
+              },
+            )
+          ],
         ));
   }
 }

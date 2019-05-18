@@ -23,7 +23,7 @@ class FirmaMenuEkrani extends State<FirmaMenu> {
         padding: const EdgeInsets.only(top: 10, left: 15),
         child: SizedBox(
           width: MediaQuery.of(context).size.width * 0.45,
-          height: MediaQuery.of(context).size.height * 0.20,
+          height: MediaQuery.of(context).size.height * 0.25,
           child: new Card(
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -33,8 +33,8 @@ class FirmaMenuEkrani extends State<FirmaMenu> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Image.asset("images/" + imagePath,
-                      height: MediaQuery.of(context).size.height * 0.10,
-                      width: MediaQuery.of(context).size.width * 0.15),
+                      height: MediaQuery.of(context).size.height * 0.15,
+                      width: MediaQuery.of(context).size.width * 0.20),
                 ),
                 Padding(
                     padding: EdgeInsets.only(top: 8, left: 5, right: 5),

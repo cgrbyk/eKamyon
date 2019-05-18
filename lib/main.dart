@@ -1,3 +1,8 @@
+/*
+ÇAĞRI BIYIK 2019
+*/
+
+import 'package:ekamyon/Admin/AdminMenu.dart';
 import 'package:ekamyon/Modeller/aktifKullaniciBilgileri.dart';
 import 'package:ekamyon/Musteri/kullaniciMenu.dart';
 import 'package:flutter/material.dart';
@@ -213,7 +218,12 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
         context,
         MaterialPageRoute(builder: (context) => FirmaMenu()),
       );
-    } else {}
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => AdminMenu()),
+      );
+    }
   }
 
   @override
