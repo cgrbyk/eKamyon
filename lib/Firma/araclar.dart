@@ -666,48 +666,66 @@ class _ShowCalenderState extends State<ShowCalender> {
           content: Builder(
             builder: (context) {
               if (tarihCekim) {
-                return Calendarro(
-                  weekdayLabelsRow: Row(
-                    children: <Widget>[
-                      Expanded(
-                          child: AutoSizeText("Pzt",
-                              maxLines: 1, textAlign: TextAlign.center)),
-                      Expanded(
-                          child: AutoSizeText("Sal",
-                              maxLines: 1, textAlign: TextAlign.center)),
-                      Expanded(
-                          child: AutoSizeText("Çar",
-                              maxLines: 1, textAlign: TextAlign.center)),
-                      Expanded(
-                          child: AutoSizeText("Per",
-                              maxLines: 1, textAlign: TextAlign.center)),
-                      Expanded(
-                          child: AutoSizeText("Cum",
-                              maxLines: 1, textAlign: TextAlign.center)),
-                      Expanded(
-                          child: AutoSizeText("Cmt",
-                              maxLines: 1, textAlign: TextAlign.center)),
-                      Expanded(
-                          child: AutoSizeText("Paz",
-                              maxLines: 1, textAlign: TextAlign.center)),
-                    ],
+                return GestureDetector(
+                  child: Calendarro(
+                    weekdayLabelsRow: Row(
+                      children: <Widget>[
+                        Expanded(
+                            child: AutoSizeText("Pzt",
+                                maxLines: 1, textAlign: TextAlign.center)),
+                        Expanded(
+                            child: AutoSizeText("Sal",
+                                maxLines: 1, textAlign: TextAlign.center)),
+                        Expanded(
+                            child: AutoSizeText("Çar",
+                                maxLines: 1, textAlign: TextAlign.center)),
+                        Expanded(
+                            child: AutoSizeText("Per",
+                                maxLines: 1, textAlign: TextAlign.center)),
+                        Expanded(
+                            child: AutoSizeText("Cum",
+                                maxLines: 1, textAlign: TextAlign.center)),
+                        Expanded(
+                            child: AutoSizeText("Cmt",
+                                maxLines: 1, textAlign: TextAlign.center)),
+                        Expanded(
+                            child: AutoSizeText("Paz",
+                                maxLines: 1, textAlign: TextAlign.center)),
+                      ],
+                    ),
+                    selectedDates: tarihler,
+                    startDate: takvimzamani,
+                    endDate: getFirstDayOfNextMonth(takvimzamani)
+                        .subtract(Duration(days: 1)),
+                    selectionMode: SelectionMode.MULTI,
+                    displayMode: DisplayMode.MONTHS,
+                    onTap: (DateTime date) {
+                      bool sahipmi = musaitTarihler.contains(date);
+                      sahipmi
+                          ? musaitTarihler.remove(date)
+                          : musaitTarihler.add(date);
+                    },
                   ),
-                  selectedDates: tarihler,
-                  startDate: takvimzamani,
-                  endDate: getFirstDayOfNextMonth(takvimzamani)
-                      .subtract(Duration(days: 1)),
-                  selectionMode: SelectionMode.MULTI,
-                  displayMode: DisplayMode.MONTHS,
-                  onTap: (DateTime date) {
-                    print(date.toString());
-                    bool sahipmi = musaitTarihler.contains(date);
-                    sahipmi
-                        ? musaitTarihler.remove(date)
-                        : musaitTarihler.add(date);
-                    print(musaitTarihler);
+                  onHorizontalDragEnd: (DragEndDetails e) {
+                    print(e.velocity.pixelsPerSecond.dx);
+                    if (e.velocity.pixelsPerSecond.dx < -1000) {
+                      takvimzamani = getFirstDayOfNextMonth(takvimzamani);
+                      setState(() {});
+                    } else if (e.velocity.pixelsPerSecond.dx > 1000) {
+                      if (takvimzamani.month != DateTime.now().month &&
+                          takvimzamani.year == DateTime.now().year) {
+                        takvimzamani = DateTime(
+                            takvimzamani.year, takvimzamani.month - 1, 1);
+                        takvimzamani.month == DateTime.now().month
+                            ? takvimzamani = DateTime(takvimzamani.year,
+                                takvimzamani.month, DateTime.now().day)
+                            : DateTime.now();
+                        setState(() {});
+                      }
+                    }
                   },
                 );
-              }else{
+              } else {
                 return CircularProgressIndicator();
               }
             },
@@ -723,11 +741,11 @@ class _ShowCalenderState extends State<ShowCalender> {
               child: Text("Kaydet"),
               onPressed: () async {
                 await _database.aracMusaitlikSil(arac.aracPlakasi);
-                for(var tarih in musaitTarihler)
-                {
+                for (var tarih in musaitTarihler) {
                   _database.aracMusaitlikKaydet(arac.aracPlakasi, tarih);
                 }
-                _showDialog("Tarihler Kaydedildi", "Tarihler başarıyla kaydedildi");
+                _showDialog(
+                    "Tarihler Kaydedildi", "Tarihler başarıyla kaydedildi");
                 //Kapat
               },
             )

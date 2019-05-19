@@ -91,8 +91,79 @@ class _AdminMenuState extends State<AdminMenu> {
                   },
                 ),
                 getImageButton("talepler.png", "Talepler"),
-                getImageButton("bildirimayarlari.png", "Bildirim"),
+                GestureDetector(
+                  child: getImageButton("bildirimayarlari.png", "Bildirim"),
+                  onTap: () {
+                    showDialog(
+                        context: context,
+                        builder: (_) {
+                          return BildirimEkrani();
+                        });
+                  },
+                ),
               ],
             )));
+  }
+}
+
+class BildirimEkrani extends StatefulWidget {
+  @override
+  BildirimEkraniPopup createState() => BildirimEkraniPopup();
+}
+
+class BildirimEkraniPopup extends State<BildirimEkrani> {
+  bool titresimBildirim = false;
+  bool sesliBildirim = false;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color(0x00000000),
+      body: Padding(
+        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.2),
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height * 0.55,
+          child: AlertDialog(
+            title: Center(
+              child: Text("Bilgirim Ayarları"),
+            ),
+            content: Column(
+              children: <Widget>[
+                CheckboxListTile(
+                  value: titresimBildirim,
+                  title: Text("Titreşim ile bildirim"),
+                  onChanged: (bool value) {
+                    titresimBildirim = value;
+                    setState(() {});
+                  },
+                ),
+                CheckboxListTile(
+                  value: sesliBildirim,
+                  title: Text("Ses ile bildirim"),
+                  onChanged: (bool value) {
+                    sesliBildirim = value;
+                    setState(() {});
+                  },
+                ),
+              ],
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Vazgeç"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                child: Text("Değişiklikleri Kaydet"),
+                onPressed: () {
+                  //değişim Kaydetme
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

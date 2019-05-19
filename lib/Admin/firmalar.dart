@@ -29,69 +29,69 @@ class _FirmalarState extends State<Firmalar> {
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          title: Center(child: new Text(firma.firmaUnvani)),
+          title: Center(child: new AutoSizeText(firma.firmaUnvani)),
           content: SizedBox(
             height: MediaQuery.of(context).size.height * 0.3,
             child: ListView(
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Text("Firma İli :", style: TextStyle(color: Colors.grey)),
-                    Text(firma.firmaIl),
+                    AutoSizeText("İl :",maxLines:1, style: TextStyle(color: Colors.grey)),
+                    AutoSizeText(firma.firmaIl,maxLines:1),
                   ],
                 ),
                 Row(
                   children: <Widget>[
-                    Text("Firma İlçe :", style: TextStyle(color: Colors.grey)),
-                    Text(firma.firmaIlce),
+                    AutoSizeText("İlçe :",maxLines:1, style: TextStyle(color: Colors.grey)),
+                    AutoSizeText(firma.firmaIlce,maxLines:1),
                   ],
                 ),
                 Row(
                   children: <Widget>[
-                    Text("Firma Adres :", style: TextStyle(color: Colors.grey)),
-                    Text(firma.firmaAdres),
+                    AutoSizeText("Adres :",maxLines:1, style: TextStyle(color: Colors.grey)),
+                    AutoSizeText(firma.firmaAdres,maxLines:1),
                   ],
                 ),
                 Row(
                   children: <Widget>[
-                    Text("Firma Cep NO :",
+                    AutoSizeText("Cep NO :",maxLines:1,
                         style: TextStyle(color: Colors.grey)),
-                    Text(firma.firmaCepTel),
+                    AutoSizeText(firma.firmaCepTel,maxLines:1),
                   ],
                 ),
                 Row(
                   children: <Widget>[
-                    Text("Firma Sabit Tel :",
+                    AutoSizeText("Sabit Tel :",maxLines:1,
                         style: TextStyle(color: Colors.grey)),
-                    Text(firma.firmaSabitTel),
+                    AutoSizeText(firma.firmaSabitTel,maxLines:1),
                   ],
                 ),
                 Row(
                   children: <Widget>[
-                    Text("Firma Faaliyet süresi :",
+                    AutoSizeText("Faaliyet süresi :",maxLines:1,
                         style: TextStyle(color: Colors.grey)),
-                    Text(firma.firmaKacYildirFaaliyette),
+                    AutoSizeText(firma.firmaKacYildirFaaliyette,maxLines:1),
                   ],
                 ),
                 Row(
                   children: <Widget>[
-                    Text("Firma Araç sayısı :",
+                    AutoSizeText("Araç sayısı :",maxLines:1,
                         style: TextStyle(color: Colors.grey)),
-                    Text(firma.firmaAracSayisi),
+                    AutoSizeText(firma.firmaAracSayisi,maxLines:1),
                   ],
                 ),
                 Row(
                   children: <Widget>[
-                    Text("Firma Personel Sayısı :",
+                    AutoSizeText("Personel Sayısı :",maxLines:1,
                         style: TextStyle(color: Colors.grey)),
-                    Text(firma.firmaPersonelSayisi),
+                    AutoSizeText(firma.firmaPersonelSayisi,maxLines:1),
                   ],
                 ),
                 Row(
                   children: <Widget>[
-                    Text("Firma web sitesi :",
+                    AutoSizeText("Web sitesi :",maxLines:1,
                         style: TextStyle(color: Colors.grey)),
-                    Text(firma.firmaWebSitesi),
+                    AutoSizeText(firma.firmaWebSitesi,maxLines:1), 
                   ],
                 ),
               ],
@@ -99,7 +99,7 @@ class _FirmalarState extends State<Firmalar> {
           ),
           actions: <Widget>[
             new FlatButton(
-              child: new Text("Kapat"),
+              child: new AutoSizeText("Kapat"),
               onPressed: () {
                 Navigator.of(context).pop();
               },
