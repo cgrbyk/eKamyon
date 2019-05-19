@@ -2,12 +2,16 @@
 ÇAĞRI BIYIK 2019
 */
 
+import 'package:ekamyon/Modeller/Nakliye.dart';
 import 'package:ekamyon/Modeller/aracmusaitlik.dart';
+import 'package:ekamyon/Modeller/firma.dart';
+import 'package:ekamyon/Modeller/musteri.dart';
 import 'package:ekamyon/Modeller/teklifFirma.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'Modeller/metadata.dart';
 import 'Modeller/aktifKullaniciBilgileri.dart';
+import "package:collection/collection.dart";
 
 class Database {
   giris(String kulEmail, String kulSifre) async {
@@ -36,16 +40,16 @@ class Database {
 
   yeniAracKayit(String aracPlaka, String aracMarka, String aracModel,
       bool aracaktifmi) async {
-    final response = await http.post(
-        "http://www.ekamyon.com/wp-app/insert_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55",
-        body: {
-          'InsertTuru': 'InsertArac',
-          'FirmaID': AktifKullaniciBilgileri.firmaKodu.toString(),
-          'AracPlakasi': aracPlaka,
-          'AracMarka': aracMarka,
-          'AracModel': aracModel,
-          'AracAktifmi': aracaktifmi.toString(),
-        });
+    final response =
+        await http.post("http://www.ekamyon.com/wp-app/insert_data.php", body: {
+      'Token': 'a15f5r1e514r1s5dw15w111w5we5qqa1hy55',
+      'InsertTuru': 'InsertArac',
+      'FirmaID': AktifKullaniciBilgileri.firmaKodu.toString(),
+      'AracPlakasi': aracPlaka,
+      'AracMarka': aracMarka,
+      'AracModel': aracModel,
+      'AracAktifmi': aracaktifmi.toString(),
+    });
     if (response.statusCode == 200)
       return true;
     else
@@ -54,15 +58,16 @@ class Database {
 
   aracBilgiGuncelle(String aracPlaka, String aracMarka, String aracModel,
       bool aracaktifmi) async {
-    final response = await http.post(
-        "http://www.ekamyon.com/wp-app/update_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&UpdateTuru=UpdateAraclarim",
-        body: {
-          'FirmaID': AktifKullaniciBilgileri.firmaKodu.toString(),
-          'AracPlakasi': aracPlaka,
-          'AracMarka': aracMarka,
-          'AracModel': aracModel,
-          'AracAktifmi': aracaktifmi.toString(),
-        });
+    final response =
+        await http.post("http://www.ekamyon.com/wp-app/update_data.php", body: {
+      'Token': 'a15f5r1e514r1s5dw15w111w5we5qqa1hy55',
+      'UpdateTuru': 'UpdateAraclarim',
+      'FirmaID': AktifKullaniciBilgileri.firmaKodu.toString(),
+      'AracPlakasi': aracPlaka,
+      'AracMarka': aracMarka,
+      'AracModel': aracModel,
+      'AracAktifmi': aracaktifmi.toString(),
+    });
     if (response.statusCode == 200)
       return true;
     else
@@ -70,13 +75,13 @@ class Database {
   }
 
   aracSil(String aracPlaka) async {
-    final response = await http.post(
-        "http://www.ekamyon.com/wp-app/delete_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55",
-        body: {
-          'DeleteTuru': 'DeleteAraclarim',
-          'FirmaID': AktifKullaniciBilgileri.firmaKodu,
-          'AracPlakasi': aracPlaka,
-        });
+    final response =
+        await http.post("http://www.ekamyon.com/wp-app/delete_data.php", body: {
+      'Token': 'a15f5r1e514r1s5dw15w111w5we5qqa1hy55',
+      'DeleteTuru': 'DeleteAraclarim',
+      'FirmaID': AktifKullaniciBilgileri.firmaKodu,
+      'AracPlakasi': aracPlaka,
+    });
     if (response.statusCode == 200)
       return true;
     else
@@ -100,14 +105,14 @@ class Database {
   }
 
   aracMusaitlikKaydet(String aracPlakasi, DateTime musaitOlduguTarih) async {
-    final response = await http.post(
-        "http://www.ekamyon.com/wp-app/insert_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55",
-        body: {
-          'InsertTuru': 'InsertMusaitAraclar',
-          'FirmaID': AktifKullaniciBilgileri.firmaKodu,
-          'AracPlakasi': aracPlakasi,
-          'MusaitOlduguTarih': musaitOlduguTarih.toString(),
-        });
+    final response =
+        await http.post("http://www.ekamyon.com/wp-app/insert_data.php", body: {
+      'Token': 'a15f5r1e514r1s5dw15w111w5we5qqa1hy55',
+      'InsertTuru': 'InsertMusaitAraclar',
+      'FirmaID': AktifKullaniciBilgileri.firmaKodu,
+      'AracPlakasi': aracPlakasi,
+      'MusaitOlduguTarih': musaitOlduguTarih.toString(),
+    });
     if (response.statusCode == 200)
       return true;
     else
@@ -115,13 +120,13 @@ class Database {
   }
 
   aracMusaitlikSil(String plaka) async {
-    final response = await http.post(
-        "http://www.ekamyon.com/wp-app/delete_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55",
-        body: {
-          'DeleteTuru': 'DeleteMusaitlik',
-          'FirmaID': AktifKullaniciBilgileri.firmaKodu,
-          'AracPlakasi': plaka,
-        });
+    final response =
+        await http.post("http://www.ekamyon.com/wp-app/delete_data.php", body: {
+      'Token': 'a15f5r1e514r1s5dw15w111w5we5qqa1hy55',
+      'DeleteTuru': 'DeleteMusaitlik',
+      'FirmaID': AktifKullaniciBilgileri.firmaKodu,
+      'AracPlakasi': plaka,
+    });
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -145,22 +150,27 @@ class Database {
       String yakitMasrafi,
       String iscilikUcreti,
       String asansorBedeli,
-      String firmaKari) async {
-    final response = await http.post(
-        "http://www.ekamyon.com/wp-app/insert_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55",
-        body: {
-          'InsertTuru':
-              isSehirlerArasi ? 'InsertFiyatSehirDisi' : 'InsertFiyatSehirIci',
-          'FirmaID': AktifKullaniciBilgileri.firmaKodu,
-          'VarisIl':
-              isSehirlerArasi ? varisil : AktifKullaniciBilgileri.firmaIl,
-          'EvTipi': oda,
-          'YakitMasrafi': yakitMasrafi,
-          'IscilikUcreti': iscilikUcreti,
-          'AsansorBedeli': asansorBedeli,
-          'FirmaKari': firmaKari,
-          'TasimaUcreti': tasimaUcreti
-        });
+      String firmaKari,
+      String ilce) async {
+    String updateTuru;
+    if (isSehirlerArasi)
+      updateTuru = 'InsertFiyatSehirDisi';
+    else
+      updateTuru = 'InsertFiyatSehirIci';
+    final response =
+        await http.post("http://www.ekamyon.com/wp-app/insert_data.php", body: {
+      'Token': 'a15f5r1e514r1s5dw15w111w5we5qqa1hy55',
+      'InsertTuru': updateTuru,
+      'FirmaID': AktifKullaniciBilgileri.firmaKodu,
+      'VarisIl': isSehirlerArasi ? varisil : AktifKullaniciBilgileri.firmaIl,
+      'EvTipi': oda,
+      'YakitMasrafi': yakitMasrafi,
+      'IscilikUcreti': iscilikUcreti,
+      'AsansorBedeli': asansorBedeli,
+      'FirmaKari': firmaKari,
+      'TasimaUcreti': tasimaUcreti,
+      'VarisIlce': ilce,
+    });
     if (response.statusCode == 200)
       return true;
     else
@@ -168,46 +178,53 @@ class Database {
   }
 
   fiyatsil(String varisil, String oda, String tasimaUcreti) async {
-    final response = await http.post(
-        "http://www.ekamyon.com/wp-app/delete_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55",
-        body: {
-          'DeleteTuru': 'DeleteFiyatlarim',
-          'FirmaID': AktifKullaniciBilgileri.firmaKodu,
-          'VarisIl': varisil,
-          'EvTipi': oda,
-          'TasimaUcretiTam': tasimaUcreti
-        });
+    final response =
+        await http.post("http://www.ekamyon.com/wp-app/delete_data.php", body: {
+      'Token': 'a15f5r1e514r1s5dw15w111w5we5qqa1hy55',
+      'DeleteTuru': 'DeleteFiyatlarim',
+      'FirmaID': AktifKullaniciBilgileri.firmaKodu,
+      'VarisIl': varisil,
+      'EvTipi': oda,
+      'TasimaUcretiTam': tasimaUcreti
+    });
     if (response.statusCode == 200)
       return true;
     else
       return false;
   }
 
-  topluFiyatGuncelle(String artisYonu, String tutar) async {
-    final response = await http.get(
-        "http://www.ekamyon.com/wp-app/update_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&UpdateTuru=UpdateTopluFiyatlarim&Tur=" +
-            artisYonu +
-            "&Tutar=" +
-            tutar +
-            "&FirmaID=" +
-            AktifKullaniciBilgileri.firmaKodu);
+  topluFiyatGuncelle(
+      String artisYonu, String tutar, bool sehirlerArasiMi) async {
+    final response =
+        await http.post("http://www.ekamyon.com/wp-app/update_data.php", body: {
+      'Token': 'a15f5r1e514r1s5dw15w111w5we5qqa1hy55',
+      'UpdateTuru':
+          sehirlerArasiMi ? 'UpdateTopluSehirDisi' : 'UpdateTopluSehirIci',
+      'Tutar': tutar,
+      'FirmaID': AktifKullaniciBilgileri.firmaKodu,
+      'Tur': artisYonu,
+    });
     if (response.statusCode == 200)
       return true;
     else
       return false;
   }
 
-  tekliFiyatGuncelle(
-      String tasimaUcreti, String paramVarisIl, String paramEvTipi) async {
-    final response = await http.post(
-        "http://www.ekamyon.com/wp-app/update_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&UpdateTuru=UpdateFiyatlarim&TasimaUcretiTam=" +
-            tasimaUcreti +
-            "&FirmaID=" +
-            AktifKullaniciBilgileri.firmaKodu +
-            "&VarisIl=" +
-            paramVarisIl +
-            "&EvTipi=" +
-            paramEvTipi);
+  tekliFiyatGuncelle(String yakit, String iscilik, String asansor, String firma,
+      String toplamucret, String paramVarisIl, String paramEvTipi) async {
+    final response =
+        await http.post('http://www.ekamyon.com/wp-app/update_data.php', body: {
+      'Token': 'a15f5r1e514r1s5dw15w111w5we5qqa1hy55',
+      'UpdateTuru': 'UpdateFiyatSehirDisi',
+      'FirmaID': AktifKullaniciBilgileri.firmaKodu,
+      'EvTipi': paramEvTipi,
+      'VarisIl': paramVarisIl,
+      'YakitMasrafi': yakit,
+      'IscilikUcreti': iscilik,
+      'AsansorBedeli': asansor,
+      'FirmaKari': firma,
+      'TasimaUcreti': toplamucret,
+    });
     if (response.statusCode == 200)
       return true;
     else
@@ -216,14 +233,15 @@ class Database {
 
   kullaniciBilgileriGuncelle(
       String telefon, String evAdresi, String ePosta) async {
-    final response = await http.post(
-        "http://www.ekamyon.com/wp-app/update_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&UpdateTuru=UpdateMusteriBilgilerim",
-        body: {
-          'MusteriID': AktifKullaniciBilgileri.musteriKodu,
-          'Telefonu': telefon,
-          'EvAdresi': evAdresi,
-          'Eposta': ePosta,
-        });
+    final response =
+        await http.post("http://www.ekamyon.com/wp-app/update_data.php", body: {
+      'Token': 'a15f5r1e514r1s5dw15w111w5we5qqa1hy55',
+      'UpdateTuru': 'UpdateMusteri',
+      'MusteriID': AktifKullaniciBilgileri.musteriKodu,
+      'Telefonu': telefon,
+      'EvAdresi': evAdresi,
+      'Eposta': ePosta,
+    });
     if (response.statusCode == 200) {
       AktifKullaniciBilgileri.musteriTelNo = telefon;
       AktifKullaniciBilgileri.musteriAdresi = evAdresi;
@@ -284,15 +302,26 @@ class Database {
     final response = await http.get(
         "http://www.ekamyon.com/wp-app/select_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&SelectTuru=Musteriler");
     var json = jsonDecode(response.body);
-    return json;
+    Map map = groupBy(json, (obj) => obj['user_id']);
+    List<Musteri> musteriler = Musteri.fromArray(map);
+    return musteriler;
+  }
+
+  getFirmalar() async {
+    final response = await http.get(
+        "http://www.ekamyon.com/wp-app/select_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&SelectTuru=Firmalar");
+    var json = jsonDecode(response.body);
+    Map map = groupBy(json, (obj) => obj['user_id']);
+    List<Firma> firmalar = Firma.fromArray(map);
+    return firmalar;
   }
 
   getBekleyenNakliyeler() async {
     final response = await http.get(
         "http://www.ekamyon.com/wp-app/select_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&SelectTuru=FirmaBekleyenNakliyelerim&FirmaID=" +
             AktifKullaniciBilgileri.firmaKodu);
-    var json = jsonDecode(response.body);
-    return json;
+    List<Nakliye> nakliyeler=Nakliye.fromArray(jsonDecode(response.body));
+    return nakliyeler;
   }
 
   esyaTasimaTeklifiSec(
@@ -311,32 +340,32 @@ class Database {
       bool coklutasima,
       String firmaID,
       String anlasilanFiyat) async {
-    final response = await http.post(
-        'http://www.ekamyon.com/wp-app/insert_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&InsertTuru=EvdenEve',
-        body: {
-          'InsertTuru': 'Esya',
-          'MusteriID': AktifKullaniciBilgileri.musteriKodu,
-          'MusteriAdi': AktifKullaniciBilgileri.musteriAdi,
-          'Eposta': AktifKullaniciBilgileri.musteriEposta,
-          'TasinmaTuru': 'Eşya Taşıma',
-          'TasinmaTarihi': tasimaTarihi.toString(),
-          'MevcutIl': mevcutIl,
-          'MevcutIlce': mevcutIlce,
-          'MevcutAdres': mevcutAdres,
-          'EsyaCinsi': esyaCinsi,
-          'YukeYaklasma': yukeYaklasma,
-          'NasilTasinacak': nasilTasinacak,
-          'NasilPaketlenecek': nasilPaketlenecek,
-          'VarisIl': varisIl,
-          'VarisIlce': varisIlce,
-          'VarisAdres': varisAdres,
-          'Sigorta': sigorta ? "Evet İstiyorum" : "Hayır İstemiyorum",
-          'TekAracCiftYuk': coklutasima ? "Evet" : "Hayır Yüküm Tek Taşınsın",
-          'AnlasilanFirmaID': firmaID,
-          'AnlasilanFiyat': anlasilanFiyat,
-          'AnlasilanTarih': DateTime.now().toString(),
-          'OlusturmaTarihi': DateTime.now().toString(),
-        });
+    final response =
+        await http.post('http://www.ekamyon.com/wp-app/insert_data.php', body: {
+      'Token': 'a15f5r1e514r1s5dw15w111w5we5qqa1hy55',
+      'InsertTuru': 'Esya',
+      'MusteriID': AktifKullaniciBilgileri.musteriKodu,
+      'MusteriAdi': AktifKullaniciBilgileri.musteriAdi,
+      'Eposta': AktifKullaniciBilgileri.musteriEposta,
+      'TasinmaTuru': 'Eşya Taşıma',
+      'TasinmaTarihi': tasimaTarihi.toString(),
+      'MevcutIl': mevcutIl,
+      'MevcutIlce': mevcutIlce,
+      'MevcutAdres': mevcutAdres,
+      'EsyaCinsi': esyaCinsi,
+      'YukeYaklasma': yukeYaklasma,
+      'NasilTasinacak': nasilTasinacak,
+      'NasilPaketlenecek': nasilPaketlenecek,
+      'VarisIl': varisIl,
+      'VarisIlce': varisIlce,
+      'VarisAdres': varisAdres,
+      'Sigorta': sigorta ? "Evet İstiyorum" : "Hayır İstemiyorum",
+      'TekAracCiftYuk': coklutasima ? "Evet" : "Hayır Yüküm Tek Taşınsın",
+      'AnlasilanFirmaID': firmaID,
+      'AnlasilanFiyat': anlasilanFiyat,
+      'AnlasilanTarih': DateTime.now().toString(),
+      'OlusturmaTarihi': DateTime.now().toString(),
+    });
     if (response.statusCode == 200)
       return true;
     else
@@ -363,35 +392,35 @@ class Database {
       String anlasilanFiyat,
       String esyaListesi) async {
     mevcutOda = mevcutOda.replaceAll('+', '.');
-    final response = await http.post(
-        'http://www.ekamyon.com/wp-app/insert_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&InsertTuru=EvdenEve',
-        body: {
-          'InsertTuru': 'EvdenEve',
-          'MusteriID': AktifKullaniciBilgileri.musteriKodu,
-          'MusteriAdi': AktifKullaniciBilgileri.musteriAdi,
-          'Eposta': AktifKullaniciBilgileri.musteriEposta,
-          'TasinmaTuru': 'Evden Eve Taşınma',
-          'TasinmaTarihi': tasimaTarihi.toString(),
-          'MevcutIl': mevcutIl,
-          'MevcutIlce': mevcutIlce,
-          'MevcutAdres': mevcutAdres,
-          'MevcutOda': mevcutOda,
-          'MevcutKat': mevcutKat,
-          'YukeYaklasma': yukeYaklasma,
-          'NasilTasinacak': nasilTasinacak,
-          'NasilPaketlenecek': nasilPaketlenecek,
-          'VarisIl': varisIl,
-          'VarisIlce': varisIlce,
-          'VarisAdres': varisAdres,
-          'VarisKat': varisKat,
-          'Sigorta': sigorta ? "Evet İstiyorum" : "Hayır İstemiyorum",
-          'TekAracCiftYuk': coklutasima ? "Evet" : "Hayır Yüküm Tek Taşınsın",
-          'AnlasilanFirmaID': firmaID,
-          'AnlasilanFiyat': anlasilanFiyat,
-          'AnlasilanTarih': DateTime.now().toString(),
-          'OlusturmaTarihi': DateTime.now().toString(),
-          'EsyaListesi': esyaListesi,
-        });
+    final response =
+        await http.post('http://www.ekamyon.com/wp-app/insert_data.php', body: {
+      'Token': 'a15f5r1e514r1s5dw15w111w5we5qqa1hy55',
+      'InsertTuru': 'EvdenEve',
+      'MusteriID': AktifKullaniciBilgileri.musteriKodu,
+      'MusteriAdi': AktifKullaniciBilgileri.musteriAdi,
+      'Eposta': AktifKullaniciBilgileri.musteriEposta,
+      'TasinmaTuru': 'Evden Eve Taşınma',
+      'TasinmaTarihi': tasimaTarihi.toString(),
+      'MevcutIl': mevcutIl,
+      'MevcutIlce': mevcutIlce,
+      'MevcutAdres': mevcutAdres,
+      'MevcutOda': mevcutOda,
+      'MevcutKat': mevcutKat,
+      'YukeYaklasma': yukeYaklasma,
+      'NasilTasinacak': nasilTasinacak,
+      'NasilPaketlenecek': nasilPaketlenecek,
+      'VarisIl': varisIl,
+      'VarisIlce': varisIlce,
+      'VarisAdres': varisAdres,
+      'VarisKat': varisKat,
+      'Sigorta': sigorta ? "Evet İstiyorum" : "Hayır İstemiyorum",
+      'TekAracCiftYuk': coklutasima ? "Evet" : "Hayır Yüküm Tek Taşınsın",
+      'AnlasilanFirmaID': firmaID,
+      'AnlasilanFiyat': anlasilanFiyat,
+      'AnlasilanTarih': DateTime.now().toString(),
+      'OlusturmaTarihi': DateTime.now().toString(),
+      'EsyaListesi': esyaListesi,
+    });
     if (response.statusCode == 200)
       return true;
     else
@@ -422,36 +451,36 @@ class Database {
         ? sigortadurum = "Evet İstiyorum"
         : sigortadurum = "Hayır İstemiyorum";
     odaSayisi = odaSayisi.replaceAll('+', '.');
-    final response = await http.post(
-        "http://www.ekamyon.com/wp-app/insert_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&InsertTuru=Ofis",
-        body: {
-          'InsertTuru': 'Ofis',
-          'MusteriID': AktifKullaniciBilgileri.musteriKodu,
-          'MusteriAdi': AktifKullaniciBilgileri.musteriAdi +
-              " " +
-              AktifKullaniciBilgileri.musteriSoyadi,
-          'Eposta': AktifKullaniciBilgileri.musteriEposta,
-          'MevcutOda': odaSayisi,
-          'TasinmaTuru': 'Ofis Taşıma',
-          'TasinmaTarihi': tasinmaTarih.toString(),
-          'MevcutIl': mevcutIl,
-          'MevcutIlce': mevcutIlce,
-          'MevcutAdres': mevcutAdres,
-          'MevcutKat': mevcutKat,
-          'YukeYaklasma': yakinlik,
-          'NasilTasinacak': nasilTasinacak,
-          'NasilPaketlenecek': nasilPaketlenecek,
-          'VarisIl': varisIl,
-          'VarisIlce': varisIlce,
-          'VarisAdres': varisAdres,
-          'VarisKat': varisKat,
-          'Sigorta': sigortadurum,
-          'TekAracCiftYuk': ortaklik ? "Evet" : "Hayır Yüküm Tek Taşınsın",
-          'AnlasilanFirmaID': anlasilanFirmaID,
-          'AnlasilanFiyat': anlasilanFiyat,
-          'AnlasilanTarih': DateTime.now().toString(),
-          'OlusturmaTarihi': DateTime.now().toString(),
-        });
+    final response =
+        await http.post("http://www.ekamyon.com/wp-app/insert_data.php", body: {
+      'Token': 'a15f5r1e514r1s5dw15w111w5we5qqa1hy55',
+      'InsertTuru': 'Ofis',
+      'MusteriID': AktifKullaniciBilgileri.musteriKodu,
+      'MusteriAdi': AktifKullaniciBilgileri.musteriAdi +
+          " " +
+          AktifKullaniciBilgileri.musteriSoyadi,
+      'Eposta': AktifKullaniciBilgileri.musteriEposta,
+      'MevcutOda': odaSayisi,
+      'TasinmaTuru': 'Ofis Taşıma',
+      'TasinmaTarihi': tasinmaTarih.toString(),
+      'MevcutIl': mevcutIl,
+      'MevcutIlce': mevcutIlce,
+      'MevcutAdres': mevcutAdres,
+      'MevcutKat': mevcutKat,
+      'YukeYaklasma': yakinlik,
+      'NasilTasinacak': nasilTasinacak,
+      'NasilPaketlenecek': nasilPaketlenecek,
+      'VarisIl': varisIl,
+      'VarisIlce': varisIlce,
+      'VarisAdres': varisAdres,
+      'VarisKat': varisKat,
+      'Sigorta': sigortadurum,
+      'TekAracCiftYuk': ortaklik ? "Evet" : "Hayır Yüküm Tek Taşınsın",
+      'AnlasilanFirmaID': anlasilanFirmaID,
+      'AnlasilanFiyat': anlasilanFiyat,
+      'AnlasilanTarih': DateTime.now().toString(),
+      'OlusturmaTarihi': DateTime.now().toString(),
+    });
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -479,30 +508,31 @@ class Database {
       String bankaIbanIki,
       String bankaAdiUc,
       String bankaIbanUc) async {
-    final response = await http.post(
-        "http://www.ekamyon.com/wp-app/update_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&UpdateTuru=UpdateFirmaBilgilerim",
-        body: {
-          'FirmaID': AktifKullaniciBilgileri.firmaKodu,
-          'FirmaUnvan': firmaUnvan,
-          'FirmaIl': firmaIl,
-          'FirmaIlce': firmaIlce,
-          'FirmaAdres': firmaAdres,
-          'VergiDairesi': vergiDairesi,
-          'VergiNo': vergiNo,
-          'FirmaAracSayisi': firmaAracSayisi,
-          'FirmaPersonelSayisi': firmaPersonelSayisi,
-          'FirmaBelgeler': firmaBelgeler,
-          'FirmaKacYildirFaaliyette': firmaKacYildirFaaliyette,
-          'FirmaWebSitesi': firmaWebSitesi,
-          'SabitTel': sabitTel,
-          'CepTel': cepTel,
-          'BankaAdiBir': bankaAdiBir,
-          'BankaIbanBir': bankaIbanBir,
-          'BankaAdiIki': bankaAdiIki,
-          'BankaIbanIki': bankaIbanIki,
-          'BankaAdiUc': bankaAdiUc,
-          'BankaIbanUc': bankaIbanUc,
-        });
+    final response =
+        await http.post("http://www.ekamyon.com/wp-app/update_data.php", body: {
+      'UpdateTuru': 'UpdateFirma',
+      'Token': 'a15f5r1e514r1s5dw15w111w5we5qqa1hy55',
+      'FirmaID': AktifKullaniciBilgileri.firmaKodu,
+      'FirmaUnvan': firmaUnvan,
+      'FirmaIl': firmaIl,
+      'FirmaIlce': firmaIlce,
+      'FirmaAdres': firmaAdres,
+      'VergiDairesi': vergiDairesi,
+      'VergiNo': vergiNo,
+      'FirmaAracSayisi': firmaAracSayisi,
+      'FirmaPersonelSayisi': firmaPersonelSayisi,
+      'FirmaBelgeler': firmaBelgeler,
+      'FirmaKacYildirFaaliyette': firmaKacYildirFaaliyette,
+      'FirmaWebSitesi': firmaWebSitesi,
+      'SabitTel': sabitTel,
+      'CepTel': cepTel,
+      'BankaAdiBir': bankaAdiBir,
+      'BankaIbanBir': bankaIbanBir,
+      'BankaAdiIki': bankaAdiIki,
+      'BankaIbanIki': bankaIbanIki,
+      'BankaAdiUc': bankaAdiUc,
+      'BankaIbanUc': bankaIbanUc,
+    });
     if (response.statusCode == 200) {
       AktifKullaniciBilgileri.firmaAdi = firmaUnvan;
       AktifKullaniciBilgileri.firmaUnvani = firmaUnvan;
@@ -591,6 +621,7 @@ class Database {
   ) async {
     final response =
         await http.post("https://www.ekamyon.com/wp-app/register.php", body: {
+      'token':'a15f5r1e514r1s5dw15w111w5we5qqa1hy55',
       'KullaniciTuru': 'Musteri',
       'KullaniciAdi': kullaniciAdi,
       'KullaniciSifresi': kullaniciSifresi,

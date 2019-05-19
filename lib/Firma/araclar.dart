@@ -354,7 +354,7 @@ class AracGuncelleme extends State<AracGuncellemeDialog> {
     aracPlaka.text = arac.aracPlakasi;
     aracMarka.text = arac.aracMarkasi;
     aracModel.text = arac.aracModel;
-    arac.aracAktifmi == "true" ? aracaktifmi = true : aracaktifmi = false;
+    arac.aracAktifmi == "Evet" ? aracaktifmi = true : aracaktifmi = false;
   }
 
   _showDialog(String title, String message) {

@@ -82,8 +82,7 @@ class AktifKullaniciBilgileri {
       firmaVergiNo = getMetaValue("firma_vergi_no", gelenveri);
       firmaAracSayisi = getMetaValue("firma_arac_sayisi", gelenveri);
       firmaPersonelSayisi = getMetaValue("firma_personel_sayisi", gelenveri);
-      firmaKacYildirFaaliyette =
-          getMetaValue("firma_kac_yildir_faliyette", gelenveri);
+      firmaKacYildirFaaliyette = getMetaValue("firma_kac_yildir_faliyette", gelenveri);
       firmaSabitTel = getMetaValue("firma_sabit_tel", gelenveri);
       firmaCepTel = getMetaValue("firma_cep_telefonu", gelenveri);
       firmaBankaBir = getMetaValue("firma_banka_adi_bir", gelenveri);
@@ -95,7 +94,6 @@ class AktifKullaniciBilgileri {
       firmaIbanUc = getMetaValue("firma_banka_iban_uc", gelenveri);
     } else {
       adminAdi = getMetaValue("first_name", gelenveri);
-      adminKodu = getMetaValue("ID", gelenveri);
     }
     return tur;
   }

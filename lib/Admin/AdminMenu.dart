@@ -1,3 +1,4 @@
+import 'package:ekamyon/Admin/firmalar.dart';
 import 'package:ekamyon/Admin/musteriler.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -72,15 +73,23 @@ class _AdminMenuState extends State<AdminMenu> {
               crossAxisCount: 2,
               children: <Widget>[
                 GestureDetector(
-                    child: getImageButton("musteriler.png", "Müşteriler"),
-                    onTap: (){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Musteriler()),
-                      );
-                    },
-                    ),
-                getImageButton("firmalar.png", "Firmalar"),
+                  child: getImageButton("musteriler.png", "Müşteriler"),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Musteriler()),
+                    );
+                  },
+                ),
+                GestureDetector(
+                  child: getImageButton("firmalar.png", "Firmalar"),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Firmalar()),
+                    );
+                  },
+                ),
                 getImageButton("talepler.png", "Talepler"),
                 getImageButton("bildirimayarlari.png", "Bildirim"),
               ],

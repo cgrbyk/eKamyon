@@ -1,78 +1,97 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:ekamyon/Modeller/firma.dart';
 import 'package:ekamyon/database.dart';
 import 'package:flutter/material.dart';
-import 'package:ekamyon/Modeller/musteri.dart';
 
-class Musteriler extends StatefulWidget {
+class Firmalar extends StatefulWidget {
   @override
-  _MusterilerState createState() => _MusterilerState();
+  _FirmalarState createState() => _FirmalarState();
 }
 
-class _MusterilerState extends State<Musteriler> {
-  Database _database = Database();
-  List<Musteri> musteriler = List<Musteri>();
+class _FirmalarState extends State<Firmalar> {
+  Database _database=Database();
+    List<Firma> firmalar = List<Firma>();
   int itemcount = 1;
-
   @override
   void initState() {
     super.initState();
-    getMusteriler();
+    getFirmalar();
+  }
+  getFirmalar()async{
+    firmalar=await _database.getFirmalar();
+    itemcount=firmalar.length;
+    setState((){});
   }
 
-  getMusteriler() async {
-    musteriler = await _database.getMusteriler();
-    itemcount = musteriler.length;
-    setState(() {});
-  }
-
-  void _showDetay(Musteri musteri) {
+  void _showDetay(Firma firma) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          title: Center(child: new Text(musteri.firstname+" "+musteri.lastname)),
+          title: Center(child: new Text(firma.firmaUnvani)),
           content: SizedBox(
-            height: MediaQuery.of(context).size.height * 0.2,
-            child: Column(
+            height: MediaQuery.of(context).size.height * 0.3,
+            child: ListView(
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Text("Musteri ili :", style: TextStyle(color: Colors.grey)),
-                    Text(musteri.musteriil),
+                    Text("Firma İli :", style: TextStyle(color: Colors.grey)),
+                    Text(firma.firmaIl),
                   ],
                 ),
                 Row(
                   children: <Widget>[
-                    Text("Musteri İlçe :", style: TextStyle(color: Colors.grey)),
-                    Text(musteri.musteriilce),
+                    Text("Firma İlçe :", style: TextStyle(color: Colors.grey)),
+                    Text(firma.firmaIlce),
                   ],
                 ),
                 Row(
                   children: <Widget>[
-                    Text("Musteri Adres :", style: TextStyle(color: Colors.grey)),
-                    Text(musteri.musteriadres),
+                    Text("Firma Adres :", style: TextStyle(color: Colors.grey)),
+                    Text(firma.firmaAdres),
                   ],
                 ),
                 Row(
                   children: <Widget>[
-                    Text("Musteri Cep NO :",
+                    Text("Firma Cep NO :",
                         style: TextStyle(color: Colors.grey)),
-                    Text(musteri.musteriiletisimtel),
+                    Text(firma.firmaCepTel),
                   ],
                 ),
                 Row(
                   children: <Widget>[
-                    Text("Musteri Posta Kodu :",
+                    Text("Firma Sabit Tel :",
                         style: TextStyle(color: Colors.grey)),
-                    Text(musteri.musteripostakodu),
+                    Text(firma.firmaSabitTel),
                   ],
                 ),
                 Row(
                   children: <Widget>[
-                    Text("Musteri TcNo :",
+                    Text("Firma Faaliyet süresi :",
                         style: TextStyle(color: Colors.grey)),
-                    Text(musteri.musteritckimlikno),
+                    Text(firma.firmaKacYildirFaaliyette),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    Text("Firma Araç sayısı :",
+                        style: TextStyle(color: Colors.grey)),
+                    Text(firma.firmaAracSayisi),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    Text("Firma Personel Sayısı :",
+                        style: TextStyle(color: Colors.grey)),
+                    Text(firma.firmaPersonelSayisi),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    Text("Firma web sitesi :",
+                        style: TextStyle(color: Colors.grey)),
+                    Text(firma.firmaWebSitesi),
                   ],
                 ),
               ],
@@ -96,7 +115,7 @@ class _MusterilerState extends State<Musteriler> {
     return Scaffold(
       appBar: AppBar(
         title: AutoSizeText(
-          'Müşteriler',
+          'Firmalar',
           style: TextStyle(fontSize: 18),
         ),
       ),
@@ -104,8 +123,8 @@ class _MusterilerState extends State<Musteriler> {
         color: Color(0xFF96beff),
         child: ListView.builder(
           itemCount: itemcount,
-          itemBuilder: (context, index) {
-            if (musteriler.length != 0) {
+          itemBuilder: (context,index){
+            if (firmalar.length != 0) {
               return Card(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -114,13 +133,11 @@ class _MusterilerState extends State<Musteriler> {
                     children: <Widget>[
                       Column(
                         children: <Widget>[
-                          AutoSizeText("Ad Soyad",
+                          AutoSizeText("Firma unvan",
                               style: TextStyle(color: Colors.grey),
                               maxLines: 1),
                           AutoSizeText(
-                              musteriler[index].firstname +
-                                  " " +
-                                  musteriler[index].lastname,
+                              firmalar[index].firmaUnvani,
                               style: TextStyle(color: Colors.grey[600]),
                               maxLines: 1),
                         ],
@@ -131,9 +148,9 @@ class _MusterilerState extends State<Musteriler> {
                               style: TextStyle(color: Colors.grey),
                               maxLines: 1),
                           AutoSizeText(
-                              musteriler[index].musteriil +
+                              firmalar[index].firmaIl +
                                   "/" +
-                                  musteriler[index].musteriilce,
+                                  firmalar[index].firmaIlce,
                               style: TextStyle(color: Colors.grey[600]),
                               maxLines: 1),
                         ],
@@ -147,7 +164,7 @@ class _MusterilerState extends State<Musteriler> {
                           style: TextStyle(color: Colors.blue),
                         ),
                         onPressed: () {
-                          _showDetay(musteriler[index]);
+                          _showDetay(firmalar[index]);
                         }, 
                       )
                     ],

@@ -6,8 +6,14 @@ class Metadata {
   Metadata({this.id, this.metakey, this.metavalue});
 
   factory Metadata.fromJson(Map<String, dynamic> json) {
+    int uid = 0;
+    if (json['ID'] == null) {
+      uid = int.parse(json['user_id']);
+    } else {
+      uid = int.parse(json['ID']);
+    }
     return Metadata(
-      id: int.parse(json['ID']),
+      id: uid,
       metakey: json['meta_key'],
       metavalue: json['meta_value'],
     );
