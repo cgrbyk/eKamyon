@@ -511,6 +511,7 @@ class AracGuncelleme extends State<AracGuncellemeDialog> {
                               _showDialog("Boş bırakılamaz",
                                   "Bütün alanları doldurmalısınız");
                             }
+                            ale.aracListesiDoldur();
                           },
                         ),
                         new GestureDetector(
@@ -523,7 +524,7 @@ class AracGuncelleme extends State<AracGuncellemeDialog> {
                                 "Aracı Sil",
                                 arac.aracPlakasi +
                                     " Plakalı aracı silmek istediğinizden emin misiniz?");
-                            setState(() {});
+                            ale.aracListesiDoldur();
                           },
                         ),
                         new GestureDetector(

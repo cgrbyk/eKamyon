@@ -1,3 +1,5 @@
+import 'package:ekamyon/Modeller/EkFiyatlar.dart';
+import 'package:ekamyon/Modeller/Ilce.dart';
 import 'package:ekamyon/Modeller/teklifFirma.dart';
 import 'package:ekamyon/database.dart';
 import 'package:flutter/cupertino.dart';
@@ -28,12 +30,22 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
   FocusNode ofisMevcutKatNode = FocusNode();
   FocusNode ofisGelecekKatNode = FocusNode();
 
+  List<DropdownMenuItem> mevcutilcelerDDM = List<DropdownMenuItem>();
+  List<DropdownMenuItem> varisilcelerDDM = List<DropdownMenuItem>();
+  List<Ilce> mevcutIlceler = List<Ilce>();
+  List<Ilce> varisIlceler = List<Ilce>();
+  String curItemIlcemevcut;
+  String curItemIlcevaris;
+
   String esyaPaketSecim = " Bütün eşyalar nakliyeciler tarafından paketlensin";
   String esyaTasimaSecim = " Bina merdiveni kullanılacak";
 
+  EkFiyatlar _ekfiyat;
+
   bool ortaklik = true;
   bool showSigorta = false;
-  bool sigorta = true;
+  bool sigorta = false;
+  int sigortaFiyati = 0;
 
   List<String> sehirler = [
     'Adana',
@@ -122,6 +134,36 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
   String curItemSehir;
   String newItemSehir;
 
+  ilceGetirMevcut(String aranansehir) async {
+    mevcutIlceler.clear();
+    mevcutilcelerDDM.clear();
+    mevcutIlceler =
+        Ilce.fromArray(await _database.ilceBilgileriCek(aranansehir));
+    for (Ilce ilce in mevcutIlceler) {
+      mevcutilcelerDDM.add(new DropdownMenuItem(
+        value: ilce.ilceAdi,
+        child: new Text(ilce.ilceAdi),
+      ));
+    }
+    curItemIlcemevcut = mevcutIlceler.first.ilceAdi;
+    setState(() {});
+  }
+
+  ilceGetirVaris(String arananSehir) async {
+    varisIlceler.clear();
+    varisilcelerDDM.clear();
+    varisIlceler =
+        Ilce.fromArray(await _database.ilceBilgileriCek(arananSehir));
+    for (Ilce ilce in varisIlceler) {
+      varisilcelerDDM.add(new DropdownMenuItem(
+        value: ilce.ilceAdi,
+        child: new Text(ilce.ilceAdi),
+      ));
+    }
+    curItemIlcevaris = varisIlceler.first.ilceAdi;
+    setState(() {});
+  }
+
   void _showDialog(String title, String message) {
     showDialog(
       context: context,
@@ -209,6 +251,31 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
     );
   }
 
+  ucretHesapla(String tamUCret) {
+    double tam = double.parse(tamUCret);
+    tam = tam + ((tam / 100) * 5); //komisyon
+    tam += sigorta ? sigortaFiyati : 0; //sigorta ekleme
+    tam += ekFiyatHesapla(mevcutIlceler
+            .singleWhere((ilce) => ilce.ilceAdi == curItemIlcemevcut)
+            .merkezeuzaklik ??
+        0);//mevcut ilçe ek fiyat
+    tam += ekFiyatHesapla(varisIlceler
+            .singleWhere((ilce) => ilce.ilceAdi == curItemIlcevaris)
+            .merkezeuzaklik ??
+        0);//variş ilçe ek fiyat
+    return tam.round();
+  }
+
+  ekFiyatHesapla(int uzaklik) {
+    if (uzaklik >= 0 && uzaklik <= 30)
+      return _ekfiyat.var1;
+    else if (uzaklik > 30 && uzaklik <= 50)
+      return _ekfiyat.var2;
+    else if (uzaklik > 50 && uzaklik <= 120)
+      return _ekfiyat.var3;
+    else if (uzaklik > 120) return _ekfiyat.var4;
+  }
+
   _showTeklifListe(List<TeklifFirma> gelenTeklifler) {
     showDialog(
       context: context,
@@ -259,7 +326,8 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                               fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          gelenTeklifler[index].tasimaUcretiTam,
+                          ucretHesapla(gelenTeklifler[index].tasimaUcretiTam)
+                              .toString(),
                           style:
                               TextStyle(fontSize: 18, color: Colors.lightGreen),
                         ),
@@ -272,34 +340,43 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                       ),
                       onTap: () async {
                         String esyaListesi = esyaListesiHesaplama();
-                        if(mevcutIlce.text.isNotEmpty && mevcutAdres.text.isNotEmpty && ofisOdaSayisi.isNotEmpty && ofisMevcutKat.text.isNotEmpty && binayaYakinlik.text.isNotEmpty && yeniIlce.text.isNotEmpty
-                        && yeniAdres.text.isNotEmpty && ofisGelecekKat.text.isNotEmpty){
-                        bool sonuc = await _database.tasimateklifiSec(
-                            secilenTarih,
-                            curItemSehir,
-                            mevcutIlce.text,
-                            mevcutAdres.text,
-                            ofisOdaSayisi,
-                            ofisMevcutKat.text,
-                            binayaYakinlik.text,
-                            esyaTasimaSecim,
-                            esyaPaketSecim,
-                            newItemSehir,
-                            yeniIlce.text,
-                            yeniAdres.text,
-                            ofisGelecekKat.text,
-                            sigorta,
-                            ortaklik,
-                            gelenTeklifler[index].firmaID,
-                            gelenTeklifler[index].tasimaUcretiTam,
-                            esyaListesi);
-                        sonuc
-                            ? _showDialog("Başarılı",
-                                "Talebiniz firmaya iletilmiştir. Firma sizinle en kısa zamanda iletişime geçecektir.")
-                            : _showDialog("Hata",
-                                "Talep oluştururken bir hata meydana geldi");
-                        }else{
-                          _showDialog("Boş alan","Lütfen adres bilgileri gibi önemli alanları boş bırakmayınız.");
+                        if (mevcutIlce.text.isNotEmpty &&
+                            mevcutAdres.text.isNotEmpty &&
+                            ofisOdaSayisi.isNotEmpty &&
+                            ofisMevcutKat.text.isNotEmpty &&
+                            binayaYakinlik.text.isNotEmpty &&
+                            yeniIlce.text.isNotEmpty &&
+                            yeniAdres.text.isNotEmpty &&
+                            ofisGelecekKat.text.isNotEmpty) {
+                          bool sonuc = await _database.tasimateklifiSec(
+                              secilenTarih,
+                              curItemSehir,
+                              mevcutIlce.text,
+                              mevcutAdres.text,
+                              ofisOdaSayisi,
+                              ofisMevcutKat.text,
+                              binayaYakinlik.text,
+                              esyaTasimaSecim,
+                              esyaPaketSecim,
+                              newItemSehir,
+                              yeniIlce.text,
+                              yeniAdres.text,
+                              ofisGelecekKat.text,
+                              sigorta,
+                              ortaklik,
+                              gelenTeklifler[index].firmaID,
+                              ucretHesapla(
+                                      gelenTeklifler[index].tasimaUcretiTam)
+                                  .toString(),
+                              esyaListesi);
+                          sonuc
+                              ? _showDialog("Başarılı",
+                                  "Talebiniz firmaya iletilmiştir. Firma sizinle en kısa zamanda iletişime geçecektir.")
+                              : _showDialog("Hata",
+                                  "Talep oluştururken bir hata meydana geldi");
+                        } else {
+                          _showDialog("Boş alan",
+                              "Lütfen adres bilgileri gibi önemli alanları boş bırakmayınız.");
                         }
                       },
                     ),
@@ -593,6 +670,19 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
     }
     curItemSehir = sehirler.first;
     newItemSehir = sehirler.first;
+    ilceGetirMevcut(curItemSehir);
+    ilceGetirVaris(newItemSehir);
+    sigortaFiyatiAl();
+    ekFiyatGetir();
+  }
+
+  ekFiyatGetir() async {
+    _ekfiyat = await _database.ekFiyatlariCek();
+  }
+
+  sigortaFiyatiAl() async {
+    var json = await _database.sigortaFiyatiAl();
+    sigortaFiyati = int.parse(json[0]['Value'].toString());
   }
 
   @override
@@ -1497,18 +1587,20 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                                 newItemSehir == curItemSehir
                                     ? showSigorta = false
                                     : showSigorta = true;
+                                ilceGetirMevcut(curItemSehir);
                                 setState(() {});
                               },
                             ),
                             Expanded(
-                                child: customTextBox(
-                                    TextInputType.text,
-                                    "İlçe Adı",
-                                    mevcutIlce,
-                                    TextInputAction.done,
-                                    null,
-                                    new FocusNode(),
-                                    false)),
+                                child: DropdownButton(
+                              isExpanded: true,
+                              items: mevcutilcelerDDM,
+                              value: curItemIlcemevcut,
+                              onChanged: (dynamic dmi) {
+                                curItemIlcemevcut = dmi;
+                                setState(() {});
+                              },
+                            )),
                           ],
                         ),
                         customTextBox(
@@ -1540,18 +1632,20 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                                 newItemSehir == curItemSehir
                                     ? showSigorta = false
                                     : showSigorta = true;
+                                ilceGetirVaris(newItemSehir);
                                 setState(() {});
                               },
                             ),
                             Expanded(
-                                child: customTextBox(
-                                    TextInputType.text,
-                                    "İlçe Adı",
-                                    yeniIlce,
-                                    TextInputAction.done,
-                                    null,
-                                    new FocusNode(),
-                                    false)),
+                                child: DropdownButton(
+                              isExpanded: true,
+                              items: varisilcelerDDM,
+                              value: curItemIlcevaris,
+                              onChanged: (dynamic dmi) {
+                                curItemIlcevaris = dmi;
+                                setState(() {});
+                              },
+                            )),
                           ],
                         ),
                         customTextBox(

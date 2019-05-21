@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:ekamyon/Modeller/firma.dart';
 import 'package:ekamyon/database.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Firmalar extends StatefulWidget {
   @override
@@ -56,14 +57,20 @@ class _FirmalarState extends State<Firmalar> {
                   children: <Widget>[
                     AutoSizeText("Cep NO :",maxLines:1,
                         style: TextStyle(color: Colors.grey)),
-                    AutoSizeText(firma.firmaCepTel,maxLines:1),
+                    GestureDetector(child: AutoSizeText(firma.firmaCepTel,maxLines:1),
+                    onTap: (){
+                      launch("tel://"+firma.firmaCepTel);
+                    },),
                   ],
                 ),
                 Row(
                   children: <Widget>[
                     AutoSizeText("Sabit Tel :",maxLines:1,
                         style: TextStyle(color: Colors.grey)),
-                    AutoSizeText(firma.firmaSabitTel,maxLines:1),
+                    GestureDetector(child: AutoSizeText(firma.firmaSabitTel,maxLines:1),
+                    onTap: (){
+                      launch("tel://"+firma.firmaSabitTel);
+                    },),
                   ],
                 ),
                 Row(

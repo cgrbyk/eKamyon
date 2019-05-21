@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:ekamyon/database.dart';
 import 'package:flutter/material.dart';
 import 'package:ekamyon/Modeller/musteri.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Musteriler extends StatefulWidget {
   @override
@@ -31,7 +32,8 @@ class _MusterilerState extends State<Musteriler> {
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          title: Center(child: new Text(musteri.firstname+" "+musteri.lastname)),
+          title: Center(
+              child: new Text(musteri.firstname + " " + musteri.lastname)),
           content: SizedBox(
             height: MediaQuery.of(context).size.height * 0.2,
             child: Column(
@@ -44,13 +46,15 @@ class _MusterilerState extends State<Musteriler> {
                 ),
                 Row(
                   children: <Widget>[
-                    Text("Musteri İlçe :", style: TextStyle(color: Colors.grey)),
+                    Text("Musteri İlçe :",
+                        style: TextStyle(color: Colors.grey)),
                     Text(musteri.musteriilce),
                   ],
                 ),
                 Row(
                   children: <Widget>[
-                    Text("Musteri Adres :", style: TextStyle(color: Colors.grey)),
+                    Text("Musteri Adres :",
+                        style: TextStyle(color: Colors.grey)),
                     Text(musteri.musteriadres),
                   ],
                 ),
@@ -58,7 +62,12 @@ class _MusterilerState extends State<Musteriler> {
                   children: <Widget>[
                     Text("Musteri Cep NO :",
                         style: TextStyle(color: Colors.grey)),
-                    Text(musteri.musteriiletisimtel),
+                    GestureDetector(
+                      child: Text(musteri.musteriiletisimtel),
+                      onTap: () {
+                        launch("tel://" + musteri.musteriiletisimtel);
+                      },
+                    ),
                   ],
                 ),
                 Row(
@@ -148,7 +157,7 @@ class _MusterilerState extends State<Musteriler> {
                         ),
                         onPressed: () {
                           _showDetay(musteriler[index]);
-                        }, 
+                        },
                       )
                     ],
                   ),
