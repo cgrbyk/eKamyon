@@ -255,14 +255,14 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
     double tam = double.parse(tamUCret);
     tam = tam + ((tam / 100) * 5); //komisyon
     tam += sigorta ? sigortaFiyati : 0; //sigorta ekleme
-    tam += ekFiyatHesapla(mevcutIlceler
+    tam += int.tryParse((mevcutIlceler
             .singleWhere((ilce) => ilce.ilceAdi == curItemIlcemevcut)
-            .merkezeuzaklik ??
-        0);//mevcut ilçe ek fiyat
-    tam += ekFiyatHesapla(varisIlceler
+            .merkezeuzaklik) ??
+        0); //mevcut ilçe ek fiyat
+    tam += int.tryParse((varisIlceler
             .singleWhere((ilce) => ilce.ilceAdi == curItemIlcevaris)
-            .merkezeuzaklik ??
-        0);//variş ilçe ek fiyat
+            .merkezeuzaklik) ??
+        0); //variş ilçe ek fiyat
     return tam.round();
   }
 
