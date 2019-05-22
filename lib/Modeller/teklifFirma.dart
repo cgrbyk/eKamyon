@@ -44,9 +44,10 @@ class TeklifFirma {
 
   static List<TeklifFirma> fromArray(var jsonArray) {
     List<TeklifFirma> gelenmesajlar = List<TeklifFirma>();
-    for (Map<String, dynamic> json in jsonArray) {
-      gelenmesajlar.add(TeklifFirma.fromJson(json));
-    }
+    if (jsonArray != null)
+      for (Map<String, dynamic> json in jsonArray) {
+        gelenmesajlar.add(TeklifFirma.fromJson(json));
+      }
     return gelenmesajlar;
   }
 }

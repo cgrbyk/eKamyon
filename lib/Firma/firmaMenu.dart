@@ -1,5 +1,6 @@
 import 'package:ekamyon/Firma/FirmaBilgisiGuncelle.dart';
 import 'package:ekamyon/Firma/bekliyenNakliyeler.dart';
+import 'package:ekamyon/Firma/tamalananNakliyeler.dart';
 import 'package:flutter/material.dart';
 import 'package:ekamyon/Modeller/aktifKullaniciBilgileri.dart';
 import 'FiyatListesi.dart';
@@ -14,7 +15,7 @@ class FirmaMenu extends StatefulWidget {
 
 class FirmaMenuEkrani extends State<FirmaMenu> {
   stateGuncelle() {
-    setState(() {});
+    if (this.mounted) {           setState(() {});         }
   }
 
   Widget getImageButton(String imagePath, String isim) {
@@ -138,7 +139,16 @@ class FirmaMenuEkrani extends State<FirmaMenu> {
               ),
               Row(
                 children: <Widget>[
-                  getImageButton("tamamlanan.png", "Tamamlanan nakliyeler"),
+                  GestureDetector
+                  (child: getImageButton("tamamlanan.png", "Tamamlanan nakliyeler"),
+                  onTap: (){
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => TamamlananNakliyeler()),
+                      );
+                  },
+                  ),
                   GestureDetector(
                     child: getImageButton(
                         "bildirimayarlari.png", "Bildirim Ayarları"),
@@ -188,7 +198,7 @@ class BildirimEkraniPopup extends State<BildirimEkrani> {
                   title: Text("Titreşim ile bildirim"),
                   onChanged: (bool value) {
                     titresimBildirim = value;
-                    setState(() {});
+                    if (this.mounted) {           setState(() {});         }
                   },
                 ),
                 CheckboxListTile(
@@ -196,7 +206,7 @@ class BildirimEkraniPopup extends State<BildirimEkrani> {
                   title: Text("Ses ile bildirim"),
                   onChanged: (bool value) {
                     sesliBildirim = value;
-                    setState(() {});
+                    if (this.mounted) {           setState(() {});         }
                   },
                 ),
               ],

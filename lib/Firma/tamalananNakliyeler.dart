@@ -4,12 +4,12 @@ import 'package:ekamyon/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-class BekleyenNakliyeler extends StatefulWidget {
+class TamamlananNakliyeler extends StatefulWidget {
   @override
-  _BekleyenNakliyelerState createState() => _BekleyenNakliyelerState();
+  _TamamlananNakliyelerState createState() => _TamamlananNakliyelerState();
 }
 
-class _BekleyenNakliyelerState extends State<BekleyenNakliyeler> {
+class _TamamlananNakliyelerState extends State<TamamlananNakliyeler> {
   Database _database = Database();
   List<Nakliye> nakliyeler = List<Nakliye>();
   int itemcount = 1;
@@ -17,18 +17,18 @@ class _BekleyenNakliyelerState extends State<BekleyenNakliyeler> {
   @override
   void initState() {
     super.initState();
-    bekleyenNakliyeleriAl();
+    tamamlananNakliyeleriAl();
   }
 
-  bekleyenNakliyeleriAl() async {
-    nakliyeler = await _database.getBekleyenNakliyeler();
+  tamamlananNakliyeleriAl() async {
+    nakliyeler = await _database.getTamamlananNakliyeler();
     itemcount = nakliyeler.length;
     loading = false;
     if (this.mounted) {           setState(() {});         }
   }
 
   void _showDetay(Nakliye n) {
-    showDialog(     
+    showDialog(
       context: context,
       builder: (BuildContext context) {
         // return object of type Dialog
@@ -39,9 +39,13 @@ class _BekleyenNakliyelerState extends State<BekleyenNakliyeler> {
             child: ListView(
               shrinkWrap: true,
               children: <Widget>[
-                AutoSizeText("Taşıma türü :",
-                    style: TextStyle(color: Colors.grey), maxLines: 1),
-                AutoSizeText(n.tasinmaTuru),
+                Row(
+                  children: <Widget>[
+                    AutoSizeText("Taşıma türü :",
+                        style: TextStyle(color: Colors.grey), maxLines: 1),
+                    AutoSizeText(n.tasinmaTuru),
+                  ],
+                ),
                 Row(
                   children: <Widget>[
                     AutoSizeText("Mevcut ili :",
@@ -119,10 +123,10 @@ class _BekleyenNakliyelerState extends State<BekleyenNakliyeler> {
                     style: TextStyle(color: Colors.grey), maxLines: 1),
                 AutoSizeText(n.nasilTasinacak),
                 Row(
-                  children: <Widget>[ 
-                    AutoSizeText(n.mevcutOda==null?"Esya Cinsi":"Evin büyüklüğü :",
+                  children: <Widget>[
+                    AutoSizeText("Evin büyüklüğü :",
                         style: TextStyle(color: Colors.grey), maxLines: 1),
-                    AutoSizeText(n.mevcutOda ?? n.esyaCinsi),
+                    AutoSizeText(n.mevcutOda),
                   ],
                 ),
                 Row(
@@ -137,13 +141,6 @@ class _BekleyenNakliyelerState extends State<BekleyenNakliyeler> {
                     AutoSizeText("Varış ev katı :",
                         style: TextStyle(color: Colors.grey), maxLines: 1),
                     AutoSizeText(n.varisKat),
-                  ],
-                ),
-                Row(
-                  children: <Widget>[
-                    AutoSizeText("Sigorta :",
-                        style: TextStyle(color: Colors.grey), maxLines: 1),
-                    AutoSizeText(n.sigorta),
                   ],
                 ),
                 Visibility(
@@ -218,9 +215,9 @@ class _BekleyenNakliyelerState extends State<BekleyenNakliyeler> {
                     ),
                     Column(
                       children: <Widget>[
-                        AutoSizeText("Tarih",
+                        AutoSizeText("Ödeme Durumu",
                             style: TextStyle(color: Colors.grey), maxLines: 1),
-                        AutoSizeText(nakliyeler[index].tasinmaTarihi,
+                        AutoSizeText(nakliyeler[index].odemeDurumu,
                             style: TextStyle(color: Colors.grey[600]),
                             maxLines: 1),
                       ],

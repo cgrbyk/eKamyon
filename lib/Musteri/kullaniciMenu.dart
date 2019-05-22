@@ -13,7 +13,7 @@ class KullaniciMenu extends StatefulWidget {
 
 class KullaniciMenuEkrani extends State<KullaniciMenu> {
   stateGuncelle() {
-    setState(() {});
+    if (this.mounted) {           setState(() {});         }
   }
 
   Widget getImageButton(String imagePath, String isim) {
@@ -188,7 +188,7 @@ class BildirimEkraniPopup extends State<BildirimEkrani> {
                   title: Text("Titreşim ile bildirim"),
                   onChanged: (bool value) {
                     titresimBildirim = value;
-                    setState(() {});
+                    if (this.mounted) {           setState(() {});         }
                   },
                 ),
                 CheckboxListTile(
@@ -196,7 +196,7 @@ class BildirimEkraniPopup extends State<BildirimEkrani> {
                   title: Text("Ses ile bildirim"),
                   onChanged: (bool value) {
                     sesliBildirim = value;
-                    setState(() {});
+                    if (this.mounted) {           setState(() {});         }
                   },
                 ),
               ],

@@ -73,7 +73,7 @@ class AracListeEkrani extends State<AracListe> {
 
   aracListesiDoldur() async {
     araclar = Arac.fromArray(await _database.araclar());
-    setState(() {});
+    if (this.mounted) {           setState(() {});         }
   }
 
   @override
@@ -289,7 +289,7 @@ class YeniAracEkle extends State<AracEklemeDialog> {
                               fontWeight: FontWeight.bold)),
                       onPressed: () {
                         Navigator.of(context).pop();
-                        setState(() {});
+                        if (this.mounted) {           setState(() {});         }
                       },
                     ),
                     new FlatButton(
@@ -308,7 +308,7 @@ class YeniAracEkle extends State<AracEklemeDialog> {
                           _showDialog(
                               "Ekleme Başarılı", "Yeni aracınız eklenmiştir.");
                           ale.aracListesiDoldur();
-                          setState(() {});
+                          if (this.mounted) {           setState(() {});         }
                         } else {
                           _showDialog("Boş bırakılamaz",
                               "Bütün alanları doldurmalısınız");
@@ -395,7 +395,7 @@ class AracGuncelleme extends State<AracGuncellemeDialog> {
                 if (islemsonuc) {
                   _showDialog("Araç silme", "Araç silme işlemi başarılı.");
                   ale.aracListesiDoldur();
-                  setState(() {});
+                  if (this.mounted) {           setState(() {});         }
                 }
               },
             ),
@@ -506,7 +506,7 @@ class AracGuncelleme extends State<AracGuncellemeDialog> {
                                   aracMarka.text, aracModel.text, aracaktifmi);
                               _showDialog(
                                   "Araç", "Araç bilgileriniz güncellenmiştir.");
-                              setState(() {});
+                              if (this.mounted) {           setState(() {});         }
                             } else {
                               _showDialog("Boş bırakılamaz",
                                   "Bütün alanları doldurmalısınız");
@@ -534,7 +534,7 @@ class AracGuncelleme extends State<AracGuncellemeDialog> {
                                   fontWeight: FontWeight.bold)),
                           onTap: () {
                             Navigator.of(context).pop();
-                            setState(() {});
+                            if (this.mounted) {           setState(() {});         }
                           },
                         ),
                       ],
@@ -626,7 +626,7 @@ class _ShowCalenderState extends State<ShowCalender> {
       musaitTarihler.add(tarih.musaitOlduguTarih);
     }
     tarihCekim = true;
-    setState(() {});
+    if (this.mounted) {           setState(() {});         }
   }
 
   @override
@@ -648,7 +648,7 @@ class _ShowCalenderState extends State<ShowCalender> {
                         ? takvimzamani = DateTime(takvimzamani.year,
                             takvimzamani.month, DateTime.now().day)
                         : DateTime.now();
-                    setState(() {});
+                    if (this.mounted) {           setState(() {});         }
                   }
                 },
               ),
@@ -659,7 +659,7 @@ class _ShowCalenderState extends State<ShowCalender> {
                 icon: Icon(Icons.arrow_right),
                 onPressed: () {
                   takvimzamani = getFirstDayOfNextMonth(takvimzamani);
-                  setState(() {});
+                  if (this.mounted) {           setState(() {});         }
                 },
               ),
             ],
@@ -711,7 +711,7 @@ class _ShowCalenderState extends State<ShowCalender> {
                     print(e.velocity.pixelsPerSecond.dx);
                     if (e.velocity.pixelsPerSecond.dx < -1000) {
                       takvimzamani = getFirstDayOfNextMonth(takvimzamani);
-                      setState(() {});
+                      if (this.mounted) {           setState(() {});         }
                     } else if (e.velocity.pixelsPerSecond.dx > 1000) {
                       if (takvimzamani.month != DateTime.now().month &&
                           takvimzamani.year == DateTime.now().year) {
@@ -721,7 +721,7 @@ class _ShowCalenderState extends State<ShowCalender> {
                             ? takvimzamani = DateTime(takvimzamani.year,
                                 takvimzamani.month, DateTime.now().day)
                             : DateTime.now();
-                        setState(() {});
+                        if (this.mounted) {           setState(() {});         }
                       }
                     }
                   },

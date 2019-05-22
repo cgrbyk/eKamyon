@@ -1,4 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:ekamyon/Modeller/EkFiyatlar.dart';
+import 'package:ekamyon/Modeller/Ilce.dart';
 import 'package:ekamyon/Modeller/teklifFirma.dart';
 import 'package:ekamyon/database.dart';
 import 'package:flutter/material.dart';
@@ -17,9 +19,7 @@ class _EsyaTasimaState extends State<EsyaTasima> {
   TextEditingController esyaGelecekKat = TextEditingController();
   TextEditingController binayaYakinlik = TextEditingController();
 
-  TextEditingController mevcutIlce = TextEditingController();
   TextEditingController mevcutAdres = TextEditingController();
-  TextEditingController yeniIlce = TextEditingController();
   TextEditingController yeniAdres = TextEditingController();
 
   FocusNode esyaMevcutKatNode = FocusNode();
@@ -33,6 +33,15 @@ class _EsyaTasimaState extends State<EsyaTasima> {
   bool showSigorta = false;
   bool sigorta = true;
   int sigortaHeight = 0;
+
+  List<DropdownMenuItem> mevcutilcelerDDM = List<DropdownMenuItem>();
+  List<DropdownMenuItem> varisilcelerDDM = List<DropdownMenuItem>();
+  List<Ilce> mevcutIlceler = List<Ilce>();
+  List<Ilce> varisIlceler = List<Ilce>();
+  String curItemIlcemevcut;
+  String curItemIlcevaris;
+  EkFiyatlar _ekfiyat;
+  int sigortaFiyati = 0;
 
   List<String> sehirler = [
     'Adana',
@@ -258,7 +267,7 @@ class _EsyaTasimaState extends State<EsyaTasima> {
                               fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          gelenTeklifler[index].tasimaUcretiTam,
+                          ucretHesapla(gelenTeklifler[index].tasimaUcretiTam).toString(),
                           style:
                               TextStyle(fontSize: 18, color: Colors.lightGreen),
                         ),
@@ -270,27 +279,25 @@ class _EsyaTasimaState extends State<EsyaTasima> {
                         style: TextStyle(color: Colors.blue),
                       ),
                       onTap: () async {
-                        if (mevcutIlce.text.isNotEmpty &&
-                            mevcutAdres.text.isNotEmpty &&
+                        if (mevcutAdres.text.isNotEmpty &&
                             binayaYakinlik.text.isNotEmpty &&
-                            yeniIlce.text.isNotEmpty &&
                             yeniAdres.text.isNotEmpty) {
                           bool sonuc = await _database.esyaTasimaTeklifiSec(
                               secilenTarih,
                               curItemSehir,
-                              mevcutIlce.text,
+                              curItemIlcemevcut,
                               mevcutAdres.text,
                               esyaCinsi,
                               binayaYakinlik.text,
                               esyaTasimaSecim,
                               esyaPaketSecim,
                               newItemSehir,
-                              yeniIlce.text,
+                              curItemIlcevaris,
                               yeniAdres.text,
                               sigorta,
                               ortaklik,
                               gelenTeklifler[index].firmaID,
-                              gelenTeklifler[index].tasimaUcretiTam);
+                              ucretHesapla(gelenTeklifler[index].tasimaUcretiTam).toString());
                           sonuc
                               ? _showDialog("Başarılı",
                                   "Talebiniz firmaya iletilmiştir. Firma sizinle en kısa zamanda iletişime geçecektir.")
@@ -325,12 +332,14 @@ class _EsyaTasimaState extends State<EsyaTasima> {
       String placeholder,
       TextEditingController controller,
       TextInputAction action,
+      FocusNode ownFocus,
       FocusNode tofocus,
       bool password) {
     return Padding(
       padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
       child: TextField(
         obscureText: password,
+        focusNode: ownFocus,
         keyboardType: type,
         autofocus: false,
         decoration: InputDecoration(
@@ -358,6 +367,78 @@ class _EsyaTasimaState extends State<EsyaTasima> {
     }
     curItemSehir = sehirler.first;
     newItemSehir = sehirler.first;
+    ilceGetirMevcut(curItemSehir);
+    ilceGetirVaris(newItemSehir);
+    sigortaFiyatiAl();
+    ekFiyatGetir();
+  }
+
+  ekFiyatGetir() async {
+    _ekfiyat = await _database.ekFiyatlariCek();
+  }
+
+  sigortaFiyatiAl() async {
+    var json = await _database.sigortaFiyatiAl();
+    sigortaFiyati = int.parse(json[0]['Value'].toString());
+  }
+
+  ilceGetirMevcut(String aranansehir) async {
+    mevcutIlceler.clear();
+    mevcutilcelerDDM.clear();
+    mevcutIlceler =
+        Ilce.fromArray(await _database.ilceBilgileriCek(aranansehir));
+    for (Ilce ilce in mevcutIlceler) {
+      mevcutilcelerDDM.add(new DropdownMenuItem(
+        value: ilce.ilceAdi,
+        child: new Text(ilce.ilceAdi),
+      ));
+    }
+    curItemIlcemevcut = mevcutIlceler.first.ilceAdi;
+    if (this.mounted) {
+      setState(() {});
+    }
+  }
+
+  ilceGetirVaris(String arananSehir) async {
+    varisIlceler.clear();
+    varisilcelerDDM.clear();
+    varisIlceler =
+        Ilce.fromArray(await _database.ilceBilgileriCek(arananSehir));
+    for (Ilce ilce in varisIlceler) {
+      varisilcelerDDM.add(new DropdownMenuItem(
+        value: ilce.ilceAdi,
+        child: new Text(ilce.ilceAdi),
+      ));
+    }
+    curItemIlcevaris = varisIlceler.first.ilceAdi;
+    if (this.mounted) {
+      setState(() {});
+    }
+  }
+
+  ucretHesapla(String tamUCret) {
+    double tam = double.parse(tamUCret);
+    tam = tam + ((tam / 100) * 5); //komisyon
+    tam += sigorta ? sigortaFiyati : 0; //sigorta ekleme
+    tam += int.tryParse((mevcutIlceler
+            .singleWhere((ilce) => ilce.ilceAdi == curItemIlcemevcut)
+            .merkezeuzaklik) ??
+        0); //mevcut ilçe ek fiyat
+    tam += int.tryParse((varisIlceler
+            .singleWhere((ilce) => ilce.ilceAdi == curItemIlcevaris)
+            .merkezeuzaklik) ??
+        0); //variş ilçe ek fiyat
+    return tam.round();
+  }
+
+  ekFiyatHesapla(int uzaklik) {
+    if (uzaklik >= 0 && uzaklik <= 30)
+      return _ekfiyat.var1;
+    else if (uzaklik > 30 && uzaklik <= 50)
+      return _ekfiyat.var2;
+    else if (uzaklik > 50 && uzaklik <= 120)
+      return _ekfiyat.var3;
+    else if (uzaklik > 120) return _ekfiyat.var4;
   }
 
   @override
@@ -419,7 +500,9 @@ class _EsyaTasimaState extends State<EsyaTasima> {
                                     onConfirm: (date) {
                                   print('confirm $date');
                                   secilenTarih = date;
-                                  setState(() {});
+                                  if (this.mounted) {
+                                    setState(() {});
+                                  }
                                 },
                                     currentTime: DateTime.now(),
                                     locale: LocaleType.tr);
@@ -463,7 +546,9 @@ class _EsyaTasimaState extends State<EsyaTasima> {
                             ],
                             onChanged: (String s) {
                               esyaCinsi = s;
-                              setState(() {});
+                              if (this.mounted) {
+                                setState(() {});
+                              }
                             },
                           )
                         ],
@@ -510,7 +595,9 @@ class _EsyaTasimaState extends State<EsyaTasima> {
                       ],
                       onChanged: (String s) {
                         esyaPaketSecim = s;
-                        setState(() {});
+                        if (this.mounted) {
+                          setState(() {});
+                        }
                       },
                     ),
                     Padding(
@@ -549,7 +636,9 @@ class _EsyaTasimaState extends State<EsyaTasima> {
                       ],
                       onChanged: (String s) {
                         esyaTasimaSecim = s;
-                        setState(() {});
+                        if (this.mounted) {
+                          setState(() {});
+                        }
                       },
                     ),
                     Padding(
@@ -560,6 +649,7 @@ class _EsyaTasimaState extends State<EsyaTasima> {
                           binayaYakinlik,
                           TextInputAction.done,
                           new FocusNode(),
+                          null,
                           false),
                     ),
                   ],
@@ -581,7 +671,7 @@ class _EsyaTasimaState extends State<EsyaTasima> {
                       child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            " Mevcut esya adresiniz ?",
+                            " Mevcut Ev adresiniz ?",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.blue[800]),
@@ -597,17 +687,24 @@ class _EsyaTasimaState extends State<EsyaTasima> {
                             newItemSehir == curItemSehir
                                 ? showSigorta = false
                                 : showSigorta = true;
-                            setState(() {});
+                            ilceGetirMevcut(curItemSehir);
+                            if (this.mounted) {
+                              setState(() {});
+                            }
                           },
                         ),
                         Expanded(
-                            child: customTextBox(
-                                TextInputType.text,
-                                "İlçe Adı",
-                                mevcutIlce,
-                                TextInputAction.done,
-                                new FocusNode(),
-                                false)),
+                            child: DropdownButton(
+                          isExpanded: true,
+                          items: mevcutilcelerDDM,
+                          value: curItemIlcemevcut,
+                          onChanged: (dynamic dmi) {
+                            curItemIlcemevcut = dmi;
+                            if (this.mounted) {
+                              setState(() {});
+                            }
+                          },
+                        )),
                       ],
                     ),
                     customTextBox(
@@ -615,6 +712,7 @@ class _EsyaTasimaState extends State<EsyaTasima> {
                         "Mahalle/Cadde/Sokak/DaireNo/KapıNo",
                         mevcutAdres,
                         TextInputAction.done,
+                        null,
                         new FocusNode(),
                         false),
                     Padding(
@@ -622,7 +720,7 @@ class _EsyaTasimaState extends State<EsyaTasima> {
                       child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            " Yeni esya adresiniz ?",
+                            " Yeni Ev adresiniz ?",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.blue[800]),
@@ -638,17 +736,24 @@ class _EsyaTasimaState extends State<EsyaTasima> {
                             newItemSehir == curItemSehir
                                 ? showSigorta = false
                                 : showSigorta = true;
-                            setState(() {});
+                            ilceGetirVaris(newItemSehir);
+                            if (this.mounted) {
+                              setState(() {});
+                            }
                           },
                         ),
                         Expanded(
-                            child: customTextBox(
-                                TextInputType.text,
-                                "İlçe Adı",
-                                yeniIlce,
-                                TextInputAction.done,
-                                new FocusNode(),
-                                false)),
+                            child: DropdownButton(
+                          isExpanded: true,
+                          items: varisilcelerDDM,
+                          value: curItemIlcevaris,
+                          onChanged: (dynamic dmi) {
+                            curItemIlcevaris = dmi;
+                            if (this.mounted) {
+                              setState(() {});
+                            }
+                          },
+                        )),
                       ],
                     ),
                     customTextBox(
@@ -656,6 +761,7 @@ class _EsyaTasimaState extends State<EsyaTasima> {
                         "Mahalle/Cadde/Sokak/DaireNo/KapıNo",
                         yeniAdres,
                         TextInputAction.done,
+                        null,
                         new FocusNode(),
                         false),
                     Visibility(
@@ -676,7 +782,9 @@ class _EsyaTasimaState extends State<EsyaTasima> {
                                     title: Text("Evet"),
                                     onChanged: (bool s) {
                                       sigorta = true;
-                                      setState(() {});
+                                      if (this.mounted) {
+                                        setState(() {});
+                                      }
                                     }),
                               ),
                               Expanded(
@@ -686,7 +794,9 @@ class _EsyaTasimaState extends State<EsyaTasima> {
                                         maxLines: 1),
                                     onChanged: (bool s) {
                                       sigorta = false;
-                                      setState(() {});
+                                      if (this.mounted) {
+                                        setState(() {});
+                                      }
                                     }),
                               ),
                             ],
@@ -718,7 +828,9 @@ class _EsyaTasimaState extends State<EsyaTasima> {
                               title: Text("Evet"),
                               onChanged: (bool s) {
                                 ortaklik = true;
-                                setState(() {});
+                                if (this.mounted) {
+                                  setState(() {});
+                                }
                               }),
                         ),
                         SizedBox(
@@ -728,7 +840,9 @@ class _EsyaTasimaState extends State<EsyaTasima> {
                               title: Text("İstemiyorum"),
                               onChanged: (bool s) {
                                 ortaklik = false;
-                                setState(() {});
+                                if (this.mounted) {
+                                  setState(() {});
+                                }
                               }),
                         ),
                       ],

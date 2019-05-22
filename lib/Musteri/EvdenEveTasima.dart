@@ -21,9 +21,7 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
   TextEditingController ofisGelecekKat = TextEditingController();
   TextEditingController binayaYakinlik = TextEditingController();
 
-  TextEditingController mevcutIlce = TextEditingController();
   TextEditingController mevcutAdres = TextEditingController();
-  TextEditingController yeniIlce = TextEditingController();
   TextEditingController yeniAdres = TextEditingController();
 
   FocusNode ofisOdaSayisiNode = FocusNode();
@@ -146,7 +144,7 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
       ));
     }
     curItemIlcemevcut = mevcutIlceler.first.ilceAdi;
-    setState(() {});
+    if (this.mounted) {           setState(() {});         }
   }
 
   ilceGetirVaris(String arananSehir) async {
@@ -161,7 +159,7 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
       ));
     }
     curItemIlcevaris = varisIlceler.first.ilceAdi;
-    setState(() {});
+    if (this.mounted) {           setState(() {});         }
   }
 
   void _showDialog(String title, String message) {
@@ -340,26 +338,24 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                       ),
                       onTap: () async {
                         String esyaListesi = esyaListesiHesaplama();
-                        if (mevcutIlce.text.isNotEmpty &&
-                            mevcutAdres.text.isNotEmpty &&
+                        if (mevcutAdres.text.isNotEmpty &&
                             ofisOdaSayisi.isNotEmpty &&
                             ofisMevcutKat.text.isNotEmpty &&
                             binayaYakinlik.text.isNotEmpty &&
-                            yeniIlce.text.isNotEmpty &&
                             yeniAdres.text.isNotEmpty &&
                             ofisGelecekKat.text.isNotEmpty) {
                           bool sonuc = await _database.tasimateklifiSec(
                               secilenTarih,
                               curItemSehir,
-                              mevcutIlce.text,
-                              mevcutAdres.text,
+                              curItemIlcemevcut,
+                              curItemIlcemevcut,
                               ofisOdaSayisi,
                               ofisMevcutKat.text,
                               binayaYakinlik.text,
                               esyaTasimaSecim,
                               esyaPaketSecim,
                               newItemSehir,
-                              yeniIlce.text,
+                              curItemIlcevaris,
                               yeniAdres.text,
                               ofisGelecekKat.text,
                               sigorta,
@@ -743,7 +739,7 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                                       onConfirm: (date) {
                                     print('confirm $date');
                                     secilenTarih = date;
-                                    setState(() {});
+                                    if (this.mounted) {           setState(() {});         }
                                   },
                                       currentTime: DateTime.now(),
                                       locale: LocaleType.tr);
@@ -791,7 +787,7 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                                   ],
                                   onChanged: (String s) {
                                     ofisOdaSayisi = s;
-                                    setState(() {});
+                                    if (this.mounted) {           setState(() {});         }
                                   },
                                 ),
                               ),
@@ -861,7 +857,7 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                           ],
                           onChanged: (String s) {
                             esyaPaketSecim = s;
-                            setState(() {});
+                            if (this.mounted) {           setState(() {});         }
                           },
                         ),
                         Padding(
@@ -901,7 +897,7 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                           ],
                           onChanged: (String s) {
                             esyaTasimaSecim = s;
-                            setState(() {});
+                            if (this.mounted) {           setState(() {});         }
                           },
                         ),
                         Padding(
@@ -1571,7 +1567,7 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                           child: Align(
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                " Mevcut ofis adresiniz ?",
+                                " Mevcut Ev adresiniz ?",
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.blue[800]),
@@ -1588,7 +1584,7 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                                     ? showSigorta = false
                                     : showSigorta = true;
                                 ilceGetirMevcut(curItemSehir);
-                                setState(() {});
+                                if (this.mounted) {           setState(() {});         }
                               },
                             ),
                             Expanded(
@@ -1598,7 +1594,7 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                               value: curItemIlcemevcut,
                               onChanged: (dynamic dmi) {
                                 curItemIlcemevcut = dmi;
-                                setState(() {});
+                                if (this.mounted) {           setState(() {});         }
                               },
                             )),
                           ],
@@ -1616,7 +1612,7 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                           child: Align(
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                " Yeni ofis adresiniz ?",
+                                " Yeni Ev adresiniz ?",
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.blue[800]),
@@ -1633,7 +1629,7 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                                     ? showSigorta = false
                                     : showSigorta = true;
                                 ilceGetirVaris(newItemSehir);
-                                setState(() {});
+                                if (this.mounted) {           setState(() {});         }
                               },
                             ),
                             Expanded(
@@ -1643,7 +1639,7 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                               value: curItemIlcevaris,
                               onChanged: (dynamic dmi) {
                                 curItemIlcevaris = dmi;
-                                setState(() {});
+                                if (this.mounted) {           setState(() {});         }
                               },
                             )),
                           ],
@@ -1687,7 +1683,7 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                                         title: Text("Evet"),
                                         onChanged: (bool s) {
                                           sigorta = true;
-                                          setState(() {});
+                                          if (this.mounted) {           setState(() {});         }
                                         }),
                                   ),
                                   Expanded(
@@ -1697,7 +1693,7 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                                             maxLines: 1),
                                         onChanged: (bool s) {
                                           sigorta = false;
-                                          setState(() {});
+                                          if (this.mounted) {           setState(() {});         }
                                         }),
                                   ),
                                 ],
@@ -1730,7 +1726,7 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                                   title: Text("Evet"),
                                   onChanged: (bool s) {
                                     ortaklik = true;
-                                    setState(() {});
+                                    if (this.mounted) {           setState(() {});         }
                                   }),
                             ),
                             SizedBox(
@@ -1740,7 +1736,7 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                                   title: Text("İstemiyorum"),
                                   onChanged: (bool s) {
                                     ortaklik = false;
-                                    setState(() {});
+                                    if (this.mounted) {           setState(() {});         }
                                   }),
                             ),
                           ],

@@ -15,9 +15,10 @@ class AracMusaitlik {
 
   static List<AracMusaitlik> fromArray(var jsonArray) {
     List<AracMusaitlik> gelenmesajlar = List<AracMusaitlik>();
-    for (Map<String, dynamic> json in jsonArray) {
-      gelenmesajlar.add(AracMusaitlik.fromJson(json));
-    }
+    if (jsonArray != null)
+      for (Map<String, dynamic> json in jsonArray) {
+        gelenmesajlar.add(AracMusaitlik.fromJson(json));
+      }
     return gelenmesajlar;
   }
 }

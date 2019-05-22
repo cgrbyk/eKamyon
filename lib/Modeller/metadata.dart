@@ -21,9 +21,10 @@ class Metadata {
 
   static List<Metadata> fromArray(var jsonArray) {
     List<Metadata> gelenmesajlar = List<Metadata>();
-    for (Map<String, dynamic> json in jsonArray) {
-      gelenmesajlar.add(Metadata.fromJson(json));
-    }
+    if (jsonArray != null)
+      for (Map<String, dynamic> json in jsonArray) {
+        gelenmesajlar.add(Metadata.fromJson(json));
+      }
     return gelenmesajlar;
   }
 }

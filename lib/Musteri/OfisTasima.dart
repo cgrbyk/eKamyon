@@ -1,3 +1,5 @@
+import 'package:ekamyon/Modeller/EkFiyatlar.dart';
+import 'package:ekamyon/Modeller/Ilce.dart';
 import 'package:ekamyon/Modeller/teklifFirma.dart';
 import 'package:ekamyon/database.dart';
 import 'package:flutter/material.dart';
@@ -20,9 +22,7 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
   TextEditingController ofisGelecekKat = TextEditingController();
   TextEditingController binayaYakinlik = TextEditingController();
 
-  TextEditingController mevcutIlce = TextEditingController();
   TextEditingController mevcutAdres = TextEditingController();
-  TextEditingController yeniIlce = TextEditingController();
   TextEditingController yeniAdres = TextEditingController();
 
   FocusNode ofisMevcutKatNode = FocusNode();
@@ -32,6 +32,15 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
   String esyaTasimaSecim = " Bina merdiveni kullanılacak";
 
   bool ortaklik = true;
+
+  List<DropdownMenuItem> mevcutilcelerDDM = List<DropdownMenuItem>();
+  List<DropdownMenuItem> varisilcelerDDM = List<DropdownMenuItem>();
+  List<Ilce> mevcutIlceler = List<Ilce>();
+  List<Ilce> varisIlceler = List<Ilce>();
+  String curItemIlcemevcut;
+  String curItemIlcevaris;
+  EkFiyatlar _ekfiyat;
+  int sigortaFiyati = 0;
 
   List<String> sehirler = [
     'Adana',
@@ -257,7 +266,8 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
                               fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          gelenTeklifler[index].tasimaUcretiTam,
+                          ucretHesapla(gelenTeklifler[index].tasimaUcretiTam)
+                              .toString(),
                           style:
                               TextStyle(fontSize: 18, color: Colors.lightGreen),
                         ),
@@ -269,32 +279,32 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
                         style: TextStyle(color: Colors.blue),
                       ),
                       onTap: () async {
-                        if (mevcutIlce.text.isNotEmpty &&
-                            mevcutAdres.text.isNotEmpty &&
+                        if (mevcutAdres.text.isNotEmpty &&
                             ofisOdaSayisi.isNotEmpty &&
                             ofisMevcutKat.text.isNotEmpty &&
                             binayaYakinlik.text.isNotEmpty &&
-                            yeniIlce.text.isNotEmpty &&
                             yeniAdres.text.isNotEmpty &&
                             ofisGelecekKat.text.isNotEmpty) {
                           bool sonuc = await _database.ofisTasimaTeklifKabul(
                               ofisOdaSayisi,
                               secilenTarih,
                               curItemSehir,
-                              mevcutIlce.text,
+                              curItemIlcemevcut,
                               mevcutAdres.text,
                               ofisMevcutKat.text,
                               binayaYakinlik.text,
                               esyaTasimaSecim,
                               esyaPaketSecim,
                               newItemSehir,
-                              yeniIlce.text,
+                              curItemIlcevaris,
                               yeniAdres.text,
                               ofisGelecekKat.text,
                               sigorta,
                               ortaklik,
                               gelenTeklifler[index].firmaID,
-                              gelenTeklifler[index].tasimaUcretiTam);
+                              ucretHesapla(
+                                      gelenTeklifler[index].tasimaUcretiTam)
+                                  .toString());
                           sonuc
                               ? _showDialog("Başarılı",
                                   "Talebiniz firmaya iletilmiştir. Firma sizinle en kısa zamanda iletişime geçecektir.")
@@ -329,12 +339,14 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
       String placeholder,
       TextEditingController controller,
       TextInputAction action,
+      FocusNode ownFocus,
       FocusNode tofocus,
       bool password) {
     return Padding(
       padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
       child: TextField(
         obscureText: password,
+        focusNode: ownFocus,
         keyboardType: type,
         autofocus: false,
         decoration: InputDecoration(
@@ -362,6 +374,78 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
     }
     curItemSehir = sehirler.first;
     newItemSehir = sehirler.first;
+    ilceGetirMevcut(curItemSehir);
+    ilceGetirVaris(newItemSehir);
+    sigortaFiyatiAl();
+    ekFiyatGetir();
+  }
+
+  ekFiyatGetir() async {
+    _ekfiyat = await _database.ekFiyatlariCek();
+  }
+
+  sigortaFiyatiAl() async {
+    var json = await _database.sigortaFiyatiAl();
+    sigortaFiyati = int.parse(json[0]['Value'].toString());
+  }
+
+  ilceGetirMevcut(String aranansehir) async {
+    mevcutIlceler.clear();
+    mevcutilcelerDDM.clear();
+    mevcutIlceler =
+        Ilce.fromArray(await _database.ilceBilgileriCek(aranansehir));
+    for (Ilce ilce in mevcutIlceler) {
+      mevcutilcelerDDM.add(new DropdownMenuItem(
+        value: ilce.ilceAdi,
+        child: new Text(ilce.ilceAdi),
+      ));
+    }
+    curItemIlcemevcut = mevcutIlceler.first.ilceAdi;
+    if (this.mounted) {
+      setState(() {});
+    }
+  }
+
+  ilceGetirVaris(String arananSehir) async {
+    varisIlceler.clear();
+    varisilcelerDDM.clear();
+    varisIlceler =
+        Ilce.fromArray(await _database.ilceBilgileriCek(arananSehir));
+    for (Ilce ilce in varisIlceler) {
+      varisilcelerDDM.add(new DropdownMenuItem(
+        value: ilce.ilceAdi,
+        child: new Text(ilce.ilceAdi),
+      ));
+    }
+    curItemIlcevaris = varisIlceler.first.ilceAdi;
+    if (this.mounted) {
+      setState(() {});
+    }
+  }
+
+  ucretHesapla(String tamUCret) {
+    double tam = double.parse(tamUCret);
+    tam = tam + ((tam / 100) * 5); //komisyon
+    tam += sigorta ? sigortaFiyati : 0; //sigorta ekleme
+    tam += int.tryParse((mevcutIlceler
+            .singleWhere((ilce) => ilce.ilceAdi == curItemIlcemevcut)
+            .merkezeuzaklik) ??
+        0); //mevcut ilçe ek fiyat
+    tam += int.tryParse((varisIlceler
+            .singleWhere((ilce) => ilce.ilceAdi == curItemIlcevaris)
+            .merkezeuzaklik) ??
+        0); //variş ilçe ek fiyat
+    return tam.round();
+  }
+
+  ekFiyatHesapla(int uzaklik) {
+    if (uzaklik >= 0 && uzaklik <= 30)
+      return _ekfiyat.var1;
+    else if (uzaklik > 30 && uzaklik <= 50)
+      return _ekfiyat.var2;
+    else if (uzaklik > 50 && uzaklik <= 120)
+      return _ekfiyat.var3;
+    else if (uzaklik > 120) return _ekfiyat.var4;
   }
 
   @override
@@ -422,7 +506,9 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
                                     onConfirm: (date) {
                                   print('confirm $date');
                                   secilenTarih = date;
-                                  setState(() {});
+                                  if (this.mounted) {
+                                    setState(() {});
+                                  }
                                 },
                                     currentTime: DateTime.now(),
                                     locale: LocaleType.tr);
@@ -470,7 +556,9 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
                                 ],
                                 onChanged: (String s) {
                                   ofisOdaSayisi = s;
-                                  setState(() {});
+                                  if (this.mounted) {
+                                    setState(() {});
+                                  }
                                 },
                               ),
                             ),
@@ -482,6 +570,7 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
                           "Ofisinizin şuan bulunduğu kat",
                           ofisMevcutKat,
                           TextInputAction.next,
+                          null,
                           ofisGelecekKatNode,
                           false),
                       customTextBox(
@@ -489,6 +578,7 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
                           "Yeni ofinizin katı",
                           ofisGelecekKat,
                           TextInputAction.next,
+                          null,
                           new FocusNode(),
                           false),
                     ],
@@ -550,7 +640,9 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
                       ],
                       onChanged: (String s) {
                         esyaPaketSecim = s;
-                        setState(() {});
+                        if (this.mounted) {
+                          setState(() {});
+                        }
                       },
                     ),
                     Padding(
@@ -589,7 +681,9 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
                       ],
                       onChanged: (String s) {
                         esyaTasimaSecim = s;
-                        setState(() {});
+                        if (this.mounted) {
+                          setState(() {});
+                        }
                       },
                     ),
                     Padding(
@@ -599,6 +693,7 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
                           "Nakliye aracı binaya ne kadar yaklaşabilir ? (Metre)",
                           binayaYakinlik,
                           TextInputAction.done,
+                          null,
                           new FocusNode(),
                           false),
                     ),
@@ -623,7 +718,7 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
                         child: Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              " Mevcut ofis adresiniz ?",
+                              " Mevcut Ev adresiniz ?",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.blue[800]),
@@ -639,17 +734,24 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
                               newItemSehir == curItemSehir
                                   ? showSigorta = false
                                   : showSigorta = true;
-                              setState(() {});
+                              ilceGetirMevcut(curItemSehir);
+                              if (this.mounted) {
+                                setState(() {});
+                              }
                             },
                           ),
                           Expanded(
-                              child: customTextBox(
-                                  TextInputType.text,
-                                  "İlçe Adı",
-                                  mevcutIlce,
-                                  TextInputAction.done,
-                                  new FocusNode(),
-                                  false)),
+                              child: DropdownButton(
+                            isExpanded: true,
+                            items: mevcutilcelerDDM,
+                            value: curItemIlcemevcut,
+                            onChanged: (dynamic dmi) {
+                              curItemIlcemevcut = dmi;
+                              if (this.mounted) {
+                                setState(() {});
+                              }
+                            },
+                          )),
                         ],
                       ),
                       customTextBox(
@@ -657,6 +759,7 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
                           "Mahalle/Cadde/Sokak/DaireNo/KapıNo",
                           mevcutAdres,
                           TextInputAction.done,
+                          null,
                           new FocusNode(),
                           false),
                       Padding(
@@ -664,7 +767,7 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
                         child: Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              " Yeni ofis adresiniz ?",
+                              " Yeni Ev adresiniz ?",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.blue[800]),
@@ -680,17 +783,24 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
                               newItemSehir == curItemSehir
                                   ? showSigorta = false
                                   : showSigorta = true;
-                              setState(() {});
+                              ilceGetirVaris(newItemSehir);
+                              if (this.mounted) {
+                                setState(() {});
+                              }
                             },
                           ),
                           Expanded(
-                              child: customTextBox(
-                                  TextInputType.text,
-                                  "İlçe Adı",
-                                  yeniIlce,
-                                  TextInputAction.done,
-                                  new FocusNode(),
-                                  false)),
+                              child: DropdownButton(
+                            isExpanded: true,
+                            items: varisilcelerDDM,
+                            value: curItemIlcevaris,
+                            onChanged: (dynamic dmi) {
+                              curItemIlcevaris = dmi;
+                              if (this.mounted) {
+                                setState(() {});
+                              }
+                            },
+                          )),
                         ],
                       ),
                       customTextBox(
@@ -698,6 +808,7 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
                           "Mahalle/Cadde/Sokak/DaireNo/KapıNo",
                           yeniAdres,
                           TextInputAction.done,
+                          null,
                           new FocusNode(),
                           false),
                       Visibility(
@@ -718,7 +829,9 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
                                       title: Text("Evet"),
                                       onChanged: (bool s) {
                                         sigorta = true;
-                                        setState(() {});
+                                        if (this.mounted) {
+                                          setState(() {});
+                                        }
                                       }),
                                 ),
                                 Expanded(
@@ -728,7 +841,9 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
                                           maxLines: 1),
                                       onChanged: (bool s) {
                                         sigorta = false;
-                                        setState(() {});
+                                        if (this.mounted) {
+                                          setState(() {});
+                                        }
                                       }),
                                 ),
                               ],
@@ -760,7 +875,9 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
                                 title: Text("Evet"),
                                 onChanged: (bool s) {
                                   ortaklik = true;
-                                  setState(() {});
+                                  if (this.mounted) {
+                                    setState(() {});
+                                  }
                                 }),
                           ),
                           Expanded(
@@ -772,7 +889,9 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
                                 ),
                                 onChanged: (bool s) {
                                   ortaklik = false;
-                                  setState(() {});
+                                  if (this.mounted) {
+                                    setState(() {});
+                                  }
                                 }),
                           ),
                         ],

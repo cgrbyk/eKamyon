@@ -4,7 +4,7 @@ class EkFiyatlar {
   final int var3;
   final int var4;
 
-  EkFiyatlar({this.var1, this.var2, this.var3,this.var4});
+  EkFiyatlar({this.var1, this.var2, this.var3, this.var4});
 
   factory EkFiyatlar.fromJson(Map<String, dynamic> json) {
     return EkFiyatlar(
@@ -17,9 +17,10 @@ class EkFiyatlar {
 
   static List<EkFiyatlar> fromArray(var jsonArray) {
     List<EkFiyatlar> gelenmesajlar = List<EkFiyatlar>();
-    for (Map<String, dynamic> json in jsonArray) {
-      gelenmesajlar.add(EkFiyatlar.fromJson(json));
-    }
+    if (jsonArray != null)
+      for (Map<String, dynamic> json in jsonArray) {
+        gelenmesajlar.add(EkFiyatlar.fromJson(json));
+      }
     return gelenmesajlar;
   }
 }

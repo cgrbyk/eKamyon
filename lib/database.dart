@@ -38,9 +38,11 @@ class Database {
     var json = jsonDecode(response.body);
     return json;
   }
-  sigortaFiyatiAl()async{
-    final response=await http.get("http://www.ekamyon.com/wp-app/select_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&SelectTuru=SigortaFiyati");
-    var json=jsonDecode(response.body);
+
+  sigortaFiyatiAl() async {
+    final response = await http.get(
+        "http://www.ekamyon.com/wp-app/select_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&SelectTuru=SigortaFiyati");
+    var json = jsonDecode(response.body);
     return json;
   }
 
@@ -54,7 +56,7 @@ class Database {
       'AracPlakasi': aracPlaka,
       'AracMarka': aracMarka,
       'AracModel': aracModel,
-      'AracAktifmi': aracaktifmi?'Evet':'Hayır',
+      'AracAktifmi': aracaktifmi ? 'Evet' : 'Hayır',
     });
     if (response.statusCode == 200)
       return true;
@@ -72,7 +74,7 @@ class Database {
       'AracPlakasi': aracPlaka,
       'AracMarka': aracMarka,
       'AracModel': aracModel,
-      'AracAktifmi': aracaktifmi?'Evet':'Hayır',
+      'AracAktifmi': aracaktifmi ? 'Evet' : 'Hayır',
     });
     if (response.statusCode == 200)
       return true;
@@ -149,11 +151,11 @@ class Database {
   }
 
   ekFiyatlariCek() async {
-     EkFiyatlar fiyatlar=EkFiyatlar();
+    EkFiyatlar fiyatlar = EkFiyatlar();
     final response = await http.get(
         "http://www.ekamyon.com/wp-app/select_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&SelectTuru=EkUcretler&FirmaID=" +
             AktifKullaniciBilgileri.firmaKodu.toString());
-    if(response.body!="null")
+    if (response.body != "null")
       fiyatlar = EkFiyatlar.fromArray(jsonDecode(response.body))[0];
     return fiyatlar;
   }
@@ -247,7 +249,7 @@ class Database {
         await http.post("http://www.ekamyon.com/wp-app/update_data.php", body: {
       'Token': 'a15f5r1e514r1s5dw15w111w5we5qqa1hy55',
       'UpdateTuru': 'UpdateEkUcretler',
-      'FirmaID':AktifKullaniciBilgileri.firmaKodu,
+      'FirmaID': AktifKullaniciBilgileri.firmaKodu,
       'Var1': var1,
       'Var2': var2,
       'Var3': var3,
@@ -383,6 +385,16 @@ class Database {
     return musteriler;
   }
 
+  getTalepler(String musteriID, String firmaUnvan) async {
+    final response = await http.get(
+        "http://www.ekamyon.com/wp-app/select_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&SelectTuru=Talepler&MusteriID=" +
+            musteriID +
+            "&firma_unvan=" +
+            firmaUnvan);
+    var json = jsonDecode(response.body);
+    return json;
+  }
+
   getFirmalar() async {
     final response = await http.get(
         "http://www.ekamyon.com/wp-app/select_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&SelectTuru=Firmalar");
@@ -395,6 +407,32 @@ class Database {
   getBekleyenNakliyeler() async {
     final response = await http.get(
         "http://www.ekamyon.com/wp-app/select_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&SelectTuru=FirmaBekleyenNakliyelerim&FirmaID=" +
+            AktifKullaniciBilgileri.firmaKodu);
+    List<Nakliye> nakliyeler = Nakliye.fromArray(jsonDecode(response.body));
+    return nakliyeler;
+  }
+
+  getMusteriBekleyenNakliyelerAdmin(String kulNo) async {
+    final response = await http.get(
+        "http://www.ekamyon.com/wp-app/select_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&SelectTuru=MusteriGecmisNakliyelerim&MusteriID=" +
+            kulNo);
+    List<Nakliye> nakliyeler = Nakliye.fromArray(jsonDecode(response.body));
+    return nakliyeler;
+  }
+
+  getFirmaNakliyelerAdmin(String firmaNo) async {
+    List<Nakliye> nakliyeler = List<Nakliye>();
+    final response = await http.get(
+        "http://www.ekamyon.com/wp-app/select_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&SelectTuru=BekleyenNakliyelerim&FirmaID=" +
+            firmaNo);
+    if (response.body.isNotEmpty)
+      nakliyeler = Nakliye.fromArray(jsonDecode(response.body));
+    return nakliyeler;
+  }
+
+  getTamamlananNakliyeler() async {
+    final response = await http.get(
+        "http://www.ekamyon.com/wp-app/select_data.php?Token=a15f5r1e514r1s5dw15w111w5we5qqa1hy55&SelectTuru=FirmaTamamlananNakliyelerim&FirmaID=" +
             AktifKullaniciBilgileri.firmaKodu);
     List<Nakliye> nakliyeler = Nakliye.fromArray(jsonDecode(response.body));
     return nakliyeler;

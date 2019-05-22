@@ -85,15 +85,16 @@ class Nakliye {
       anlasilanFirmaID: json['AnlasilanFirmaID'],
       anlasilanFiyat: json['AnlasilanFiyat'],
       anlasilanTarih: json['AnlasilanTarih'],
-      odemeDurumu: json['OdemeDurumu'],
+      odemeDurumu: json['OdemeDurumu'] ?? 'Ödenmemiş',
     );
   }
 
   static List<Nakliye> fromArray(var jsonArray) {
     List<Nakliye> nakliyeler = List<Nakliye>();
-    for (Map<String, dynamic> json in jsonArray) {
-      nakliyeler.add(Nakliye.fromJson(json));
-    }
+    if (jsonArray != null)
+      for (Map<String, dynamic> json in jsonArray) {
+        nakliyeler.add(Nakliye.fromJson(json));
+      }
     return nakliyeler;
   }
 }

@@ -133,7 +133,7 @@ class BildirimEkraniPopup extends State<BildirimEkrani> {
                   title: Text("Titreşim ile bildirim"),
                   onChanged: (bool value) {
                     titresimBildirim = value;
-                    setState(() {});
+                    if (this.mounted) {           setState(() {});         }
                   },
                 ),
                 CheckboxListTile(
@@ -141,7 +141,7 @@ class BildirimEkraniPopup extends State<BildirimEkrani> {
                   title: Text("Ses ile bildirim"),
                   onChanged: (bool value) {
                     sesliBildirim = value;
-                    setState(() {});
+                    if (this.mounted) {           setState(() {});         }
                   },
                 ),
               ],

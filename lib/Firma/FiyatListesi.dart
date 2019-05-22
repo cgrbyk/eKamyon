@@ -28,6 +28,7 @@ class FiyatListeEkrani extends State<FiyatListe> {
   FocusNode karNode = FocusNode();
   FocusNode asansorNode = FocusNode();
   int toplamFiya = 0;
+  int itemCount = 1;
 
   Widget customTextBox(
       TextInputType type,
@@ -54,7 +55,9 @@ class FiyatListeEkrani extends State<FiyatListe> {
         toplamFiya += int.tryParse(asansorcontroller.text) ?? 0;
         toplamFiya += int.tryParse(karcontroller.text) ?? 0;
         FocusScope.of(context).requestFocus(tofocus);
-        setState(() {});
+        if (this.mounted) {
+          setState(() {});
+        }
       },
       style: TextStyle(
           fontWeight: FontWeight.bold, fontFamily: 'Montserrat', fontSize: 20),
@@ -69,7 +72,10 @@ class FiyatListeEkrani extends State<FiyatListe> {
 
   fiyatListesiDoldur() async {
     fiyatlar = Fiyat.fromArray(await _database.fiyatlariCek());
-    setState(() {});
+    itemCount = fiyatlar.length;
+    if (this.mounted) {
+      setState(() {});
+    }
   }
 
   void _showDialog(String title, String message) {
@@ -244,82 +250,84 @@ class FiyatListeEkrani extends State<FiyatListe> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: fiyatlar.length,
-                    itemBuilder: (context, index) {
-                      if (fiyatlar.length != 0) {
-                        return Card(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.only(left: 5),
-                                child: Column(
+                  Expanded(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: itemCount,
+                      itemBuilder: (context, index) {
+                        if (fiyatlar.length != 0) {
+                          return Card(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Padding(
+                                  padding: EdgeInsets.only(left: 5),
+                                  child: Column(
+                                    children: <Widget>[
+                                      Text("Varış İl",
+                                          style: TextStyle(
+                                              color: Colors.grey[1000],
+                                              fontSize: 14)),
+                                      Text(fiyatlar[index].varisIl,
+                                          style: TextStyle(
+                                              color: Colors.grey[600],
+                                              fontSize: 12)),
+                                    ],
+                                  ),
+                                ),
+                                Column(
                                   children: <Widget>[
-                                    Text("Varış İl",
+                                    Text("Ev Tipi",
                                         style: TextStyle(
                                             color: Colors.grey[1000],
                                             fontSize: 14)),
-                                    Text(fiyatlar[index].varisIl,
+                                    Text(fiyatlar[index].evTipi,
                                         style: TextStyle(
                                             color: Colors.grey[600],
                                             fontSize: 12)),
                                   ],
                                 ),
-                              ),
-                              Column(
-                                children: <Widget>[
-                                  Text("Ev Tipi",
-                                      style: TextStyle(
-                                          color: Colors.grey[1000],
-                                          fontSize: 14)),
-                                  Text(fiyatlar[index].evTipi,
-                                      style: TextStyle(
-                                          color: Colors.grey[600],
-                                          fontSize: 12)),
-                                ],
-                              ),
-                              Column(
-                                children: <Widget>[
-                                  Text("Fiyat",
-                                      style: TextStyle(
-                                          color: Colors.grey[1000],
-                                          fontSize: 14)),
-                                  Text(fiyatlar[index].tasimaUcretiTam,
-                                      style: TextStyle(
-                                          color: Colors.grey[600],
-                                          fontSize: 12)),
-                                ],
-                              ),
-                              Align(
-                                alignment: Alignment.bottomRight,
-                                child: RaisedButton(
-                                  child: Text("Fiyat Güncelle"),
-                                  onPressed: () {
-                                    _showDialogTekliFiyat(fiyatlar[index]);
-                                  },
+                                Column(
+                                  children: <Widget>[
+                                    Text("Fiyat",
+                                        style: TextStyle(
+                                            color: Colors.grey[1000],
+                                            fontSize: 14)),
+                                    Text(fiyatlar[index].tasimaUcretiTam,
+                                        style: TextStyle(
+                                            color: Colors.grey[600],
+                                            fontSize: 12)),
+                                  ],
                                 ),
-                              ),
-                              Align(
-                                alignment: Alignment.topRight,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(right: 4.0),
+                                Align(
+                                  alignment: Alignment.bottomRight,
                                   child: RaisedButton(
-                                    child: Text("Sil"),
+                                    child: Text("Fiyat Güncelle"),
                                     onPressed: () {
-                                      _showDialogSilme(fiyatlar[index]);
+                                      _showDialogTekliFiyat(fiyatlar[index]);
                                     },
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        );
-                      } else {
-                        return CircularProgressIndicator();
-                      }
-                    },
+                                Align(
+                                  alignment: Alignment.topRight,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: 4.0),
+                                    child: RaisedButton(
+                                      child: Text("Sil"),
+                                      onPressed: () {
+                                        _showDialogSilme(fiyatlar[index]);
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        } else {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                      },
+                    ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -339,7 +347,9 @@ class FiyatListeEkrani extends State<FiyatListe> {
                                     isSehirlerArasi: true,
                                   );
                                 });
-                            setState(() {});
+                            if (this.mounted) {
+                              setState(() {});
+                            }
                           }),
                       RaisedButton(
                         child: Text("Toplu Fiyat Güncelle"),
@@ -355,7 +365,9 @@ class FiyatListeEkrani extends State<FiyatListe> {
                                   isSehirlerArasi: true,
                                 );
                               });
-                          setState(() {});
+                          if (this.mounted) {
+                            setState(() {});
+                          }
                           //toplu fiyat Güncelle
                         },
                       ),
@@ -392,10 +404,14 @@ class _ThridPageState extends State<ThridPage> {
 
   ekFiyatlariAl() async {
     loading = true;
-    setState(() {});
+    if (this.mounted) {
+      setState(() {});
+    }
     ekFiyatlar = await _database.ekFiyatlariCek();
     loading = false;
-    setState(() {});
+    if (this.mounted) {
+      setState(() {});
+    }
   }
 
   Widget customTextBox(
@@ -419,7 +435,9 @@ class _ThridPageState extends State<ThridPage> {
       textInputAction: action,
       onSubmitted: (String s) {
         FocusScope.of(context).requestFocus(tofocus);
-        setState(() {});
+        if (this.mounted) {
+          setState(() {});
+        }
       },
       style: TextStyle(
           fontWeight: FontWeight.bold, fontFamily: 'Montserrat', fontSize: 20),
@@ -702,6 +720,7 @@ class _SecondPageState extends State<SecondPage> {
   FocusNode karNode = FocusNode();
   FocusNode asansorNode = FocusNode();
   int toplamFiya = 0;
+  int itemCount = 1;
 
   void initState() {
     fiyatListesiDoldur();
@@ -711,7 +730,10 @@ class _SecondPageState extends State<SecondPage> {
   fiyatListesiDoldur() async {
     sehirIciFiyatlar =
         SehirIciFiyat.fromArray(await _database.sehiIcifiyatlariCek());
-    setState(() {});
+    itemCount = sehirIciFiyatlar.length;
+    if (this.mounted) {
+      setState(() {});
+    }
   }
 
   Widget customTextBox(
@@ -739,7 +761,9 @@ class _SecondPageState extends State<SecondPage> {
         toplamFiya += int.tryParse(asansorcontroller.text) ?? 0;
         toplamFiya += int.tryParse(karcontroller.text) ?? 0;
         FocusScope.of(context).requestFocus(tofocus);
-        setState(() {});
+        if (this.mounted) {
+          setState(() {});
+        }
       },
       style: TextStyle(
           fontWeight: FontWeight.bold, fontFamily: 'Montserrat', fontSize: 20),
@@ -811,7 +835,7 @@ class _SecondPageState extends State<SecondPage> {
             children: <Widget>[
               customTextBox(
                   TextInputType.number,
-                  "Yakit Masrafi",
+                  "Yakit Masrafi " + f.yakitMasrafi,
                   yakitcontroller,
                   TextInputAction.done,
                   yakitNode,
@@ -819,7 +843,7 @@ class _SecondPageState extends State<SecondPage> {
                   false),
               customTextBox(
                   TextInputType.number,
-                  "İşcilik Ücreti",
+                  "İşcilik Ücreti " + f.iscilikUcreti,
                   iscilikcontroller,
                   TextInputAction.done,
                   iscilikNode,
@@ -827,14 +851,20 @@ class _SecondPageState extends State<SecondPage> {
                   false),
               customTextBox(
                   TextInputType.number,
-                  "Asansör Bedeli",
+                  "Asansör Bedeli " + f.asansorBedeli,
                   asansorcontroller,
                   TextInputAction.done,
                   asansorNode,
                   karNode,
                   false),
-              customTextBox(TextInputType.number, "Firma Kârı", karcontroller,
-                  TextInputAction.done, karNode, new FocusNode(), false),
+              customTextBox(
+                  TextInputType.number,
+                  "Firma Kârı " + f.firmaKari,
+                  karcontroller,
+                  TextInputAction.done,
+                  karNode,
+                  new FocusNode(),
+                  false),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
@@ -887,77 +917,79 @@ class _SecondPageState extends State<SecondPage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        ListView.builder(
-          shrinkWrap: true,
-          itemCount: sehirIciFiyatlar.length,
-          itemBuilder: (context, index) {
-            if (sehirIciFiyatlar.length != 0) {
-              return Card(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(left: 5),
-                      child: Column(
+        Expanded(
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: itemCount,
+            itemBuilder: (context, index) {
+              if (sehirIciFiyatlar.length != 0) {
+                return Card(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(left: 5),
+                        child: Column(
+                          children: <Widget>[
+                            Text("Varış İlçe",
+                                style: TextStyle(
+                                    color: Colors.grey[1000], fontSize: 14)),
+                            Text(sehirIciFiyatlar[index].varisIlce,
+                                style: TextStyle(
+                                    color: Colors.grey[600], fontSize: 12)),
+                          ],
+                        ),
+                      ),
+                      Column(
                         children: <Widget>[
-                          Text("Varış İlçe",
+                          Text("Ev Tipi",
                               style: TextStyle(
                                   color: Colors.grey[1000], fontSize: 14)),
-                          Text(sehirIciFiyatlar[index].varisIlce,
+                          Text(sehirIciFiyatlar[index].evTipi,
                               style: TextStyle(
                                   color: Colors.grey[600], fontSize: 12)),
                         ],
                       ),
-                    ),
-                    Column(
-                      children: <Widget>[
-                        Text("Ev Tipi",
-                            style: TextStyle(
-                                color: Colors.grey[1000], fontSize: 14)),
-                        Text(sehirIciFiyatlar[index].evTipi,
-                            style: TextStyle(
-                                color: Colors.grey[600], fontSize: 12)),
-                      ],
-                    ),
-                    Column(
-                      children: <Widget>[
-                        Text("Fiyat",
-                            style: TextStyle(
-                                color: Colors.grey[1000], fontSize: 14)),
-                        Text(sehirIciFiyatlar[index].tasimaUcretiTam,
-                            style: TextStyle(
-                                color: Colors.grey[600], fontSize: 12)),
-                      ],
-                    ),
-                    Align(
-                      alignment: Alignment.bottomRight,
-                      child: RaisedButton(
-                        child: Text("Fiyat Güncelle"),
-                        onPressed: () {
-                          _showDialogTekliSehirIciFiyat(
-                              sehirIciFiyatlar[index]);
-                        },
+                      Column(
+                        children: <Widget>[
+                          Text("Fiyat",
+                              style: TextStyle(
+                                  color: Colors.grey[1000], fontSize: 14)),
+                          Text(sehirIciFiyatlar[index].tasimaUcretiTam,
+                              style: TextStyle(
+                                  color: Colors.grey[600], fontSize: 12)),
+                        ],
                       ),
-                    ),
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 4.0),
+                      Align(
+                        alignment: Alignment.bottomRight,
                         child: RaisedButton(
-                          child: Text("Sil"),
+                          child: Text("Fiyat Güncelle"),
                           onPressed: () {
-                            _showDialogSehirIciSilme(sehirIciFiyatlar[index]);
+                            _showDialogTekliSehirIciFiyat(
+                                sehirIciFiyatlar[index]);
                           },
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              );
-            } else {
-              return CircularProgressIndicator();
-            }
-          },
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 4.0),
+                          child: RaisedButton(
+                            child: Text("Sil"),
+                            onPressed: () {
+                              _showDialogSehirIciSilme(sehirIciFiyatlar[index]);
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
+            },
+          ),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -977,7 +1009,9 @@ class _SecondPageState extends State<SecondPage> {
                           isSehirlerArasi: false,
                         );
                       });
-                  setState(() {});
+                  if (this.mounted) {
+                    setState(() {});
+                  }
                 }),
             RaisedButton(
               child: Text("Toplu Fiyat Güncelle"),
@@ -993,7 +1027,9 @@ class _SecondPageState extends State<SecondPage> {
                         isSehirlerArasi: false,
                       );
                     });
-                setState(() {});
+                if (this.mounted) {
+                  setState(() {});
+                }
                 //toplu fiyat Güncelle
               },
             ),
@@ -1227,7 +1263,9 @@ class FiyatDialogPopup extends State<FiyatDialog> {
         toplamFiya += int.tryParse(asansorcontroller.text) ?? 0;
         toplamFiya += int.tryParse(karcontroller.text) ?? 0;
         FocusScope.of(context).requestFocus(tofocus);
-        setState(() {});
+        if (this.mounted) {
+          setState(() {});
+        }
       },
       style: TextStyle(
           fontWeight: FontWeight.bold, fontFamily: 'Montserrat', fontSize: 20),
@@ -1264,7 +1302,9 @@ class FiyatDialogPopup extends State<FiyatDialog> {
       ));
     }
     curItemIlce = ilceler.first.ilceAdi;
-    setState(() {});
+    if (this.mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -1296,7 +1336,9 @@ class FiyatDialogPopup extends State<FiyatDialog> {
                     value: curItemSehir,
                     onChanged: (dynamic dmi) {
                       curItemSehir = dmi;
-                      setState(() {});
+                      if (this.mounted) {
+                        setState(() {});
+                      }
                     },
                   ),
                 ),
@@ -1308,7 +1350,9 @@ class FiyatDialogPopup extends State<FiyatDialog> {
                     value: curItemIlce,
                     onChanged: (dynamic dmi) {
                       curItemIlce = dmi;
-                      setState(() {});
+                      if (this.mounted) {
+                        setState(() {});
+                      }
                     },
                   ),
                 ),
@@ -1318,7 +1362,9 @@ class FiyatDialogPopup extends State<FiyatDialog> {
                   isExpanded: true,
                   onChanged: (dynamic dmi) {
                     curItemEv = dmi;
-                    setState(() {});
+                    if (this.mounted) {
+                      setState(() {});
+                    }
                   },
                 ),
                 customTextBox(
