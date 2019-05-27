@@ -229,94 +229,100 @@ class _OfisTasimaEkraniState extends State<OfisTasimaEkrani> {
             child: ListView.builder(
               itemCount: gelenTeklifler.length,
               itemBuilder: (context, index) {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Column(
-                      children: <Widget>[
-                        Text(
-                          gelenTeklifler[index].firmaUnvan,
-                          style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          gelenTeklifler[index].firmaIl,
-                          style: TextStyle(fontSize: 12, color: Colors.grey),
-                        ),
-                      ],
-                    ),
-                    GestureDetector(
-                      child: Text(
-                        "Detay",
-                        style: TextStyle(color: Colors.blue),
+                return Card(
+                  child: Column(
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          Text(
+                            gelenTeklifler[index].firmaUnvan,
+                            style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.grey,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Column(
+                            children: <Widget>[
+                              Text(
+                                "Teklif Fiyatı",
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                ucretHesapla(gelenTeklifler[index]
+                                            .tasimaUcretiTam)
+                                        .toString() +
+                                    " ₺",
+                                style: TextStyle(
+                                    fontSize: 20, color: Colors.lightGreen),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                      onTap: () {
-                        _showDetay(gelenTeklifler[index]);
-                      },
-                    ),
-                    Column(
-                      children: <Widget>[
-                        Text(
-                          "Teklif Fiyatı",
-                          style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          ucretHesapla(gelenTeklifler[index].tasimaUcretiTam)
-                              .toString(),
-                          style:
-                              TextStyle(fontSize: 18, color: Colors.lightGreen),
-                        ),
-                      ],
-                    ),
-                    GestureDetector(
-                      child: Text(
-                        "Seç",
-                        style: TextStyle(color: Colors.blue),
-                      ),
-                      onTap: () async {
-                        if (mevcutAdres.text.isNotEmpty &&
-                            ofisOdaSayisi.isNotEmpty &&
-                            ofisMevcutKat.text.isNotEmpty &&
-                            binayaYakinlik.text.isNotEmpty &&
-                            yeniAdres.text.isNotEmpty &&
-                            ofisGelecekKat.text.isNotEmpty) {
-                          bool sonuc = await _database.ofisTasimaTeklifKabul(
-                              ofisOdaSayisi,
-                              secilenTarih,
-                              curItemSehir,
-                              curItemIlcemevcut,
-                              mevcutAdres.text,
-                              ofisMevcutKat.text,
-                              binayaYakinlik.text,
-                              esyaTasimaSecim,
-                              esyaPaketSecim,
-                              newItemSehir,
-                              curItemIlcevaris,
-                              yeniAdres.text,
-                              ofisGelecekKat.text,
-                              sigorta,
-                              ortaklik,
-                              gelenTeklifler[index].firmaID,
-                              ucretHesapla(
-                                      gelenTeklifler[index].tasimaUcretiTam)
-                                  .toString());
-                          sonuc
-                              ? _showDialog("Başarılı",
-                                  "Talebiniz firmaya iletilmiştir. Firma sizinle en kısa zamanda iletişime geçecektir.")
-                              : _showDialog("Hata",
-                                  "Talep oluştururken bir hata meydana geldi");
-                        } else {
-                          _showDialog("Boş alan",
-                              "Lütfen adres bilgileri gibi önemli alanları boş bırakmayınız.");
-                        }
-                      },
-                    ),
-                  ],
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          FlatButton(
+                            child: Text(
+                              "Detay",
+                              style: TextStyle(color: Colors.blue),
+                            ),
+                            onPressed: () {
+                              _showDetay(gelenTeklifler[index]);
+                            },
+                          ),
+                          FlatButton(
+                            child: Text(
+                              "Seç",
+                              style: TextStyle(color: Colors.blue),
+                            ),
+                            onPressed: () async {
+                              if (mevcutAdres.text.isNotEmpty &&
+                                  ofisOdaSayisi.isNotEmpty &&
+                                  ofisMevcutKat.text.isNotEmpty &&
+                                  binayaYakinlik.text.isNotEmpty &&
+                                  yeniAdres.text.isNotEmpty &&
+                                  ofisGelecekKat.text.isNotEmpty) {
+                                bool sonuc =
+                                    await _database.ofisTasimaTeklifKabul(
+                                        ofisOdaSayisi,
+                                        secilenTarih,
+                                        curItemSehir,
+                                        curItemIlcemevcut,
+                                        mevcutAdres.text,
+                                        ofisMevcutKat.text,
+                                        binayaYakinlik.text,
+                                        esyaTasimaSecim,
+                                        esyaPaketSecim,
+                                        newItemSehir,
+                                        curItemIlcevaris,
+                                        yeniAdres.text,
+                                        ofisGelecekKat.text,
+                                        sigorta,
+                                        ortaklik,
+                                        gelenTeklifler[index].firmaID,
+                                        ucretHesapla(gelenTeklifler[index]
+                                                .tasimaUcretiTam)
+                                            .toString());
+                                sonuc
+                                    ? _showDialog("Başarılı",
+                                        "Talebiniz firmaya iletilmiştir. Firma sizinle en kısa zamanda iletişime geçecektir.")
+                                    : _showDialog("Hata",
+                                        "Talep oluştururken bir hata meydana geldi");
+                              } else {
+                                _showDialog("Boş alan",
+                                    "Lütfen adres bilgileri gibi önemli alanları boş bırakmayınız.");
+                              }
+                            },
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
                 );
               },
             ),

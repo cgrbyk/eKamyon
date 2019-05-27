@@ -15,7 +15,7 @@ class EvdenEveTasima extends StatefulWidget {
 class _EvdenEveTasimaState extends State<EvdenEveTasima> {
   Database _database = Database();
   PageController _pageController = PageController();
-  DateTime secilenTarih = DateTime.now();
+  DateTime secilenTarih = DateTime.now().add(Duration(days: 1));
   String ofisOdaSayisi = "1+1";
   TextEditingController ofisMevcutKat = TextEditingController();
   TextEditingController ofisGelecekKat = TextEditingController();
@@ -144,7 +144,9 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
       ));
     }
     curItemIlcemevcut = mevcutIlceler.first.ilceAdi;
-    if (this.mounted) {           setState(() {});         }
+    if (this.mounted) {
+      setState(() {});
+    }
   }
 
   ilceGetirVaris(String arananSehir) async {
@@ -159,7 +161,9 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
       ));
     }
     curItemIlcevaris = varisIlceler.first.ilceAdi;
-    if (this.mounted) {           setState(() {});         }
+    if (this.mounted) {
+      setState(() {});
+    }
   }
 
   void _showDialog(String title, String message) {
@@ -287,96 +291,101 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
             child: ListView.builder(
               itemCount: gelenTeklifler.length,
               itemBuilder: (context, index) {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Column(
-                      children: <Widget>[
-                        Text(
-                          gelenTeklifler[index].firmaUnvan,
-                          style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          gelenTeklifler[index].firmaIl,
-                          style: TextStyle(fontSize: 12, color: Colors.grey),
-                        ),
-                      ],
-                    ),
-                    GestureDetector(
-                      child: Text(
-                        "Detay",
-                        style: TextStyle(color: Colors.blue),
+                return Card(
+                  child: Column(
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          Text(
+                            gelenTeklifler[index].firmaUnvan,
+                            style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.grey,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Column(
+                            children: <Widget>[
+                              Text(
+                                "Teklif Fiyatı",
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                ucretHesapla(gelenTeklifler[index]
+                                            .tasimaUcretiTam)
+                                        .toString() +
+                                    " ₺",
+                                style: TextStyle(
+                                    fontSize: 20, color: Colors.lightGreen),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                      onTap: () {
-                        _showDetay(gelenTeklifler[index]);
-                      },
-                    ),
-                    Column(
-                      children: <Widget>[
-                        Text(
-                          "Teklif Fiyatı",
-                          style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          ucretHesapla(gelenTeklifler[index].tasimaUcretiTam)
-                              .toString(),
-                          style:
-                              TextStyle(fontSize: 18, color: Colors.lightGreen),
-                        ),
-                      ],
-                    ),
-                    GestureDetector(
-                      child: Text(
-                        "Seç",
-                        style: TextStyle(color: Colors.blue),
-                      ),
-                      onTap: () async {
-                        String esyaListesi = esyaListesiHesaplama();
-                        if (mevcutAdres.text.isNotEmpty &&
-                            ofisOdaSayisi.isNotEmpty &&
-                            ofisMevcutKat.text.isNotEmpty &&
-                            binayaYakinlik.text.isNotEmpty &&
-                            yeniAdres.text.isNotEmpty &&
-                            ofisGelecekKat.text.isNotEmpty) {
-                          bool sonuc = await _database.tasimateklifiSec(
-                              secilenTarih,
-                              curItemSehir,
-                              curItemIlcemevcut,
-                              curItemIlcemevcut,
-                              ofisOdaSayisi,
-                              ofisMevcutKat.text,
-                              binayaYakinlik.text,
-                              esyaTasimaSecim,
-                              esyaPaketSecim,
-                              newItemSehir,
-                              curItemIlcevaris,
-                              yeniAdres.text,
-                              ofisGelecekKat.text,
-                              sigorta,
-                              ortaklik,
-                              gelenTeklifler[index].firmaID,
-                              ucretHesapla(
-                                      gelenTeklifler[index].tasimaUcretiTam)
-                                  .toString(),
-                              esyaListesi);
-                          sonuc
-                              ? _showDialog("Başarılı",
-                                  "Talebiniz firmaya iletilmiştir. Firma sizinle en kısa zamanda iletişime geçecektir.")
-                              : _showDialog("Hata",
-                                  "Talep oluştururken bir hata meydana geldi");
-                        } else {
-                          _showDialog("Boş alan",
-                              "Lütfen adres bilgileri gibi önemli alanları boş bırakmayınız.");
-                        }
-                      },
-                    ),
-                  ],
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          FlatButton(
+                            child: Text(
+                              "Detay",
+                              style: TextStyle(color: Colors.blue),
+                            ),
+                            onPressed: () {
+                              _showDetay(gelenTeklifler[index]);
+                            },
+                          ),
+                          FlatButton(
+                            child: Text(
+                              "Seç",
+                              style: TextStyle(color: Colors.blue),
+                            ),
+                            onPressed: () async {
+                              String esyaListesi = esyaListesiHesaplama();
+                              if (mevcutAdres.text.isNotEmpty &&
+                                  ofisOdaSayisi.isNotEmpty &&
+                                  ofisMevcutKat.text.isNotEmpty &&
+                                  binayaYakinlik.text.isNotEmpty &&
+                                  yeniAdres.text.isNotEmpty &&
+                                  ofisGelecekKat.text.isNotEmpty) {
+                                bool sonuc = await _database.tasimateklifiSec(
+                                    secilenTarih,
+                                    curItemSehir,
+                                    curItemIlcemevcut,
+                                    curItemIlcemevcut,
+                                    ofisOdaSayisi,
+                                    ofisMevcutKat.text,
+                                    binayaYakinlik.text,
+                                    esyaTasimaSecim,
+                                    esyaPaketSecim,
+                                    newItemSehir,
+                                    curItemIlcevaris,
+                                    yeniAdres.text,
+                                    ofisGelecekKat.text,
+                                    sigorta,
+                                    ortaklik,
+                                    gelenTeklifler[index].firmaID,
+                                    ucretHesapla(gelenTeklifler[index]
+                                            .tasimaUcretiTam)
+                                        .toString(),
+                                    esyaListesi);
+                                sonuc
+                                    ? _showDialog("Başarılı",
+                                        "Talebiniz firmaya iletilmiştir. Firma sizinle en kısa zamanda iletişime geçecektir.")
+                                    : _showDialog("Hata",
+                                        "Talep oluştururken bir hata meydana geldi");
+                              } else {
+                                _showDialog("Boş alan",
+                                    "Lütfen adres bilgileri gibi önemli alanları boş bırakmayınız.");
+                              }
+                            },
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
                 );
               },
             ),
@@ -733,13 +742,15 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                                 onPressed: () {
                                   DatePicker.showDatePicker(context,
                                       showTitleActions: true,
-                                      minTime: DateTime.now(),
+                                      minTime: DateTime.now().add(Duration(days: 1)),
                                       maxTime: DateTime.now()
                                           .add(Duration(days: 365)),
                                       onConfirm: (date) {
                                     print('confirm $date');
                                     secilenTarih = date;
-                                    if (this.mounted) {           setState(() {});         }
+                                    if (this.mounted) {
+                                      setState(() {});
+                                    }
                                   },
                                       currentTime: DateTime.now(),
                                       locale: LocaleType.tr);
@@ -787,7 +798,9 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                                   ],
                                   onChanged: (String s) {
                                     ofisOdaSayisi = s;
-                                    if (this.mounted) {           setState(() {});         }
+                                    if (this.mounted) {
+                                      setState(() {});
+                                    }
                                   },
                                 ),
                               ),
@@ -857,7 +870,9 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                           ],
                           onChanged: (String s) {
                             esyaPaketSecim = s;
-                            if (this.mounted) {           setState(() {});         }
+                            if (this.mounted) {
+                              setState(() {});
+                            }
                           },
                         ),
                         Padding(
@@ -897,7 +912,9 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                           ],
                           onChanged: (String s) {
                             esyaTasimaSecim = s;
-                            if (this.mounted) {           setState(() {});         }
+                            if (this.mounted) {
+                              setState(() {});
+                            }
                           },
                         ),
                         Padding(
@@ -1584,7 +1601,9 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                                     ? showSigorta = false
                                     : showSigorta = true;
                                 ilceGetirMevcut(curItemSehir);
-                                if (this.mounted) {           setState(() {});         }
+                                if (this.mounted) {
+                                  setState(() {});
+                                }
                               },
                             ),
                             Expanded(
@@ -1594,7 +1613,9 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                               value: curItemIlcemevcut,
                               onChanged: (dynamic dmi) {
                                 curItemIlcemevcut = dmi;
-                                if (this.mounted) {           setState(() {});         }
+                                if (this.mounted) {
+                                  setState(() {});
+                                }
                               },
                             )),
                           ],
@@ -1629,7 +1650,9 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                                     ? showSigorta = false
                                     : showSigorta = true;
                                 ilceGetirVaris(newItemSehir);
-                                if (this.mounted) {           setState(() {});         }
+                                if (this.mounted) {
+                                  setState(() {});
+                                }
                               },
                             ),
                             Expanded(
@@ -1639,7 +1662,9 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                               value: curItemIlcevaris,
                               onChanged: (dynamic dmi) {
                                 curItemIlcevaris = dmi;
-                                if (this.mounted) {           setState(() {});         }
+                                if (this.mounted) {
+                                  setState(() {});
+                                }
                               },
                             )),
                           ],
@@ -1683,7 +1708,9 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                                         title: Text("Evet"),
                                         onChanged: (bool s) {
                                           sigorta = true;
-                                          if (this.mounted) {           setState(() {});         }
+                                          if (this.mounted) {
+                                            setState(() {});
+                                          }
                                         }),
                                   ),
                                   Expanded(
@@ -1693,7 +1720,9 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                                             maxLines: 1),
                                         onChanged: (bool s) {
                                           sigorta = false;
-                                          if (this.mounted) {           setState(() {});         }
+                                          if (this.mounted) {
+                                            setState(() {});
+                                          }
                                         }),
                                   ),
                                 ],
@@ -1726,7 +1755,9 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                                   title: Text("Evet"),
                                   onChanged: (bool s) {
                                     ortaklik = true;
-                                    if (this.mounted) {           setState(() {});         }
+                                    if (this.mounted) {
+                                      setState(() {});
+                                    }
                                   }),
                             ),
                             SizedBox(
@@ -1736,7 +1767,9 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                                   title: Text("İstemiyorum"),
                                   onChanged: (bool s) {
                                     ortaklik = false;
-                                    if (this.mounted) {           setState(() {});         }
+                                    if (this.mounted) {
+                                      setState(() {});
+                                    }
                                   }),
                             ),
                           ],
@@ -1768,7 +1801,34 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 18)),
                         onPressed: () async {
+                          bool odaSayisiGoster = false;
+                          String odaSayisiString = "";
                           int odasayisi = esyaSayisiHesaplama();
+                          if (odasayisi < 40 && ofisOdaSayisi != "1+1") {
+                            odaSayisiGoster = true;
+                            odaSayisiString =
+                                "Girdiğiniz Eşyalar 1+1 için uygundur.Oda tipi değiştilimiştir.";
+                            ofisOdaSayisi = "1+1";
+                          } else if (odasayisi > 40 &&
+                              odasayisi <= 50 &&
+                              ofisOdaSayisi != "2+1") {
+                            odaSayisiGoster = true;
+                            odaSayisiString =
+                                "Girdiğiniz Eşyalar 2+1 için uygundur.Oda tipi değiştilimiştir.";
+                            ofisOdaSayisi = "2+1";
+                          } else if (odasayisi > 50 &&
+                              odasayisi <= 70 &&
+                              ofisOdaSayisi != "3+1") {
+                            odaSayisiGoster = true;
+                            odaSayisiString =
+                                "Girdiğiniz Eşyalar 3+1 için uygundur.Oda tipi değiştilimiştir.";
+                            ofisOdaSayisi = "3+1";
+                          } else if (ofisOdaSayisi == "4+1") {
+                            odaSayisiGoster = true;
+                            odaSayisiString =
+                                "Girdiğiniz Eşyalar 4+1 için uygundur.Oda tipi değiştilimiştir.";
+                            ofisOdaSayisi = "4+1";
+                          }
                           List<TeklifFirma> gelenTeklifler =
                               await _database.evdenEveTasimaTeklifleriAl(
                                   secilenTarih,
@@ -1781,27 +1841,10 @@ class _EvdenEveTasimaState extends State<EvdenEveTasima> {
                             _showDialog("Uygun teklif bulunamadı",
                                 "Şuan sizin için uygun bir araç bulamadık en kısa sürede bu eksiği gidereceğiz.");
                           }
-                          if (odasayisi < 40 && ofisOdaSayisi != "1+1") {
-                            _showDialog("Oda sayısı hesaplandı",
-                                "Girdiğiniz Eşyalar 1+1 için uygundur.Oda tipi değiştilimiştir.");
-                            ofisOdaSayisi = "1+1";
-                          } else if (odasayisi > 40 &&
-                              odasayisi <= 50 &&
-                              ofisOdaSayisi != "2+1") {
-                            _showDialog("Oda sayısı hesaplandı",
-                                "Girdiğiniz Eşyalar 2+1 için uygundur.Oda tipi değiştilimiştir.");
-                            ofisOdaSayisi = "2+1";
-                          } else if (odasayisi > 50 &&
-                              odasayisi <= 70 &&
-                              ofisOdaSayisi != "3+1") {
-                            _showDialog("Oda sayısı hesaplandı",
-                                "Girdiğiniz Eşyalar 3+1 için uygundur.Oda tipi değiştilimiştir.");
-                            ofisOdaSayisi = "3+1";
-                          } else if (ofisOdaSayisi == "4+1") {
-                            _showDialog("Oda sayısı hesaplandı",
-                                "Girdiğiniz Eşyalar 4+1 için uygundur.Oda tipi değiştilimiştir.");
-                            ofisOdaSayisi = "4+1";
-                          }
+                          if (odaSayisiGoster)
+                            _showDialog(
+                                "Oda Sayisi Hesaplandi", odaSayisiString);
+                          odaSayisiGoster = false;
                         },
                       ),
                     )

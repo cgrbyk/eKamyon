@@ -281,7 +281,7 @@ class FiyatListeEkrani extends State<FiyatListe> {
                                         style: TextStyle(
                                             color: Colors.grey[1000],
                                             fontSize: 14)),
-                                    Text(fiyatlar[index].evTipi,
+                                    Text(fiyatlar[index].evTipi.split('.')[0]+"+1",
                                         style: TextStyle(
                                             color: Colors.grey[600],
                                             fontSize: 12)),
@@ -299,25 +299,21 @@ class FiyatListeEkrani extends State<FiyatListe> {
                                             fontSize: 12)),
                                   ],
                                 ),
-                                Align(
-                                  alignment: Alignment.bottomRight,
-                                  child: RaisedButton(
-                                    child: Text("Fiyat Güncelle"),
-                                    onPressed: () {
-                                      _showDialogTekliFiyat(fiyatlar[index]);
-                                    },
-                                  ),
+                                FlatButton(
+                                  highlightColor: Colors.blue[100],
+                                  child: Text("Fiyat Güncelle",style: TextStyle(color: Colors.blue,fontSize: 12)),
+                                  onPressed: () {
+                                    _showDialogTekliFiyat(fiyatlar[index]);
+                                  },
                                 ),
-                                Align(
-                                  alignment: Alignment.topRight,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(right: 4.0),
-                                    child: RaisedButton(
-                                      child: Text("Sil"),
-                                      onPressed: () {
-                                        _showDialogSilme(fiyatlar[index]);
-                                      },
-                                    ),
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 4.0),
+                                  child: FlatButton(
+                                    highlightColor: Colors.blue[100],
+                                    child: Text("Sil",style: TextStyle(color: Colors.blue,fontSize: 12)),
+                                    onPressed: () {
+                                      _showDialogSilme(fiyatlar[index]);
+                                    },
                                   ),
                                 ),
                               ],
@@ -945,7 +941,7 @@ class _SecondPageState extends State<SecondPage> {
                           Text("Ev Tipi",
                               style: TextStyle(
                                   color: Colors.grey[1000], fontSize: 14)),
-                          Text(sehirIciFiyatlar[index].evTipi,
+                          Text(sehirIciFiyatlar[index].evTipi.split('.')[0]+"+1",
                               style: TextStyle(
                                   color: Colors.grey[600], fontSize: 12)),
                         ],
@@ -960,26 +956,22 @@ class _SecondPageState extends State<SecondPage> {
                                   color: Colors.grey[600], fontSize: 12)),
                         ],
                       ),
-                      Align(
-                        alignment: Alignment.bottomRight,
-                        child: RaisedButton(
-                          child: Text("Fiyat Güncelle"),
-                          onPressed: () {
-                            _showDialogTekliSehirIciFiyat(
-                                sehirIciFiyatlar[index]);
-                          },
-                        ),
+                      FlatButton(
+                        highlightColor: Colors.blue[100],
+                        child: Text("Fiyat Güncelle",style: TextStyle(color: Colors.blue,fontSize: 12)),
+                        onPressed: () {
+                          _showDialogTekliSehirIciFiyat(
+                              sehirIciFiyatlar[index]);
+                        },
                       ),
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 4.0),
-                          child: RaisedButton(
-                            child: Text("Sil"),
-                            onPressed: () {
-                              _showDialogSehirIciSilme(sehirIciFiyatlar[index]);
-                            },
-                          ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 4.0),
+                        child: FlatButton(
+                          highlightColor: Colors.blue[100],
+                          child: Text("Sil",style: TextStyle(color: Colors.blue,fontSize: 12)),
+                          onPressed: () {
+                            _showDialogSehirIciSilme(sehirIciFiyatlar[index]);
+                          },
                         ),
                       ),
                     ],
@@ -1211,7 +1203,7 @@ class FiyatDialogPopup extends State<FiyatDialog> {
   String curItemIlce;
   bool aracaktifmi = false;
 
-  List<String> evTipleri = ['1+1', '1+2', '1+3', '1+4'];
+  List<String> evTipleri = ['1+1', '2+1', '3+1', '4+1'];
   List<DropdownMenuItem> evTipleriDDM = List<DropdownMenuItem>();
   String curItemEv;
 

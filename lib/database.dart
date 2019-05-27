@@ -695,6 +695,7 @@ class Database {
   ) async {
     final response =
         await http.post("https://www.ekamyon.com/wp-app/register.php", body: {
+      'token': 'a15f5r1e514r1s5dw15w111w5we5qqa1hy55',
       'KullaniciTuru': 'Firma',
       'Telefonu': telefon,
       'FirmaAdi': firmaAdi,
@@ -715,7 +716,6 @@ class Database {
       'PostaKodu': postaKodu,
       'KayitTarihi': DateTime.now().toString(),
       'SozlesmeKabulTarihi': DateTime.now().toString(),
-      'token': '', //Onesignal Token
     });
     if (response.body == "Kaydedildi")
       return true;
@@ -747,7 +747,6 @@ class Database {
       'Eposta': eposta,
       'KayitTarihi': DateTime.now().toString(),
       'SozlesmeKabulTarihi': DateTime.now().toString(),
-      'token': '' //One Signal TOken
     });
     if (response.body == "Kaydedildi")
       return true;

@@ -24,11 +24,13 @@ class _BekleyenNakliyelerState extends State<BekleyenNakliyeler> {
     nakliyeler = await _database.getBekleyenNakliyeler();
     itemcount = nakliyeler.length;
     loading = false;
-    if (this.mounted) {           setState(() {});         }
+    if (this.mounted) {
+      setState(() {});
+    }
   }
 
   void _showDetay(Nakliye n) {
-    showDialog(     
+    showDialog(
       context: context,
       builder: (BuildContext context) {
         // return object of type Dialog
@@ -41,109 +43,111 @@ class _BekleyenNakliyelerState extends State<BekleyenNakliyeler> {
               children: <Widget>[
                 AutoSizeText("Taşıma türü :",
                     style: TextStyle(color: Colors.grey), maxLines: 1),
-                AutoSizeText(n.tasinmaTuru),
+                AutoSizeText(n.tasinmaTuru,maxLines: 1),
                 Row(
                   children: <Widget>[
                     AutoSizeText("Mevcut ili :",
                         style: TextStyle(color: Colors.grey), maxLines: 1),
-                    AutoSizeText(n.mevcutIl),
+                    AutoSizeText(n.mevcutIl,maxLines: 1),
                   ],
                 ),
                 Row(
                   children: <Widget>[
                     AutoSizeText("Mevcut İlçe :",
                         style: TextStyle(color: Colors.grey), maxLines: 1),
-                    AutoSizeText(n.mevcutIlce),
+                    AutoSizeText(n.mevcutIlce,maxLines: 1),
                   ],
                 ),
                 Row(
                   children: <Widget>[
                     AutoSizeText("Mevcut Adres :",
                         style: TextStyle(color: Colors.grey), maxLines: 1),
-                    AutoSizeText(n.mevcutAdres),
+                    AutoSizeText(n.mevcutAdres,maxLines: 1),
                   ],
                 ),
                 Row(
                   children: <Widget>[
                     AutoSizeText("Varış Il :",
                         style: TextStyle(color: Colors.grey), maxLines: 1),
-                    AutoSizeText(n.varisIl),
+                    AutoSizeText(n.varisIl,maxLines: 1),
                   ],
                 ),
                 Row(
                   children: <Widget>[
                     AutoSizeText("Varış Ilce :",
                         style: TextStyle(color: Colors.grey), maxLines: 1),
-                    AutoSizeText(n.varisIlce),
+                    AutoSizeText(n.varisIlce,maxLines: 1),
                   ],
                 ),
                 Row(
                   children: <Widget>[
                     AutoSizeText("Varış adres :",
                         style: TextStyle(color: Colors.grey), maxLines: 1),
-                    AutoSizeText(n.varisAdres),
+                    AutoSizeText(n.varisAdres,maxLines: 1),
                   ],
                 ),
                 Row(
                   children: <Widget>[
                     AutoSizeText("Tasinma Tarihi :",
                         style: TextStyle(color: Colors.grey), maxLines: 1),
-                    AutoSizeText(n.tasinmaTarihi),
+                    AutoSizeText(n.tasinmaTarihi,maxLines: 1),
                   ],
                 ),
                 Row(
                   children: <Widget>[
                     AutoSizeText("Anlasma Tarihi :",
                         style: TextStyle(color: Colors.grey), maxLines: 1),
-                    AutoSizeText(n.anlasilanTarih.split(' ')[0]),
+                    AutoSizeText(n.anlasilanTarih.split(' ')[0],maxLines: 1),
                   ],
                 ),
                 Row(
                   children: <Widget>[
                     AutoSizeText("Eposta :",
                         style: TextStyle(color: Colors.grey), maxLines: 1),
-                    AutoSizeText(n.eposta),
+                    AutoSizeText(n.eposta,maxLines: 1),
                   ],
                 ),
                 Row(
                   children: <Widget>[
                     AutoSizeText("yakınlık :",
                         style: TextStyle(color: Colors.grey), maxLines: 1),
-                    AutoSizeText(n.yukeYaklasma + "m"),
+                    AutoSizeText(n.yukeYaklasma + "m",maxLines: 1),
                   ],
                 ),
                 AutoSizeText("Eşyalar nasıl paketlenecek :",
                     style: TextStyle(color: Colors.grey), maxLines: 1),
-                AutoSizeText(n.nasilPaketlenecek),
+                AutoSizeText(n.nasilPaketlenecek,maxLines: 1),
                 AutoSizeText("Eşyalar nasıl taşınacak :",
                     style: TextStyle(color: Colors.grey), maxLines: 1),
-                AutoSizeText(n.nasilTasinacak),
+                AutoSizeText(n.nasilTasinacak,maxLines: 1),
                 Row(
-                  children: <Widget>[ 
-                    AutoSizeText(n.mevcutOda==null?"Esya Cinsi":"Evin büyüklüğü :",
-                        style: TextStyle(color: Colors.grey), maxLines: 1),
-                    AutoSizeText(n.mevcutOda ?? n.esyaCinsi),
+                  children: <Widget>[
+                    AutoSizeText(
+                        n.mevcutOda == null ? "Esya Cinsi" : "Evin büyüklüğü :",
+                        style: TextStyle(color: Colors.grey),
+                        maxLines: 1),
+                    AutoSizeText(n.mevcutOda ?? n.esyaCinsi ,maxLines: 1),
                   ],
                 ),
                 Row(
                   children: <Widget>[
                     AutoSizeText("Mevcut ev katı:",
                         style: TextStyle(color: Colors.grey), maxLines: 1),
-                    AutoSizeText(n.mevcutKat),
+                    AutoSizeText(n.mevcutKat,maxLines: 1),
                   ],
                 ),
                 Row(
                   children: <Widget>[
                     AutoSizeText("Varış ev katı :",
                         style: TextStyle(color: Colors.grey), maxLines: 1),
-                    AutoSizeText(n.varisKat),
+                    AutoSizeText(n.varisKat,maxLines: 1),
                   ],
                 ),
                 Row(
                   children: <Widget>[
                     AutoSizeText("Sigorta :",
                         style: TextStyle(color: Colors.grey), maxLines: 1),
-                    AutoSizeText(n.sigorta),
+                    AutoSizeText(n.sigorta,maxLines: 1),
                   ],
                 ),
                 Visibility(
@@ -152,8 +156,8 @@ class _BekleyenNakliyelerState extends State<BekleyenNakliyeler> {
                     children: <Widget>[
                       AutoSizeText("Eşya Listesi :",
                           style: TextStyle(color: Colors.grey), maxLines: 1),
-                      AutoSizeText(n.esyaListesi ?? ""),
-                    ],
+                      Text(n.esyaListesi ?? ""),
+                    ], 
                   ),
                 ),
               ],

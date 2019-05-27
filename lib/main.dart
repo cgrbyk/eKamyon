@@ -82,7 +82,7 @@ class _GirisSayfasiState extends State<GirisSayfasi> {
                     },
                   ),
                   new FlatButton(
-                    child: new Text("Nakliye Hesabı",
+                    child: new Text("Firma Hesabı",
                         style: TextStyle(
                             color: Colors.blue,
                             fontSize: 14,
