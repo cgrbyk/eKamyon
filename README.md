@@ -1,16 +1,22 @@
-# ekamyon
+# Ekamyon
 
-A new Flutter project.
+Flutter ile yapılmış bir nakliyecilik projesi
 
-## Getting Started
+## Nasıl çalışıyor
 
-This project is a starting point for a Flutter application.
+Uygulama da iki ayrı kullanıcı tipi var. Bunlar nakliyeciler ve müşteriler.
 
-A few resources to get you started if this is your first Flutter project:
+Nakliyeciler: Firmaları için gerekli olan işlemleri yapabiliyorlar bunlar;
 
-- [Lab: Write your first Flutter app](https://flutter.io/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.io/docs/cookbook)
+Firma adı, Adresi vs gibi Bilgiler.
+Araç ve Araç bilgileri eklemek ve güncellemek.
+Şehirler arası ve şehir içi fiyat belirlemek ve güncellemek.
+Km başına ödenecek fiyat belirlemek. Bu fiyat taşınacak olan kargonun veya evin bulunduğu ilçenin şehir merkezine göre uzaklığı belirlenerek müşteriye gösterilen fiyata eklenecektir.
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.io/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+Müşteriler: Ofis, ev veya eşya taşıması yapabilir;
+
+Ad, soyad ve telefon vs gibi bilgilerini güncelleyebilir.
+Evindeki eşyaları belirterek firmalardan anında fiyat alabilir.
+Ofis ve Eşya taşıma için ayrı ekranlar bulunmaktadır.
+
+Projenin tüm Databas iletişimi rest api ile gerçekleşmektedir.
